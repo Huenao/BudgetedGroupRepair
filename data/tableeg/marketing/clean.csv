@@ -1,0 +1,484 @@
+row_id,Income,Sex,Marital,Age,Education,Occupation,Live,Dual,Person,Person under 18,Householder,Hometype,Ethnic,Language
+48,1,female,married,35 thru 44,graduated high school,homemaker,four to six years,no,six,four,own,house,white,english
+116,1,female,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+119,1,male,single or never married,45 thru 54,grad study,professional/managerial,less than one year,not married,one,none,rent,condominium,white,english
+122,1,female,divorced or separated,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,not married,two,none,own,house,white,english
+136,1,female,married,55 thru 64,1 to 3 years of college,professional/managerial,more than ten years,no,two,none,own,house,white,english
+147,1,male,married,65 and over,graduated high school,retired,more than ten years,no,three,none,own,house,white,english
+149,1,male,married,65 and over,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+154,1,female,married,35 thru 44,1 to 3 years of college,homemaker,more than ten years,no,four,none,own,house,white,english
+160,0,female,married,18 thru 24,graduated high school,professional/managerial,more than ten years,yes,two,none,rent,apartment,white,english
+170,1,female,widowed,45 thru 54,1 to 3 years of college,retired,one to three years,not married,two,none,rent,apartment,white,english
+172,1,male,married,65 and over,grad study,retired,more than ten years,no,two,none,own,house,white,english
+173,1,female,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+184,1,female,single or never married,18 thru 24,graduated high school,sales worker,four to six years,not married,three,one,live with parents/family,house,white,english
+217,1,male,married,55 thru 64,1 to 3 years of college,professional/managerial,more than ten years,yes,three,none,own,house,white,english
+235,1,male,single or never married,25 thru 34,grad study,professional/managerial,more than ten years,not married,two,none,rent,apartment,white,english
+243,1,male,married,35 thru 44,grad study,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+251,1,male,married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,no,two,none,own,house,white,english
+264,1,male,married,25 thru 34,graduated high school,factory worker/laborer/driver,more than ten years,yes,four,two,rent,other,white,english
+268,1,female,married,25 thru 34,1 to 3 years of college,homemaker,seven to ten years,no,five,none,rent,house,white,english
+274,1,female,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,three,none,own,house,white,english
+276,1,male,married,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,no,four,two,own,house,white,english
+277,1,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+290,0,female,married,55 thru 64,college graduate,military,more than ten years,no,two,none,own,house,white,english
+292,1,male,married,45 thru 54,grad study,professional/managerial,more than ten years,no,two,none,own,house,white,english
+318,1,female,married,35 thru 44,college graduate,professional/managerial,seven to ten years,yes,four,two,own,house,white,english
+321,1,male,married,45 thru 54,college graduate,professional/managerial,more than ten years,yes,four,two,own,house,white,english
+322,1,female,divorced or separated,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+335,0,female,living together or not married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,two,none,rent,apartment,white,english
+341,0,female,single or never married,25 thru 34,grad study,unemployed,more than ten years,not married,one,none,rent,apartment,white,english
+344,0,female,married,18 thru 24,graduated high school,homemaker,one to three years,no,four,two,rent,apartment,white,english
+350,0,male,single or never married,55 thru 64,1 to 3 years of college,retired,more than ten years,not married,one,none,rent,apartment,white,english
+363,1,male,married,65 and over,college graduate,professional/managerial,more than ten years,no,two,none,own,house,white,english
+381,0,female,divorced or separated,45 thru 54,graduated high school,homemaker,more than ten years,not married,two,none,own,house,white,english
+386,0,male,single or never married,14 thru 17,graduated high school,sales worker,less than one year,not married,four,none,rent,apartment,white,english
+390,0,female,divorced or separated,25 thru 34,college graduate,professional/managerial,more than ten years,not married,two,one,rent,condominium,white,english
+399,0,female,divorced or separated,45 thru 54,grad study,professional/managerial,more than ten years,not married,one,none,own,house,white,english
+421,1,male,married,35 thru 44,grad study,professional/managerial,more than ten years,yes,four,two,own,house,white,english
+426,0,male,single or never married,25 thru 34,1 to 3 years of college,sales worker,more than ten years,not married,three,none,live with parents/family,apartment,white,english
+433,1,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,one to three years,not married,one,none,own,mobile home,white,english
+447,0,male,single or never married,25 thru 34,grades 9 to 11,unemployed,more than ten years,not married,two,none,rent,house,hispanic,english
+454,0,female,single or never married,18 thru 24,grades 9 to 11,sales worker,one to three years,not married,two,none,rent,apartment,white,english
+457,1,male,married,55 thru 64,college graduate,professional/managerial,more than ten years,no,two,none,own,house,white,english
+472,1,female,widowed,65 and over,college graduate,retired,more than ten years,not married,one,none,own,house,white,english
+490,1,male,single or never married,18 thru 24,graduated high school,professional/managerial,more than ten years,not married,eight,two,live with parents/family,house,white,english
+495,0,female,married,25 thru 34,college graduate,professional/managerial,more than ten years,no,four,two,own,mobile home,white,english
+504,1,male,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,hispanic,english
+505,1,female,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+506,0,female,widowed,55 thru 64,grades 9 to 11,retired,more than ten years,not married,one,none,live with parents/family,house,white,english
+514,0,female,single or never married,18 thru 24,1 to 3 years of college,professional/managerial,more than ten years,not married,three,none,live with parents/family,house,white,english
+520,1,male,married,45 thru 54,grad study,professional/managerial,seven to ten years,yes,seven,four,rent,house,white,english
+536,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+550,0,female,single or never married,25 thru 34,1 to 3 years of college,unemployed,seven to ten years,not married,one,none,rent,apartment,white,english
+560,0,female,married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,no,two,none,own,house,white,english
+563,0,male,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,four,two,live with parents/family,condominium,white,english
+590,1,male,married,35 thru 44,grad study,homemaker,more than ten years,no,four,two,own,house,white,english
+594,0,female,single or never married,25 thru 34,college graduate,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+612,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,mobile home,white,english
+617,0,female,married,25 thru 34,graduated high school,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+620,0,male,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,two,one,live with parents/family,apartment,white,english
+626,1,female,married,25 thru 34,1 to 3 years of college,clerical/service worker,four to six years,yes,five,three,own,house,white,english
+644,1,male,divorced or separated,45 thru 54,grades 9 to 11,factory worker/laborer/driver,one to three years,not married,one,none,rent,apartment,white,english
+663,0,male,single or never married,18 thru 24,graduated high school,unemployed,one to three years,not married,four,none,live with parents/family,house,white,english
+673,1,female,married,35 thru 44,1 to 3 years of college,professional/managerial,four to six years,yes,three,none,rent,house,white,english
+681,0,female,married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,no,five,one,live with parents/family,condominium,white,english
+693,0,male,single or never married,18 thru 24,1 to 3 years of college,sales worker,more than ten years,not married,five,none,live with parents/family,house,white,english
+703,1,female,married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,yes,three,one,own,house,white,english
+709,1,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+716,0,male,married,65 and over,graduated high school,retired,more than ten years,no,three,none,rent,house,white,english
+719,1,female,married,25 thru 34,1 to 3 years of college,homemaker,more than ten years,yes,five,three,own,house,white,english
+723,1,female,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,three,one,rent,apartment,white,english
+725,1,female,married,45 thru 54,1 to 3 years of college,clerical/service worker,more than ten years,yes,three,none,own,house,white,english
+746,1,female,married,65 and over,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+753,0,male,divorced or separated,65 and over,college graduate,professional/managerial,more than ten years,not married,one,none,own,mobile home,white,english
+762,1,male,married,35 thru 44,1 to 3 years of college,professional/managerial,one to three years,yes,four,two,own,condominium,white,english
+771,1,male,married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,yes,three,one,own,house,white,english
+773,1,female,married,55 thru 64,1 to 3 years of college,homemaker,more than ten years,no,two,none,own,mobile home,white,english
+783,1,female,married,35 thru 44,grad study,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+809,1,female,single or never married,18 thru 24,graduated high school,sales worker,less than one year,not married,three,none,live with parents/family,house,white,english
+827,1,female,married,25 thru 34,graduated high school,sales worker,more than ten years,yes,four,two,rent,apartment,white,english
+829,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+837,0,male,divorced or separated,55 thru 64,graduated high school,retired,more than ten years,not married,one,none,rent,apartment,white,english
+844,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,five,three,live with parents/family,house,white,english
+860,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+862,0,female,widowed,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,other,white,english
+903,0,male,single or never married,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,not married,four,none,live with parents/family,house,white,english
+909,0,female,married,35 thru 44,1 to 3 years of college,sales worker,more than ten years,yes,two,none,own,condominium,white,english
+1052,0,male,living together or not married,25 thru 34,college graduate,professional/managerial,one to three years,not married,one,none,rent,apartment,white,english
+1153,1,male,single or never married,18 thru 24,college graduate,student or hs or college,seven to ten years,not married,three,none,rent,other,white,english
+1154,0,female,single or never married,18 thru 24,college graduate,professional/managerial,less than one year,not married,three,none,rent,apartment,white,english
+1240,0,male,married,55 thru 64,1 to 3 years of college,retired,seven to ten years,no,one,none,rent,apartment,white,english
+1311,1,male,living together or not married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,four,two,rent,condominium,american indian,english
+1321,0,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,seven to ten years,not married,one,none,rent,apartment,white,english
+1327,0,female,single or never married,18 thru 24,1 to 3 years of college,unemployed,one to three years,not married,five,none,rent,apartment,asian,english
+1436,1,male,divorced or separated,35 thru 44,1 to 3 years of college,unemployed,one to three years,not married,one,none,rent,apartment,white,english
+1464,0,female,single or never married,18 thru 24,college graduate,factory worker/laborer/driver,more than ten years,not married,four,none,live with parents/family,house,white,english
+1467,0,male,single or never married,25 thru 34,college graduate,professional/managerial,one to three years,not married,one,none,rent,apartment,white,english
+1485,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,one to three years,not married,three,none,live with parents/family,apartment,white,english
+1492,1,female,married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+1519,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,two,none,live with parents/family,apartment,white,english
+1542,1,male,married,25 thru 34,1 to 3 years of college,military,one to three years,yes,two,none,rent,house,white,english
+1575,1,male,single or never married,25 thru 34,college graduate,unemployed,one to three years,not married,one,none,rent,other,white,english
+1588,1,female,single or never married,18 thru 24,1 to 3 years of college,unemployed,more than ten years,not married,five,four,rent,apartment,white,english
+1611,0,male,married,18 thru 24,graduated high school,student or hs or college,more than ten years,yes,five,one,own,house,white,english
+1612,0,male,single or never married,18 thru 24,1 to 3 years of college,military,one to three years,not married,one,none,rent,other,white,english
+1618,0,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,seven to ten years,not married,one,none,rent,apartment,white,english
+1637,1,female,single or never married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,not married,two,none,own,house,white,english
+1646,1,female,living together or not married,18 thru 24,college graduate,clerical/service worker,more than ten years,not married,two,none,rent,condominium,black,english
+1651,1,female,living together or not married,25 thru 34,college graduate,professional/managerial,more than ten years,no,two,none,own,house,white,english
+1669,0,female,single or never married,18 thru 24,graduated high school,military,one to three years,not married,one,none,rent,other,white,english
+1672,0,male,married,35 thru 44,graduated high school,unemployed,more than ten years,yes,two,none,own,house,hispanic,english
+1697,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,one to three years,not married,four,one,live with parents/family,house,white,english
+1704,0,male,single or never married,18 thru 24,graduated high school,military,one to three years,not married,one,none,rent,other,black,english
+1737,0,male,divorced or separated,65 and over,1 to 3 years of college,retired,more than ten years,not married,one,none,rent,apartment,white,english
+1811,1,male,married,18 thru 24,graduated high school,professional/managerial,more than ten years,not married,three,none,rent,house,white,english
+1834,0,male,married,35 thru 44,graduated high school,factory worker/laborer/driver,less than one year,not married,two,none,rent,apartment,black,english
+1888,0,female,single or never married,25 thru 34,college graduate,student or hs or college,more than ten years,not married,one,none,rent,apartment,hispanic,spanish
+1889,0,male,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+1927,0,male,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,two,none,live with parents/family,apartment,white,english
+2038,0,male,living together or not married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,no,two,none,live with parents/family,house,white,english
+2055,0,female,married,25 thru 34,1 to 3 years of college,student or hs or college,more than ten years,no,five,three,rent,apartment,white,english
+2072,0,male,single or never married,14 thru 17,grades 9 to 11,unemployed,more than ten years,not married,one,none,live with parents/family,apartment,white,english
+2073,1,male,married,35 thru 44,college graduate,factory worker/laborer/driver,more than ten years,yes,three,one,own,house,white,english
+2096,0,male,single or never married,18 thru 24,graduated high school,military,more than ten years,not married,six,four,rent,apartment,white,english
+2129,1,male,divorced or separated,25 thru 34,1 to 3 years of college,sales worker,one to three years,not married,one,one,rent,apartment,white,english
+2138,0,female,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,three,two,live with parents/family,house,white,english
+2141,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,seven to ten years,not married,four,three,live with parents/family,condominium,white,spanish
+2168,0,male,living together or not married,14 thru 17,grades 9 to 11,unemployed,more than ten years,no,two,one,live with parents/family,apartment,white,english
+2192,1,male,single or never married,14 thru 17,grade 8 or less,unemployed,more than ten years,not married,four,two,rent,house,white,english
+2210,1,male,married,35 thru 44,college graduate,professional/managerial,more than ten years,no,two,none,own,house,white,english
+2216,0,male,single or never married,65 and over,college graduate,retired,more than ten years,not married,one,none,rent,apartment,white,english
+2219,1,male,single or never married,45 thru 54,grad study,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+2253,0,male,single or never married,35 thru 44,1 to 3 years of college,student or hs or college,more than ten years,not married,one,none,rent,apartment,white,english
+2264,1,female,married,35 thru 44,college graduate,professional/managerial,more than ten years,yes,five,three,own,house,white,english
+2268,0,male,married,35 thru 44,1 to 3 years of college,retired,seven to ten years,no,four,none,rent,other,white,english
+2286,1,male,married,45 thru 54,college graduate,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+2300,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+2303,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,one,live with parents/family,house,white,english
+2308,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,one,live with parents/family,house,white,english
+2314,1,male,married,55 thru 64,grad study,professional/managerial,more than ten years,yes,three,none,own,house,white,english
+2334,1,female,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+2339,1,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,three,none,rent,other,white,english
+2357,1,female,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,four,two,own,house,white,english
+2371,0,female,single or never married,18 thru 24,graduated high school,student or hs or college,seven to ten years,not married,five,two,live with parents/family,house,asian,english
+2372,1,female,married,35 thru 44,1 to 3 years of college,homemaker,more than ten years,no,four,two,own,house,white,english
+2377,0,female,single or never married,25 thru 34,graduated high school,clerical/service worker,more than ten years,not married,three,none,rent,house,white,english
+2384,0,female,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+2404,0,female,married,55 thru 64,1 to 3 years of college,retired,seven to ten years,no,two,none,own,house,white,english
+2405,0,female,widowed,65 and over,graduated high school,retired,more than ten years,not married,one,none,own,house,white,english
+2407,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,four to six years,not married,three,one,live with parents/family,house,asian,other
+2416,1,female,single or never married,14 thru 17,grades 9 to 11,sales worker,more than ten years,not married,five,three,live with parents/family,house,white,english
+2443,1,female,single or never married,18 thru 24,1 to 3 years of college,professional/managerial,more than ten years,not married,three,none,live with parents/family,house,white,english
+2445,0,female,divorced or separated,35 thru 44,college graduate,professional/managerial,more than ten years,not married,four,two,own,house,white,english
+2447,0,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,two,none,rent,house,white,english
+2449,1,female,married,35 thru 44,college graduate,sales worker,more than ten years,yes,four,two,own,house,white,english
+2456,1,female,married,45 thru 54,grad study,professional/managerial,one to three years,yes,two,none,own,house,white,english
+2467,1,female,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+2471,0,male,single or never married,18 thru 24,1 to 3 years of college,factory worker/laborer/driver,more than ten years,not married,six,none,live with parents/family,house,white,english
+2499,1,male,married,35 thru 44,college graduate,professional/managerial,more than ten years,yes,three,none,own,house,white,english
+2504,1,male,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,five,none,live with parents/family,house,white,english
+2509,1,male,married,55 thru 64,grad study,retired,more than ten years,no,two,none,own,house,white,english
+2543,1,female,married,65 and over,1 to 3 years of college,retired,more than ten years,no,five,none,own,house,white,english
+2555,1,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,own,condominium,white,english
+2564,0,female,married,65 and over,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+2585,1,female,single or never married,18 thru 24,college graduate,professional/managerial,more than ten years,not married,four,none,live with parents/family,house,white,english
+2593,1,male,married,35 thru 44,college graduate,professional/managerial,more than ten years,yes,three,none,own,house,white,english
+2638,1,female,single or never married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,not married,two,one,rent,apartment,white,english
+2759,1,female,married,55 thru 64,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+2760,1,female,married,65 and over,1 to 3 years of college,homemaker,more than ten years,no,two,none,own,house,white,english
+2797,1,male,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+2801,0,female,married,55 thru 64,1 to 3 years of college,retired,more than ten years,no,two,none,live with parents/family,house,white,english
+2870,1,male,divorced or separated,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,not married,one,none,rent,house,white,english
+2935,0,female,widowed,65 and over,1 to 3 years of college,retired,more than ten years,not married,one,none,rent,apartment,white,english
+3046,1,male,single or never married,25 thru 34,grad study,professional/managerial,one to three years,not married,one,none,rent,apartment,white,english
+3071,1,female,divorced or separated,18 thru 24,1 to 3 years of college,professional/managerial,more than ten years,not married,two,none,own,house,white,english
+3272,1,female,married,25 thru 34,graduated high school,homemaker,more than ten years,yes,five,three,rent,condominium,white,english
+3280,1,female,single or never married,18 thru 24,grades 9 to 11,student or hs or college,more than ten years,not married,three,one,live with parents/family,house,white,english
+3285,0,female,single or never married,18 thru 24,1 to 3 years of college,sales worker,one to three years,not married,two,none,live with parents/family,condominium,white,english
+3305,1,male,married,55 thru 64,grad study,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+3324,1,female,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,five,three,own,house,white,english
+3327,1,female,married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,no,two,none,rent,apartment,white,english
+3329,1,female,married,45 thru 54,grad study,professional/managerial,four to six years,yes,four,none,own,house,white,english
+3355,1,female,living together or not married,35 thru 44,graduated high school,professional/managerial,more than ten years,not married,four,one,own,house,white,english
+3356,1,male,married,65 and over,1 to 3 years of college,retired,more than ten years,no,two,none,own,house,white,english
+3379,1,female,divorced or separated,45 thru 54,grad study,professional/managerial,more than ten years,not married,two,none,own,condominium,white,english
+3494,1,female,married,25 thru 34,grad study,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+3499,0,female,single or never married,25 thru 34,graduated high school,factory worker/laborer/driver,seven to ten years,not married,four,none,live with parents/family,house,white,english
+3504,0,male,divorced or separated,25 thru 34,graduated high school,factory worker/laborer/driver,more than ten years,not married,two,none,rent,condominium,white,english
+3524,0,female,divorced or separated,25 thru 34,graduated high school,homemaker,more than ten years,not married,four,three,live with parents/family,house,white,spanish
+3527,0,female,widowed,25 thru 34,1 to 3 years of college,student or hs or college,more than ten years,not married,seven,six,rent,house,white,english
+3530,1,male,married,55 thru 64,grad study,retired,more than ten years,no,two,none,own,house,white,english
+3540,0,male,single or never married,18 thru 24,graduated high school,military,one to three years,not married,one,none,rent,other,white,english
+3549,0,male,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,no,two,one,own,house,white,english
+3554,0,female,single or never married,18 thru 24,graduated high school,sales worker,more than ten years,not married,three,none,live with parents/family,house,white,english
+3562,1,male,divorced or separated,25 thru 34,college graduate,professional/managerial,seven to ten years,not married,one,none,own,house,white,english
+3565,0,male,single or never married,14 thru 17,grade 8 or less,homemaker,one to three years,not married,one,none,live with parents/family,house,white,english
+3566,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,one to three years,not married,four,two,live with parents/family,house,white,english
+3568,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,seven to ten years,not married,four,none,live with parents/family,house,asian,english
+3573,1,female,single or never married,18 thru 24,grades 9 to 11,student or hs or college,more than ten years,not married,eight,three,rent,house,hispanic,spanish
+3575,1,female,married,45 thru 54,1 to 3 years of college,clerical/service worker,more than ten years,yes,seven,none,own,house,white,english
+3582,1,male,married,35 thru 44,college graduate,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+3592,1,female,married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,yes,six,four,own,house,white,english
+3597,1,female,married,25 thru 34,1 to 3 years of college,professional/managerial,one to three years,yes,two,none,rent,house,white,english
+3604,0,female,divorced or separated,25 thru 34,grades 9 to 11,homemaker,one to three years,not married,one,none,rent,house,hispanic,spanish
+3617,0,male,married,25 thru 34,grades 9 to 11,sales worker,one to three years,yes,five,three,rent,apartment,hispanic,spanish
+3631,0,male,married,25 thru 34,graduated high school,factory worker/laborer/driver,more than ten years,yes,five,three,rent,apartment,hispanic,spanish
+3654,0,male,married,25 thru 34,grades 9 to 11,unemployed,more than ten years,not married,four,none,own,house,hispanic,spanish
+3660,0,female,married,25 thru 34,grade 8 or less,homemaker,one to three years,yes,seven,five,rent,apartment,hispanic,spanish
+3669,0,male,single or never married,18 thru 24,grades 9 to 11,clerical/service worker,one to three years,not married,five,none,live with parents/family,house,hispanic,spanish
+3670,0,female,married,25 thru 34,grade 8 or less,homemaker,more than ten years,no,five,three,rent,house,hispanic,spanish
+3694,1,female,divorced or separated,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,four,none,rent,apartment,black,english
+3700,1,male,married,45 thru 54,1 to 3 years of college,clerical/service worker,four to six years,yes,two,none,rent,house,white,english
+3702,1,male,divorced or separated,25 thru 34,graduated high school,factory worker/laborer/driver,more than ten years,not married,five,three,own,house,white,english
+3740,0,male,married,55 thru 64,grade 8 or less,retired,more than ten years,no,three,one,rent,apartment,white,english
+3741,1,male,single or never married,18 thru 24,graduated high school,military,one to three years,not married,four,three,own,condominium,asian,english
+3746,0,male,married,65 and over,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+3754,1,male,married,18 thru 24,graduated high school,professional/managerial,more than ten years,yes,two,none,rent,apartment,white,english
+3756,1,male,divorced or separated,25 thru 34,grades 9 to 11,professional/managerial,more than ten years,not married,one,none,rent,house,white,english
+3785,0,male,single or never married,18 thru 24,graduated high school,military,one to three years,not married,one,none,rent,other,white,english
+3797,0,female,widowed,45 thru 54,1 to 3 years of college,clerical/service worker,more than ten years,not married,one,none,own,mobile home,white,english
+3825,1,male,single or never married,18 thru 24,grad study,military,one to three years,not married,one,none,own,apartment,white,english
+3826,1,male,married,18 thru 24,graduated high school,retired,more than ten years,no,two,none,own,other,white,english
+3845,1,male,single or never married,14 thru 17,grades 9 to 11,sales worker,more than ten years,not married,three,one,live with parents/family,house,white,english
+3850,0,male,single or never married,14 thru 17,grades 9 to 11,sales worker,more than ten years,not married,four,one,rent,apartment,white,english
+3873,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+3906,1,female,married,25 thru 34,1 to 3 years of college,homemaker,more than ten years,no,three,one,own,house,white,english
+3943,0,male,married,18 thru 24,graduated high school,military,one to three years,yes,two,none,rent,apartment,white,english
+3976,0,female,single or never married,18 thru 24,graduated high school,unemployed,more than ten years,not married,five,two,live with parents/family,house,white,english
+4017,0,male,married,18 thru 24,graduated high school,factory worker/laborer/driver,more than ten years,no,four,none,live with parents/family,house,white,english
+4111,1,male,widowed,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,four,none,live with parents/family,house,asian,english
+4117,1,female,widowed,65 and over,1 to 3 years of college,retired,more than ten years,not married,one,none,own,house,white,english
+4159,0,female,widowed,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,house,white,english
+4183,1,male,married,55 thru 64,1 to 3 years of college,sales worker,more than ten years,yes,two,none,own,house,white,english
+4209,0,female,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,one,none,rent,apartment,hispanic,english
+4216,0,female,widowed,55 thru 64,grades 9 to 11,homemaker,more than ten years,not married,one,none,rent,apartment,white,english
+4320,1,male,married,45 thru 54,college graduate,factory worker/laborer/driver,more than ten years,no,four,three,own,house,white,english
+4345,0,female,widowed,25 thru 34,grade 8 or less,homemaker,more than ten years,not married,five,none,live with parents/family,mobile home,hispanic,english
+4369,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,seven to ten years,not married,four,two,live with parents/family,house,asian,english
+4376,1,male,married,45 thru 54,college graduate,sales worker,seven to ten years,yes,three,one,own,condominium,white,english
+4377,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,condominium,white,english
+4390,0,male,living together or not married,18 thru 24,graduated high school,unemployed,more than ten years,yes,two,none,rent,apartment,white,english
+4412,1,female,married,25 thru 34,1 to 3 years of college,unemployed,more than ten years,no,two,none,rent,apartment,white,english
+4435,1,female,living together or not married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,two,none,own,house,white,english
+4449,1,female,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,four,two,own,house,white,english
+4486,1,female,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,four,two,own,house,white,english
+4520,1,female,married,25 thru 34,1 to 3 years of college,homemaker,more than ten years,no,four,none,own,house,white,english
+4522,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,one,none,rent,house,white,english
+4537,1,male,married,45 thru 54,college graduate,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+4538,0,female,single or never married,25 thru 34,grad study,professional/managerial,more than ten years,not married,one,none,live with parents/family,house,white,english
+4613,1,male,single or never married,18 thru 24,grades 9 to 11,student or hs or college,more than ten years,not married,five,two,live with parents/family,other,asian,other
+4619,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,seven to ten years,not married,five,two,live with parents/family,house,white,other
+4647,1,female,single or never married,25 thru 34,college graduate,professional/managerial,more than ten years,not married,one,none,live with parents/family,house,white,english
+4663,0,male,single or never married,18 thru 24,graduated high school,sales worker,less than one year,not married,two,none,rent,apartment,hispanic,english
+4844,0,male,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,four to six years,not married,one,none,rent,other,white,english
+4870,0,female,married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,no,four,two,rent,house,white,english
+5001,0,male,married,25 thru 34,graduated high school,factory worker/laborer/driver,more than ten years,yes,two,two,rent,apartment,white,spanish
+5020,1,female,married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+5036,1,male,married,35 thru 44,college graduate,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+5052,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+5054,1,female,married,45 thru 54,college graduate,homemaker,more than ten years,no,four,none,own,house,white,english
+5074,0,female,living together or not married,18 thru 24,1 to 3 years of college,sales worker,more than ten years,not married,two,none,rent,house,white,english
+5086,1,male,single or never married,18 thru 24,1 to 3 years of college,clerical/service worker,more than ten years,not married,four,none,live with parents/family,house,asian,english
+5097,1,female,living together or not married,65 and over,graduated high school,retired,more than ten years,not married,two,none,own,condominium,white,english
+5102,1,female,married,55 thru 64,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+5107,1,male,married,25 thru 34,1 to 3 years of college,professional/managerial,four to six years,no,five,three,rent,house,white,english
+5212,1,female,single or never married,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,not married,one,none,rent,apartment,white,english
+5213,0,female,single or never married,18 thru 24,college graduate,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+5234,1,female,married,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,no,three,one,own,house,white,english
+5248,0,female,single or never married,18 thru 24,graduated high school,factory worker/laborer/driver,more than ten years,not married,four,none,own,house,white,english
+5344,1,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,three,none,live with parents/family,house,white,english
+5421,0,female,single or never married,25 thru 34,1 to 3 years of college,clerical/service worker,four to six years,not married,one,none,rent,apartment,white,english
+5438,1,female,married,35 thru 44,grad study,professional/managerial,more than ten years,yes,three,one,own,house,white,english
+5456,1,male,married,35 thru 44,1 to 3 years of college,factory worker/laborer/driver,more than ten years,yes,four,two,own,house,white,english
+5457,1,female,married,35 thru 44,graduated high school,clerical/service worker,more than ten years,yes,three,one,own,house,white,english
+5467,0,male,single or never married,55 thru 64,grad study,factory worker/laborer/driver,more than ten years,not married,one,none,rent,apartment,white,english
+5493,1,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,asian,english
+5506,1,male,single or never married,25 thru 34,grad study,professional/managerial,four to six years,not married,nine or more,two,rent,condominium,asian,english
+5516,1,female,living together or not married,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,yes,three,one,rent,other,white,english
+5566,1,male,divorced or separated,35 thru 44,graduated high school,professional/managerial,more than ten years,not married,one,none,own,house,white,english
+5596,0,male,married,18 thru 24,1 to 3 years of college,student or hs or college,less than one year,no,two,none,rent,apartment,asian,english
+5615,1,male,living together or not married,25 thru 34,1 to 3 years of college,homemaker,more than ten years,not married,two,none,rent,apartment,white,english
+5632,1,male,single or never married,25 thru 34,college graduate,professional/managerial,more than ten years,not married,three,none,rent,apartment,white,english
+5647,0,female,divorced or separated,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,four,three,rent,house,white,english
+5652,0,female,single or never married,18 thru 24,graduated high school,clerical/service worker,more than ten years,not married,eight,one,rent,house,white,english
+5663,0,male,married,65 and over,grade 8 or less,factory worker/laborer/driver,more than ten years,no,two,none,own,house,hispanic,spanish
+5671,0,male,living together or not married,18 thru 24,graduated high school,sales worker,more than ten years,yes,three,none,rent,house,white,english
+5672,0,male,married,18 thru 24,graduated high school,factory worker/laborer/driver,four to six years,yes,two,none,rent,apartment,white,spanish
+5674,1,male,married,25 thru 34,graduated high school,factory worker/laborer/driver,more than ten years,yes,four,two,rent,house,white,english
+5675,0,female,married,25 thru 34,college graduate,professional/managerial,more than ten years,yes,five,four,own,house,hispanic,english
+5677,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,two,live with parents/family,house,white,english
+5679,0,male,single or never married,18 thru 24,graduated high school,factory worker/laborer/driver,more than ten years,not married,one,none,rent,apartment,hispanic,spanish
+5700,0,male,married,18 thru 24,grade 8 or less,factory worker/laborer/driver,seven to ten years,yes,five,one,rent,house,hispanic,spanish
+5711,0,male,single or never married,35 thru 44,graduated high school,unemployed,more than ten years,not married,one,none,rent,apartment,white,english
+5713,0,male,single or never married,18 thru 24,graduated high school,factory worker/laborer/driver,more than ten years,not married,three,none,live with parents/family,house,white,spanish
+5721,1,female,married,45 thru 54,graduated high school,professional/managerial,seven to ten years,yes,two,none,own,condominium,white,english
+5806,1,female,married,18 thru 24,1 to 3 years of college,clerical/service worker,more than ten years,not married,two,none,rent,house,hispanic,english
+5816,1,female,married,35 thru 44,graduated high school,clerical/service worker,more than ten years,yes,five,three,rent,house,white,english
+5827,1,female,married,35 thru 44,graduated high school,clerical/service worker,more than ten years,yes,five,three,rent,house,white,english
+5839,0,male,divorced or separated,45 thru 54,graduated high school,factory worker/laborer/driver,more than ten years,not married,one,one,rent,apartment,white,english
+5853,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,six,five,live with parents/family,condominium,hispanic,english
+5924,1,male,divorced or separated,45 thru 54,graduated high school,factory worker/laborer/driver,less than one year,not married,two,none,rent,house,hispanic,spanish
+5943,0,female,married,45 thru 54,graduated high school,homemaker,four to six years,yes,two,none,rent,apartment,hispanic,spanish
+5953,1,male,single or never married,25 thru 34,1 to 3 years of college,unemployed,four to six years,not married,one,none,live with parents/family,house,white,english
+5972,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,hispanic,english
+6015,1,female,married,25 thru 34,college graduate,professional/managerial,four to six years,yes,two,one,rent,house,white,english
+6070,0,female,divorced or separated,45 thru 54,1 to 3 years of college,sales worker,more than ten years,not married,three,none,rent,house,white,english
+6093,1,male,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+6104,1,female,divorced or separated,55 thru 64,graduated high school,professional/managerial,more than ten years,not married,one,none,own,house,white,english
+6116,1,male,single or never married,25 thru 34,college graduate,professional/managerial,more than ten years,not married,one,none,rent,house,hispanic,english
+6229,1,female,married,25 thru 34,1 to 3 years of college,clerical/service worker,seven to ten years,yes,two,none,own,house,white,english
+6230,1,female,single or never married,25 thru 34,graduated high school,professional/managerial,four to six years,not married,two,none,rent,house,white,english
+6233,0,female,divorced or separated,18 thru 24,grades 9 to 11,factory worker/laborer/driver,less than one year,not married,one,none,live with parents/family,house,white,english
+6236,1,female,married,35 thru 44,1 to 3 years of college,homemaker,more than ten years,no,five,three,own,house,white,english
+6249,1,female,married,55 thru 64,college graduate,clerical/service worker,more than ten years,yes,three,none,own,house,white,english
+6264,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,apartment,white,english
+6286,1,female,married,25 thru 34,graduated high school,factory worker/laborer/driver,less than one year,yes,five,three,rent,condominium,hispanic,spanish
+6306,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+6311,1,male,married,35 thru 44,grad study,professional/managerial,more than ten years,no,five,three,own,house,white,english
+6344,0,female,widowed,65 and over,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,own,house,white,english
+6379,1,female,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+6448,1,female,single or never married,18 thru 24,grades 9 to 11,student or hs or college,seven to ten years,not married,five,one,live with parents/family,house,asian,english
+6556,0,female,married,45 thru 54,graduated high school,homemaker,four to six years,no,two,none,own,house,white,english
+6600,1,female,single or never married,25 thru 34,college graduate,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+6656,1,male,living together or not married,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,not married,two,none,rent,apartment,white,english
+6677,1,male,single or never married,45 thru 54,1 to 3 years of college,sales worker,seven to ten years,not married,four,two,own,house,hispanic,english
+6694,1,male,married,35 thru 44,college graduate,clerical/service worker,more than ten years,yes,two,none,rent,condominium,white,english
+6709,0,female,single or never married,18 thru 24,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+6751,0,female,divorced or separated,35 thru 44,grad study,unemployed,more than ten years,not married,two,none,rent,apartment,white,english
+6765,1,male,single or never married,25 thru 34,grad study,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+6788,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,one to three years,not married,four,none,rent,apartment,white,english
+6821,1,female,living together or not married,18 thru 24,1 to 3 years of college,student or hs or college,one to three years,not married,two,none,rent,house,white,english
+6823,0,male,divorced or separated,55 thru 64,graduated high school,factory worker/laborer/driver,more than ten years,not married,one,none,own,house,hispanic,english
+6838,1,female,single or never married,18 thru 24,graduated high school,clerical/service worker,more than ten years,not married,three,none,live with parents/family,house,hispanic,english
+6855,1,male,divorced or separated,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,own,house,white,english
+6858,0,male,living together or not married,35 thru 44,graduated high school,sales worker,seven to ten years,yes,two,none,rent,house,asian,english
+6869,0,male,single or never married,18 thru 24,1 to 3 years of college,sales worker,four to six years,not married,three,none,rent,apartment,white,english
+6919,1,male,single or never married,25 thru 34,1 to 3 years of college,sales worker,one to three years,not married,two,none,rent,apartment,white,english
+6923,1,male,single or never married,35 thru 44,college graduate,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+6925,0,male,single or never married,18 thru 24,1 to 3 years of college,professional/managerial,one to three years,not married,one,none,rent,apartment,white,english
+6928,0,male,single or never married,35 thru 44,grades 9 to 11,factory worker/laborer/driver,more than ten years,not married,one,none,rent,apartment,white,english
+6948,0,male,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,four to six years,not married,three,none,rent,apartment,white,english
+6965,0,male,single or never married,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+6970,0,male,divorced or separated,35 thru 44,college graduate,professional/managerial,four to six years,not married,two,none,rent,house,white,english
+6991,0,female,divorced or separated,45 thru 54,grad study,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+6998,1,female,living together or not married,25 thru 34,grad study,professional/managerial,seven to ten years,not married,two,none,rent,apartment,white,english
+7006,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,one,live with parents/family,condominium,white,english
+7025,1,male,living together or not married,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,not married,two,none,rent,condominium,white,english
+7042,1,female,married,55 thru 64,grades 9 to 11,homemaker,more than ten years,no,three,one,own,house,white,english
+7044,1,male,single or never married,35 thru 44,graduated high school,factory worker/laborer/driver,more than ten years,not married,one,none,rent,apartment,black,english
+7073,0,male,married,18 thru 24,graduated high school,military,one to three years,yes,four,two,rent,house,white,spanish
+7092,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,one,live with parents/family,house,white,english
+7105,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,one to three years,not married,four,two,live with parents/family,house,asian,spanish
+7112,1,female,married,55 thru 64,1 to 3 years of college,professional/managerial,more than ten years,yes,four,none,own,house,white,english
+7134,1,female,married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,yes,five,three,rent,house,white,english
+7140,0,male,living together or not married,25 thru 34,graduated high school,unemployed,more than ten years,not married,four,two,rent,house,white,english
+7144,1,male,single or never married,35 thru 44,college graduate,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+7150,0,male,single or never married,18 thru 24,graduated high school,professional/managerial,more than ten years,not married,six,two,rent,house,white,english
+7162,0,male,married,18 thru 24,college graduate,clerical/service worker,more than ten years,yes,two,none,rent,condominium,white,english
+7172,1,female,married,25 thru 34,graduated high school,factory worker/laborer/driver,one to three years,not married,one,none,rent,apartment,white,english
+7179,1,male,married,35 thru 44,college graduate,factory worker/laborer/driver,seven to ten years,yes,three,one,own,house,white,english
+7182,1,male,widowed,55 thru 64,1 to 3 years of college,sales worker,more than ten years,not married,one,none,rent,house,white,english
+7192,1,female,married,35 thru 44,college graduate,professional/managerial,seven to ten years,yes,three,one,own,house,white,english
+7194,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,one to three years,not married,four,two,live with parents/family,house,asian,other
+7204,1,male,single or never married,25 thru 34,grad study,professional/managerial,seven to ten years,not married,one,none,rent,condominium,white,english
+7216,1,male,widowed,65 and over,1 to 3 years of college,retired,four to six years,not married,one,none,rent,apartment,hispanic,english
+7246,1,male,married,35 thru 44,grad study,professional/managerial,more than ten years,yes,five,two,own,house,white,english
+7276,1,male,divorced or separated,55 thru 64,1 to 3 years of college,factory worker/laborer/driver,more than ten years,not married,one,none,own,house,white,english
+7286,1,female,married,35 thru 44,grad study,professional/managerial,more than ten years,not married,three,one,rent,apartment,white,english
+7289,0,male,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+7306,1,male,married,35 thru 44,grad study,professional/managerial,more than ten years,yes,five,two,own,house,asian,english
+7308,1,female,married,25 thru 34,college graduate,professional/managerial,four to six years,yes,five,two,live with parents/family,house,asian,english
+7312,1,male,married,65 and over,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+7313,1,female,married,65 and over,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+7314,0,female,divorced or separated,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,five,none,live with parents/family,house,asian,english
+7338,1,male,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,three,one,live with parents/family,house,hispanic,english
+7346,0,female,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,five,three,live with parents/family,house,white,english
+7347,1,female,married,18 thru 24,1 to 3 years of college,clerical/service worker,four to six years,yes,three,none,rent,apartment,white,english
+7366,0,male,single or never married,14 thru 17,grade 8 or less,student or hs or college,one to three years,not married,four,three,live with parents/family,apartment,hispanic,spanish
+7373,1,male,married,25 thru 34,1 to 3 years of college,factory worker/laborer/driver,more than ten years,yes,two,none,rent,apartment,white,english
+7374,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+7393,1,female,widowed,65 and over,graduated high school,retired,more than ten years,not married,one,none,rent,apartment,white,english
+7403,1,male,married,55 thru 64,college graduate,factory worker/laborer/driver,more than ten years,no,two,none,own,condominium,hispanic,english
+7419,1,female,married,25 thru 34,graduated high school,professional/managerial,more than ten years,yes,three,one,rent,apartment,white,english
+7429,1,male,divorced or separated,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+7431,1,female,married,18 thru 24,college graduate,professional/managerial,more than ten years,yes,three,one,rent,apartment,white,english
+7438,1,male,married,35 thru 44,1 to 3 years of college,clerical/service worker,seven to ten years,yes,five,two,own,house,white,english
+7439,1,female,single or never married,18 thru 24,1 to 3 years of college,professional/managerial,four to six years,not married,four,two,rent,apartment,white,english
+7440,0,female,married,18 thru 24,graduated high school,sales worker,seven to ten years,yes,three,one,rent,apartment,white,english
+7441,0,female,living together or not married,18 thru 24,grades 9 to 11,sales worker,more than ten years,not married,four,none,live with parents/family,house,white,english
+7455,1,female,married,25 thru 34,graduated high school,sales worker,more than ten years,yes,three,one,own,house,white,english
+7465,1,male,married,35 thru 44,grad study,professional/managerial,more than ten years,no,three,none,own,house,white,english
+7469,0,male,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,one,none,rent,other,white,english
+7484,1,female,living together or not married,25 thru 34,1 to 3 years of college,factory worker/laborer/driver,four to six years,no,two,none,rent,mobile home,white,english
+7500,1,female,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,seven to ten years,not married,one,none,rent,apartment,white,english
+7510,1,female,married,65 and over,graduated high school,homemaker,more than ten years,no,two,none,own,house,white,english
+7511,1,male,married,65 and over,grad study,retired,more than ten years,no,two,none,own,house,white,english
+7537,1,female,married,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,not married,two,none,rent,condominium,white,english
+7546,1,female,widowed,55 thru 64,graduated high school,retired,more than ten years,not married,one,none,own,house,white,english
+7579,0,female,married,25 thru 34,graduated high school,homemaker,more than ten years,yes,four,two,live with parents/family,house,hispanic,spanish
+7583,0,male,single or never married,14 thru 17,grades 9 to 11,unemployed,more than ten years,not married,four,two,live with parents/family,house,white,english
+7590,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+7599,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+7619,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,less than one year,not married,one,two,live with parents/family,house,white,english
+7622,1,female,married,25 thru 34,college graduate,factory worker/laborer/driver,more than ten years,yes,two,none,own,house,white,english
+7640,1,female,widowed,55 thru 64,1 to 3 years of college,retired,more than ten years,not married,one,none,own,house,white,english
+7653,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,five,three,live with parents/family,house,white,english
+7655,1,male,single or never married,14 thru 17,grades 9 to 11,unemployed,seven to ten years,not married,three,one,own,house,white,english
+7665,1,male,divorced or separated,35 thru 44,grad study,military,more than ten years,not married,two,none,rent,apartment,white,english
+7667,1,female,married,25 thru 34,1 to 3 years of college,homemaker,four to six years,no,two,none,own,house,white,english
+7677,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+7679,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+7697,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+7709,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,seven to ten years,not married,three,one,live with parents/family,house,white,english
+7710,0,female,single or never married,14 thru 17,grade 8 or less,student or hs or college,four to six years,not married,four,two,live with parents/family,condominium,white,other
+7712,0,female,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,two,none,live with parents/family,apartment,white,english
+7721,1,female,widowed,45 thru 54,1 to 3 years of college,retired,more than ten years,not married,one,none,own,house,white,english
+7726,1,male,married,35 thru 44,college graduate,military,more than ten years,not married,four,one,rent,house,white,english
+7791,1,male,married,25 thru 34,college graduate,professional/managerial,more than ten years,not married,two,none,own,house,white,english
+7839,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,three,none,live with parents/family,apartment,white,english
+7869,0,male,single or never married,18 thru 24,graduated high school,sales worker,more than ten years,not married,three,none,live with parents/family,house,white,spanish
+7880,0,male,single or never married,14 thru 17,grade 8 or less,student or hs or college,one to three years,not married,seven,five,live with parents/family,apartment,asian,other
+7882,0,male,single or never married,18 thru 24,graduated high school,military,less than one year,not married,one,none,rent,other,white,english
+7893,0,female,married,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,yes,three,one,rent,house,white,english
+7908,0,female,widowed,35 thru 44,grad study,clerical/service worker,more than ten years,not married,one,none,rent,apartment,white,english
+7915,0,female,divorced or separated,35 thru 44,1 to 3 years of college,unemployed,more than ten years,not married,one,none,own,house,white,english
+7942,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+7943,0,male,single or never married,14 thru 17,grades 9 to 11,military,one to three years,not married,one,none,own,other,white,english
+7953,0,male,married,35 thru 44,grades 9 to 11,factory worker/laborer/driver,more than ten years,not married,two,none,rent,house,hispanic,spanish
+7965,1,female,married,45 thru 54,college graduate,professional/managerial,more than ten years,yes,two,none,own,condominium,white,english
+7981,1,male,living together or not married,45 thru 54,college graduate,professional/managerial,seven to ten years,yes,two,none,own,house,white,english
+7984,1,female,single or never married,35 thru 44,grad study,professional/managerial,four to six years,not married,one,none,own,house,white,english
+7993,0,male,divorced or separated,45 thru 54,college graduate,unemployed,seven to ten years,not married,one,none,rent,apartment,white,english
+8019,0,female,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,three,none,live with parents/family,house,white,english
+8025,1,male,single or never married,25 thru 34,college graduate,professional/managerial,one to three years,not married,three,none,rent,house,white,english
+8031,1,male,married,65 and over,college graduate,retired,more than ten years,no,two,none,own,house,white,english
+8051,0,male,single or never married,18 thru 24,college graduate,professional/managerial,seven to ten years,not married,two,none,rent,apartment,white,english
+8053,0,female,married,65 and over,graduated high school,homemaker,more than ten years,no,two,none,own,house,white,english
+8081,0,male,single or never married,45 thru 54,1 to 3 years of college,professional/managerial,more than ten years,not married,one,none,rent,house,white,english
+8083,0,female,married,25 thru 34,graduated high school,sales worker,more than ten years,yes,two,none,own,house,white,english
+8086,1,male,single or never married,18 thru 24,grades 9 to 11,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+8088,0,male,single or never married,18 thru 24,grades 9 to 11,student or hs or college,more than ten years,not married,three,none,live with parents/family,apartment,white,english
+8096,1,female,married,45 thru 54,grad study,professional/managerial,more than ten years,yes,five,none,own,house,white,english
+8104,1,female,single or never married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,not married,two,none,rent,apartment,white,english
+8106,1,female,single or never married,55 thru 64,grad study,retired,more than ten years,not married,one,none,live with parents/family,condominium,white,english
+8125,1,female,married,35 thru 44,college graduate,clerical/service worker,seven to ten years,yes,three,one,rent,apartment,white,english
+8147,0,male,married,35 thru 44,graduated high school,unemployed,more than ten years,yes,three,one,rent,house,hispanic,english
+8156,0,male,single or never married,18 thru 24,graduated high school,military,less than one year,not married,one,none,rent,other,white,english
+8169,0,female,single or never married,25 thru 34,graduated high school,clerical/service worker,more than ten years,not married,one,none,rent,apartment,white,english
+8176,0,male,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,three,none,live with parents/family,other,white,english
+8214,1,female,single or never married,14 thru 17,grades 9 to 11,clerical/service worker,more than ten years,not married,five,two,rent,house,white,english
+8219,0,male,single or never married,18 thru 24,1 to 3 years of college,factory worker/laborer/driver,more than ten years,not married,five,none,live with parents/family,house,white,english
+8226,1,male,married,25 thru 34,college graduate,military,one to three years,no,two,none,rent,apartment,white,english
+8237,1,male,married,55 thru 64,graduated high school,retired,more than ten years,no,two,none,own,house,white,english
+8310,0,female,married,35 thru 44,1 to 3 years of college,clerical/service worker,more than ten years,yes,four,two,own,house,white,english
+8314,1,female,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,three,one,live with parents/family,house,white,english
+8318,1,male,single or never married,18 thru 24,1 to 3 years of college,student or hs or college,more than ten years,not married,four,none,live with parents/family,house,white,english
+8319,1,male,divorced or separated,35 thru 44,1 to 3 years of college,professional/managerial,more than ten years,not married,one,one,rent,apartment,white,english
+8320,1,male,married,55 thru 64,graduated high school,retired,more than ten years,not married,two,none,own,house,white,english
+8339,0,male,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+8367,0,male,single or never married,35 thru 44,graduated high school,clerical/service worker,more than ten years,not married,three,none,live with parents/family,house,white,english
+8379,0,male,divorced or separated,18 thru 24,grade 8 or less,military,one to three years,not married,four,one,live with parents/family,other,white,english
+8402,0,female,single or never married,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,not married,one,none,rent,apartment,white,english
+8409,1,female,widowed,65 and over,1 to 3 years of college,retired,more than ten years,not married,one,none,own,apartment,white,english
+8410,1,female,married,25 thru 34,college graduate,sales worker,more than ten years,yes,four,two,rent,condominium,white,english
+8413,0,female,single or never married,14 thru 17,grade 8 or less,student or hs or college,more than ten years,not married,four,one,live with parents/family,house,white,english
+8418,0,female,divorced or separated,45 thru 54,graduated high school,professional/managerial,more than ten years,not married,two,none,rent,apartment,white,english
+8459,1,female,single or never married,25 thru 34,grad study,professional/managerial,more than ten years,not married,one,none,rent,apartment,white,english
+8495,0,female,living together or not married,25 thru 34,1 to 3 years of college,student or hs or college,four to six years,yes,two,none,rent,apartment,white,english
+8498,0,female,married,25 thru 34,1 to 3 years of college,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+8506,1,male,married,25 thru 34,1 to 3 years of college,clerical/service worker,more than ten years,yes,two,none,own,house,asian,english
+8512,1,male,married,65 and over,grad study,retired,more than ten years,no,two,none,own,house,white,english
+8575,1,male,married,45 thru 54,college graduate,professional/managerial,more than ten years,yes,two,none,own,house,white,english
+8589,1,female,single or never married,14 thru 17,grades 9 to 11,unemployed,more than ten years,not married,four,none,live with parents/family,house,white,english
+8618,1,female,married,25 thru 34,1 to 3 years of college,factory worker/laborer/driver,more than ten years,yes,five,none,rent,house,white,english
+8653,1,male,single or never married,25 thru 34,1 to 3 years of college,professional/managerial,one to three years,not married,one,none,rent,apartment,white,english
+8664,0,female,single or never married,18 thru 24,graduated high school,student or hs or college,more than ten years,not married,seven,four,rent,house,white,english
+8680,0,female,single or never married,18 thru 24,college graduate,professional/managerial,more than ten years,not married,one,none,rent,house,hispanic,english
+8693,1,male,single or never married,25 thru 34,graduated high school,professional/managerial,more than ten years,not married,one,none,rent,house,white,english
+8748,0,female,single or never married,14 thru 17,grades 9 to 11,student or hs or college,more than ten years,not married,four,two,live with parents/family,house,white,english
+8750,0,male,single or never married,25 thru 34,1 to 3 years of college,student or hs or college,one to three years,not married,one,none,rent,apartment,white,english
+8776,1,male,divorced or separated,35 thru 44,college graduate,sales worker,more than ten years,not married,one,none,rent,apartment,white,english
+8850,0,male,single or never married,14 thru 17,grades 9 to 11,student or hs or college,seven to ten years,not married,three,none,live with parents/family,house,white,english
+8879,0,male,single or never married,18 thru 24,graduated high school,professional/managerial,more than ten years,not married,four,one,live with parents/family,house,white,spanish
+8965,1,male,married,45 thru 54,grad study,professional/managerial,more than ten years,yes,four,none,own,house,white,english

@@ -1,0 +1,22 @@
+{
+  "dataset": "flight_20",
+  "family": "tableeg",
+  "shape": [
+    450,
+    7
+  ],
+  "oracle_errors": 658,
+  "error_log": {
+    "rows": 658,
+    "error_type_counts": {
+      "rule_violation": 202,
+      "pattern_violation": 342,
+      "missing_value": 114
+    }
+  },
+  "copied_from": {
+    "dirty.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/flight/flight_20/dirty_dataset_20.csv",
+    "clean.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/flight/test_flight.csv",
+    "error_log.jsonl": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/flight/flight_20/error_log_20.jsonl"
+  }
+}

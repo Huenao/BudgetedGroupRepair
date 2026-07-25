@@ -1,0 +1,336 @@
+{
+  "benchmark": "CARE 5 source + 9 TableEG snapshot",
+  "data_root": ".",
+  "normalization": "html-unescape+collapse-ascii-whitespace+strip",
+  "schema_version": 2,
+  "sha256_algorithm": "sha256",
+  "source": {
+    "beers": {
+      "annotation": "",
+      "files": {
+        "clean.csv": {
+          "bytes": 233019,
+          "sha256": "373227df59ad197e154dd5149125789e415019535c7223355e9486ee1b3b93de"
+        },
+        "dirty.csv": {
+          "bytes": 255295,
+          "sha256": "7110bf4931a9445a1675e544d6c996817c739136239f8a2b02e088c7ec0a1f68"
+        }
+      },
+      "oracle_errors": 4362,
+      "shape": [
+        2410,
+        11
+      ]
+    },
+    "flights": {
+      "annotation": "",
+      "files": {
+        "clean.csv": {
+          "bytes": 173159,
+          "sha256": "0acfcfd8985b06fdd363965c9e8d9522c43e7589a93d79ae7dc311e1c37fdf3b"
+        },
+        "dirty.csv": {
+          "bytes": 154776,
+          "sha256": "1b5c1afa10aa0e7c20fd7e14d05c56772715b2771aa0f5fa67ed1709e1eecd46"
+        }
+      },
+      "oracle_errors": 4920,
+      "shape": [
+        2376,
+        7
+      ]
+    },
+    "hospital": {
+      "annotation": "",
+      "files": {
+        "clean.csv": {
+          "bytes": 303324,
+          "sha256": "ea3ee44998455c0b491750c348509de176c758a3bbf58e4530c0a136bb248b4b"
+        },
+        "dirty.csv": {
+          "bytes": 303306,
+          "sha256": "dbc5575b915fe8b5e0ac6dc6172f38ba91e611fdb76d09a8f4a81cb7ea9925ac"
+        }
+      },
+      "oracle_errors": 509,
+      "shape": [
+        1000,
+        20
+      ]
+    },
+    "movies_1": {
+      "annotation": "",
+      "files": {
+        "clean.csv": {
+          "bytes": 4399162,
+          "sha256": "22a84e70d153d809341c55cf8e8154beebe1836456f617bf8277b953a762bfca"
+        },
+        "dirty.csv": {
+          "bytes": 4550868,
+          "sha256": "bed752115dd0a5925ea36db443ff6835d10a5a8d2f549299535b14f8ac324316"
+        }
+      },
+      "oracle_errors": 7675,
+      "shape": [
+        7390,
+        17
+      ]
+    },
+    "rayyan": {
+      "annotation": "",
+      "files": {
+        "clean.csv": {
+          "bytes": 272785,
+          "sha256": "23159f43c0706782388ed8957ad0c74eb7b88bc98f34d65bd49296e186d4673f"
+        },
+        "dirty.csv": {
+          "bytes": 273084,
+          "sha256": "7e25e6db262b0c72ca2d9735d5959599cf5a582e1c705459507c7b45d0d1d174"
+        }
+      },
+      "oracle_errors": 948,
+      "shape": [
+        1000,
+        11
+      ]
+    }
+  },
+  "tableeg": {
+    "company": {
+      "annotation": "tableeg/company/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 54148,
+          "sha256": "cf409f5a33c42f13c6254a4c06a6b6cd165bddc26d041b4edd4b47a69c50d675"
+        },
+        "dirty.csv": {
+          "bytes": 52673,
+          "sha256": "2c82211df7635e6aa80e4338eb567b26733f8e8e926e43d389e704815e69715e"
+        },
+        "error_log.jsonl": {
+          "bytes": 104570,
+          "sha256": "f4bed35a8044375c44dd5abb88bdda5c4a92c15d885f3ca5c732a79e4ba392e3"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 641,
+          "sha256": "1fd87fecc1f427101b987fa6286412d74c5bff0515a109d0a3e58f3a2f549957"
+        }
+      },
+      "oracle_errors": 572,
+      "shape": [
+        497,
+        10
+      ]
+    },
+    "flight_10": {
+      "annotation": "tableeg/flight_10/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 32163,
+          "sha256": "bf051e6c798350a14380adb6549f9322641cdabe53749fc48df313c12f77fb74"
+        },
+        "dirty.csv": {
+          "bytes": 32909,
+          "sha256": "a747b61b30daeed457a02c41f942e8fead25a84d8b865714b7cfed9752ffcc45"
+        },
+        "error_log.jsonl": {
+          "bytes": 121831,
+          "sha256": "6769c441e8b1e5714445a221df31ddfda2f9d20a5784f012d29d89709cbe0cc4"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 669,
+          "sha256": "32269795067dbdf77d90446642babb582bb1b8d9a6f32b374fda762be367f139"
+        }
+      },
+      "oracle_errors": 477,
+      "shape": [
+        450,
+        7
+      ]
+    },
+    "flight_20": {
+      "annotation": "tableeg/flight_20/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 32163,
+          "sha256": "bf051e6c798350a14380adb6549f9322641cdabe53749fc48df313c12f77fb74"
+        },
+        "dirty.csv": {
+          "bytes": 33398,
+          "sha256": "eccf634e6fef95f0a8b1eed10ff6cf3ff859017aeedfdfbd37032d4d5be8b4e5"
+        },
+        "error_log.jsonl": {
+          "bytes": 164450,
+          "sha256": "4b5f940f2965741e8463642feb0db136fc610e7eef64609a5dd44079df1cc73d"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 670,
+          "sha256": "d51d775b6dc0c9d9a4e171ca2dc3ad70f8d79d42e993c622ba1e8977cd5f9223"
+        }
+      },
+      "oracle_errors": 658,
+      "shape": [
+        450,
+        7
+      ]
+    },
+    "marketing": {
+      "annotation": "tableeg/marketing/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 72685,
+          "sha256": "c33a830ae04e7685cb86411126315faab7c4f3b14106c2ac7745dc57efd4ea62"
+        },
+        "dirty.csv": {
+          "bytes": 69482,
+          "sha256": "5751c3c94020eedab0ff5a47d50201736f2c9cf53b1300fe21f1fc172b73664d"
+        },
+        "error_log.jsonl": {
+          "bytes": 133912,
+          "sha256": "8278b75cf41c1b53fcc1ffbdcb9f717a23d5df8e8b3763718b971cb661b5fc4a"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 651,
+          "sha256": "6f564ce7107bf6080fb42d46ec3ede3bbdf404e75b13eb7a39d6d2aa0afb108b"
+        }
+      },
+      "oracle_errors": 723,
+      "shape": [
+        483,
+        15
+      ]
+    },
+    "movie_metadata_10": {
+      "annotation": "tableeg/movie_metadata_10/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 165484,
+          "sha256": "04b9a31b076afa714360dee19b03f2d452382d563d3c9ab7fb295e310e3ef079"
+        },
+        "dirty.csv": {
+          "bytes": 164479,
+          "sha256": "a8f0c935f80231627c66517a26c55e0249599dabb89a886c9719a89999370f9f"
+        },
+        "error_log.jsonl": {
+          "bytes": 45697,
+          "sha256": "bd289db7e9865e3fe18fe6d5bf861e57be90edc45efcd71574435e7780b193a5"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 693,
+          "sha256": "18ec9b87eea51be31504297619cfe0d86ec122ad57b966d89bba3bde3cb8717b"
+        }
+      },
+      "oracle_errors": 244,
+      "shape": [
+        266,
+        18
+      ]
+    },
+    "restaurant_10": {
+      "annotation": "tableeg/restaurant_10/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 64416,
+          "sha256": "d28cfeed3d5e1608d7e3b5c16bad5e658f3fa231765c3ddbb1c266858f8b6e2c"
+        },
+        "dirty.csv": {
+          "bytes": 62205,
+          "sha256": "e8c8612207496e20ef1e11e924c401fee78cf1a077948b6bc77da52971912f39"
+        },
+        "error_log.jsonl": {
+          "bytes": 72532,
+          "sha256": "fe68f0f7422ae67b08162c469e37bdbb2e227163320a22a7338127f6bc6b6b25"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 694,
+          "sha256": "46fd95149f8074f200cc005ce6834f3eabe10f685d0311d3b7a58a751fbd1d92"
+        }
+      },
+      "oracle_errors": 304,
+      "shape": [
+        864,
+        6
+      ]
+    },
+    "restaurant_20": {
+      "annotation": "tableeg/restaurant_20/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 64416,
+          "sha256": "d28cfeed3d5e1608d7e3b5c16bad5e658f3fa231765c3ddbb1c266858f8b6e2c"
+        },
+        "dirty.csv": {
+          "bytes": 59337,
+          "sha256": "034cad3696d83b9046ee30255a5768cda4b4a15631c0c654a5dafb92bc598b38"
+        },
+        "error_log.jsonl": {
+          "bytes": 128093,
+          "sha256": "01da1879effe356892f780511dd1c465137d956682c3948abbe25a97bdc1e131"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 695,
+          "sha256": "cc217c2d4a99d176dbb2f13509231f33e5898ad5a5c74431f47246816e8bb09e"
+        }
+      },
+      "oracle_errors": 606,
+      "shape": [
+        864,
+        6
+      ]
+    },
+    "restaurant_rule_only": {
+      "annotation": "tableeg/restaurant_rule_only/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 64416,
+          "sha256": "d28cfeed3d5e1608d7e3b5c16bad5e658f3fa231765c3ddbb1c266858f8b6e2c"
+        },
+        "dirty.csv": {
+          "bytes": 63370,
+          "sha256": "390e326111aa55a08bdc109d64ce9e9d195db5f62ca23d6b437764f2e15added"
+        },
+        "error_log.jsonl": {
+          "bytes": 25925,
+          "sha256": "b5b8ddf1600cd6050e549a1450a0e08f6f8e242da1069b3ad9303e1283c0fb64"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 628,
+          "sha256": "84f5f6a2a5e1ed9fde39ef51b4260eea079c8b977f5d448daf81fa193c31ed51"
+        }
+      },
+      "oracle_errors": 76,
+      "shape": [
+        864,
+        6
+      ]
+    },
+    "soccer": {
+      "annotation": "tableeg/soccer/error_log.jsonl",
+      "files": {
+        "clean.csv": {
+          "bytes": 227570,
+          "sha256": "f6c57947f5476df1d136edae58d1ca443d1ca6514d92825c5bc29b94a4e5d523"
+        },
+        "dirty.csv": {
+          "bytes": 228842,
+          "sha256": "9f8f9aac6aba2e5a9763afd8671f8c3e84c3fa321d27d0de12be527013ace1ac"
+        },
+        "error_log.jsonl": {
+          "bytes": 567646,
+          "sha256": "f493b6f1ebeb86552955aed331b7123d61a853286215f4f5c9e1998c04a77897"
+        },
+        "tableeg_metadata.json": {
+          "bytes": 641,
+          "sha256": "26ace4a26ae4a44241ad5873ae0fc8dd7ee786bdd1aa02d060ec741f07b8a6b6"
+        }
+      },
+      "oracle_errors": 1883,
+      "shape": [
+        1999,
+        11
+      ]
+    }
+  },
+  "unavailable": {}
+}

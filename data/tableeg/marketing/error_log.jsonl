@@ -1,0 +1,723 @@
+{"row_id": "6677", "column": "Age", "error_type": "pattern_violation", "error_value": "18 thru 24", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8506", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5506", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "asian", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7044", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8053", "column": "Live", "error_type": "outliers", "error_value": "one to three years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3669", "column": "Marital", "error_type": "outliers", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4345", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3700", "column": "Income", "error_type": "outliers", "error_value": "2", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "344", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "apartment", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2371", "column": "Sex", "error_type": "outliers", "error_value": "male", "right_value": "female", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2416", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "14 thru 17", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Person under 18", "error_type": "outliers", "error_value": "seven", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "390", "column": "Occupation", "error_type": "outliers", "error_value": "clerical/service worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6236", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1321", "column": "Income", "error_type": "outliers", "error_value": "10", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1672", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "844", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4870", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5421", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "one", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8176", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8237", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2445", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "divorced or separated", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7179", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7599", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1704", "column": "Ethnic", "error_type": "outliers", "error_value": "american indian", "right_value": "black", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5248", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "own", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6104", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6677", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7880", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5052", "column": "Hometype", "error_type": "pattern_violation", "error_value": "apartment", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6991", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5102", "column": "Marital", "error_type": "outliers", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5234", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1669", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7172", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1467", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "apartment", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1240", "column": "Person", "error_type": "outliers", "error_value": "eight", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4369", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "asian", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8879", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2404", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4647", "column": "Occupation", "error_type": "pattern_violation", "error_value": "clerical/service worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2509", "column": "Education", "error_type": "outliers", "error_value": "graduated high school", "right_value": "grad study", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2467", "column": "Hometype", "error_type": "pattern_violation", "error_value": "apartment", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3597", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "one", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5853", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7908", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "one", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1311", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3280", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "student or hs or college", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3826", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "321", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2593", "column": "Marital", "error_type": "pattern_violation", "error_value": "divorced or separated", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3355", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8680", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6677", "column": "Education", "error_type": "pattern_violation", "error_value": "graduated high school", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5074", "column": "Person", "error_type": "outliers", "error_value": "eight", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "506", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "widowed", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5086", "column": "Person", "error_type": "outliers", "error_value": "ten", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7393", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "widowed", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7665", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8506", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7953", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6991", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6838", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7216", "column": "Ethnic", "error_type": "outliers", "error_value": "white", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6015", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6249", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "college graduate", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2129", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "862", "column": "Occupation", "error_type": "outliers", "error_value": "homemaker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7105", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "14 thru 17", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8025", "column": "Income", "error_type": "outliers", "error_value": "2", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7216", "column": "Person under 18", "error_type": "outliers", "error_value": "four", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6230", "column": "Dual", "error_type": "pattern_violation", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6928", "column": "Income", "error_type": "outliers", "error_value": "1", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "860", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "827", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5839", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2443", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3976", "column": "Person under 18", "error_type": "outliers", "error_value": "five or more", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8169", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7893", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8459", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "apartment", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6677", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8053", "column": "Income", "error_type": "outliers", "error_value": "10000", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6919", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1672", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2564", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8226", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7162", "column": "Occupation", "error_type": "pattern_violation", "error_value": "unemployed", "right_value": "clerical/service worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7216", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "retired", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3741", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7653", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8589", "column": "Occupation", "error_type": "pattern_violation", "error_value": "professional/managerial", "right_value": "unemployed", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5675", "column": "Sex", "error_type": "pattern_violation", "error_value": "male", "right_value": "female", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "495", "column": "Age", "error_type": "pattern_violation", "error_value": "35 thru 44", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3756", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1927", "column": "Live", "error_type": "pattern_violation", "error_value": "one to three years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "160", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2467", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1889", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1519", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1464", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5086", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "716", "column": "Occupation", "error_type": "outliers", "error_value": "clerical worker", "right_value": "retired", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3324", "column": "Person", "error_type": "outliers", "error_value": "seven", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "506", "column": "Sex", "error_type": "pattern_violation", "error_value": "male", "right_value": "female", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6249", "column": "Marital", "error_type": "outliers", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "274", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6379", "column": "Occupation", "error_type": "pattern_violation", "error_value": "factory worker/laborer/driver", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1575", "column": "Language", "error_type": "pattern_violation", "error_value": "spanish", "right_value": "english", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "184", "column": "Person under 18", "error_type": "outliers", "error_value": "five or more", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7697", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2456", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7204", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7346", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8125", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "clerical/service worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7216", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8096", "column": "Age", "error_type": "outliers", "error_value": "65 and over", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "184", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "live with parents/family", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8083", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6230", "column": "Occupation", "error_type": "pattern_violation", "error_value": "factory worker/laborer/driver", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5438", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4870", "column": "Education", "error_type": "outliers", "error_value": "grad studies", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2638", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6925", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2129", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "other", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8379", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1637", "column": "Education", "error_type": "pattern_violation", "error_value": "graduated high school", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6264", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7044", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "rent", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8748", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3568", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7172", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2377", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1240", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "asian", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8088", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1669", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "one", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2377", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7112", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8156", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "less than one year", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8088", "column": "Occupation", "error_type": "outliers", "error_value": "homemaker", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4376", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "620", "column": "Marital", "error_type": "outliers", "error_value": "divorced or separated", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7182", "column": "Person under 18", "error_type": "outliers", "error_value": "four or more", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7006", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3617", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3943", "column": "Sex", "error_type": "outliers", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2543", "column": "Person", "error_type": "outliers", "error_value": "twelve", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6015", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "college graduate", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8169", "column": "Income", "error_type": "outliers", "error_value": "50", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3976", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6344", "column": "Education", "error_type": "pattern_violation", "error_value": "grades 9 to 11", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8459", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "386", "column": "Person", "error_type": "outliers", "error_value": "eight", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7182", "column": "Age", "error_type": "pattern_violation", "error_value": "14 thru 17", "right_value": "55 thru 64", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3756", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "590", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7440", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7308", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5663", "column": "Live", "error_type": "outliers", "error_value": "one to three years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7677", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5506", "column": "Income", "error_type": "outliers", "error_value": "2", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7150", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7150", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7073", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8025", "column": "Age", "error_type": "outliers", "error_value": "55 and over", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3329", "column": "Education", "error_type": "outliers", "error_value": "grad study or grad degree", "right_value": "grad study", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6230", "column": "Hometype", "error_type": "pattern_violation", "error_value": "apartment", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5086", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "clerical/service worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3797", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "mobile home", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5721", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8051", "column": "Age", "error_type": "pattern_violation", "error_value": "14 thru 17", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6838", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7044", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3741", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "own", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8379", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8051", "column": "Occupation", "error_type": "outliers", "error_value": "clerical/service worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8410", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1927", "column": "Occupation", "error_type": "pattern_violation", "error_value": "unemployed", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3845", "column": "Person", "error_type": "outliers", "error_value": "seven", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7306", "column": "Age", "error_type": "outliers", "error_value": "65 and over", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6230", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8459", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8680", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7677", "column": "Age", "error_type": "outliers", "error_value": "35 thru 44", "right_value": "14 thru 17", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1311", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3549", "column": "Occupation", "error_type": "pattern_violation", "error_value": "clerical/service worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "421", "column": "Occupation", "error_type": "pattern_violation", "error_value": "factory worker/laborer/driver", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Sex", "error_type": "pattern_violation", "error_value": "male", "right_value": "female", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3379", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "condominium", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8169", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8618", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "274", "column": "Hometype", "error_type": "pattern_violation", "error_value": "apartment", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "spanish", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "550", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "862", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "590", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3305", "column": "Occupation", "error_type": "pattern_violation", "error_value": "clerical/service worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2219", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "rent", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8081", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5086", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2797", "column": "Income", "error_type": "pattern_violation", "error_value": "0", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8031", "column": "Person", "error_type": "outliers", "error_value": "ten", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8410", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5234", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7622", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7182", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2543", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2585", "column": "Age", "error_type": "outliers", "error_value": "65 or more", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3976", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5700", "column": "Age", "error_type": "pattern_violation", "error_value": "35 thru 44", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2129", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2303", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6923", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7246", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "professional/managerial", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6233", "column": "Age", "error_type": "outliers", "error_value": "65 thru 74", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7025", "column": "Dual", "error_type": "pattern_violation", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3976", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "unemployed", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7665", "column": "Occupation", "error_type": "pattern_violation", "error_value": "unemployed", "right_value": "military", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8025", "column": "Person", "error_type": "outliers", "error_value": "six", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "184", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8339", "column": "Hometype", "error_type": "pattern_violation", "error_value": "condominium", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6070", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4209", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8237", "column": "Dual", "error_type": "outliers", "error_value": "not married", "right_value": "no", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7893", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8965", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2129", "column": "Marital", "error_type": "outliers", "error_value": "widowed", "right_value": "divorced or separated", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6230", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3825", "column": "Occupation", "error_type": "outliers", "error_value": "clerical/service worker", "right_value": "military", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2585", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "college graduate", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7105", "column": "Education", "error_type": "pattern_violation", "error_value": "grad study", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1311", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2192", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2555", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3355", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8019", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6116", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "620", "column": "Sex", "error_type": "pattern_violation", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3329", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8367", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5711", "column": "Income", "error_type": "outliers", "error_value": "5000", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7622", "column": "Live", "error_type": "outliers", "error_value": "one to three years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4449", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7306", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "asian", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4017", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "factory worker/laborer/driver", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2593", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6233", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "factory worker/laborer/driver", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3694", "column": "Education", "error_type": "pattern_violation", "error_value": "grades 9 to 11", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8031", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "black", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3285", "column": "Occupation", "error_type": "pattern_violation", "error_value": "professional/managerial", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Income", "error_type": "outliers", "error_value": "1", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5421", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "clerical/service worker", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3825", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5721", "column": "Income", "error_type": "outliers", "error_value": "71", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2216", "column": "Live", "error_type": "pattern_violation", "error_value": "one to three years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3524", "column": "Person under 18", "error_type": "outliers", "error_value": "seven", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7710", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4647", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8106", "column": "Marital", "error_type": "pattern_violation", "error_value": "divorced or separated", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "783", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8169", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4159", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8237", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6236", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "homemaker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "243", "column": "Education", "error_type": "outliers", "error_value": "grad study or grad deg", "right_value": "grad study", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "386", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8418", "column": "Hometype", "error_type": "outliers", "error_value": "condominium", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "862", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6448", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "asian", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1672", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "own", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2073", "column": "Dual", "error_type": "pattern_violation", "error_value": "not married", "right_value": "yes", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5467", "column": "Marital", "error_type": "outliers", "error_value": "widowed", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2447", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3604", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8410", "column": "Person under 18", "error_type": "outliers", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1737", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "apartment", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3906", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3754", "column": "Person", "error_type": "outliers", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5102", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6998", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "rent", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1888", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "college graduate", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8318", "column": "Income", "error_type": "outliers", "error_value": "98", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1646", "column": "Person", "error_type": "outliers", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8748", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5566", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8418", "column": "Ethnic", "error_type": "missing_value", "error_value": "", "right_value": "white", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1492", "column": "Education", "error_type": "pattern_violation", "error_value": "grades 9 to 11", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8879", "column": "Person", "error_type": "outliers", "error_value": "eight", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8106", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3694", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "black", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3379", "column": "Age", "error_type": "pattern_violation", "error_value": "35 thru 44", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8750", "column": "Occupation", "error_type": "pattern_violation", "error_value": "factory worker/laborer/driver", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7182", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7044", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1611", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "five", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "829", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2372", "column": "Education", "error_type": "pattern_violation", "error_value": "grades 9 to 11", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2445", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7839", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "274", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2138", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8776", "column": "Occupation", "error_type": "pattern_violation", "error_value": "professional/managerial", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1612", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3582", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7709", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "495", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8169", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "one", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7346", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5234", "column": "Hometype", "error_type": "outliers", "error_value": "condominium", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7192", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7286", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5647", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8664", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1669", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "594", "column": "Hometype", "error_type": "outliers", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7194", "column": "Live", "error_type": "pattern_violation", "error_value": "more than ten years", "right_value": "one to three years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3631", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5248", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1485", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3700", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "rent", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7839", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2372", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "506", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3826", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1327", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6556", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "homemaker", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8413", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "american indian", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5663", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3654", "column": "Sex", "error_type": "outliers", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8965", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7697", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3746", "column": "Age", "error_type": "outliers", "error_value": "18 thru 24", "right_value": "65 and over", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6998", "column": "Person under 18", "error_type": "outliers", "error_value": "six", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7314", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8367", "column": "Hometype", "error_type": "pattern_violation", "error_value": "other", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8379", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8410", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3746", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "no", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5632", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7140", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "unemployed", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "560", "column": "Occupation", "error_type": "pattern_violation", "error_value": "factory worker/laborer/driver", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2443", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1737", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "divorced or separated", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6991", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3046", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6928", "column": "Occupation", "error_type": "outliers", "error_value": "professional or technical worker", "right_value": "factory worker/laborer/driver", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3327", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8575", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1467", "column": "Occupation", "error_type": "outliers", "error_value": "clerical/service worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8413", "column": "Occupation", "error_type": "outliers", "error_value": "clerical service worker", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "829", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8965", "column": "Education", "error_type": "outliers", "error_value": "grad study or equivalent", "right_value": "grad study", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2264", "column": "Hometype", "error_type": "pattern_violation", "error_value": "apartment", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3280", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3746", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1834", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "black", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "184", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1311", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "condominium", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3845", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "black", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3873", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "719", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3379", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "asian", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7150", "column": "Person", "error_type": "outliers", "error_value": "twelve", "right_value": "six", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3702", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "factory worker/laborer/driver", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1542", "column": "Age", "error_type": "outliers", "error_value": "65 thru 74", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7590", "column": "Occupation", "error_type": "pattern_violation", "error_value": "professional/managerial", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4017", "column": "Person", "error_type": "outliers", "error_value": "six", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7172", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "550", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1467", "column": "Age", "error_type": "pattern_violation", "error_value": "35 thru 44", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2593", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8320", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1321", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7134", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "490", "column": "Sex", "error_type": "outliers", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "184", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4209", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "860", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7306", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7286", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8318", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8083", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2210", "column": "Income", "error_type": "outliers", "error_value": "2", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5721", "column": "Dual", "error_type": "outliers", "error_value": "not married", "right_value": "yes", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "663", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8147", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7042", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "673", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4209", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8096", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7869", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5596", "column": "Person", "error_type": "outliers", "error_value": "eight", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6600", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2372", "column": "Hometype", "error_type": "pattern_violation", "error_value": "apartment", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5924", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "less than one year", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "827", "column": "Dual", "error_type": "pattern_violation", "error_value": "not married", "right_value": "yes", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8498", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8693", "column": "Live", "error_type": "outliers", "error_value": "1 to 3 years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1889", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "student or hs or college", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7042", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "no", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "386", "column": "Live", "error_type": "pattern_violation", "error_value": "more than ten years", "right_value": "less than one year", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3756", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3873", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3754", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8318", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6230", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2038", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1327", "column": "Person", "error_type": "outliers", "error_value": "ten", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "390", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6116", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7140", "column": "Dual", "error_type": "pattern_violation", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6821", "column": "Hometype", "error_type": "pattern_violation", "error_value": "condominium", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3527", "column": "Person under 18", "error_type": "outliers", "error_value": "nine", "right_value": "six", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1669", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5675", "column": "Person under 18", "error_type": "outliers", "error_value": "seven", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8418", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "professional/managerial", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4377", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "condominium", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7134", "column": "Occupation", "error_type": "pattern_violation", "error_value": "professional/managerial", "right_value": "clerical/service worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5001", "column": "Language", "error_type": "pattern_violation", "error_value": "english", "right_value": "spanish", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8653", "column": "Age", "error_type": "pattern_violation", "error_value": "14 thru 17", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8664", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "seven", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8879", "column": "Person under 18", "error_type": "outliers", "error_value": "five or more", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8418", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "762", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8086", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7162", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3906", "column": "Age", "error_type": "pattern_violation", "error_value": "18 thru 24", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8226", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3700", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8226", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "military", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2300", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6998", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7194", "column": "Occupation", "error_type": "pattern_violation", "error_value": "clerical worker", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "620", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8850", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8339", "column": "Householder", "error_type": "pattern_violation", "error_value": "rent", "right_value": "live with parents/family", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7204", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2405", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2210", "column": "Person", "error_type": "pattern_violation", "error_value": "five", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3797", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "one", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8319", "column": "Education", "error_type": "pattern_violation", "error_value": "grad study", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6677", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7346", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6858", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6600", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "723", "column": "Live", "error_type": "pattern_violation", "error_value": "four to six years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1888", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8850", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "277", "column": "Live", "error_type": "pattern_violation", "error_value": "four to six years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5679", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1646", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6344", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5566", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6344", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "426", "column": "Income", "error_type": "outliers", "error_value": "2000", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8410", "column": "Occupation", "error_type": "pattern_violation", "error_value": "retired", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2141", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "spanish", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8125", "column": "Income", "error_type": "outliers", "error_value": "1000", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7312", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2334", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6821", "column": "Age", "error_type": "outliers", "error_value": "65 and over", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4369", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "14 thru 17", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2300", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8314", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7162", "column": "Age", "error_type": "outliers", "error_value": "65 and over", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8575", "column": "Marital", "error_type": "pattern_violation", "error_value": "divorced or separated", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8086", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8459", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "one", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6858", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3597", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2216", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3566", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "black", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5001", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2467", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5679", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2471", "column": "Person", "error_type": "outliers", "error_value": "eight", "right_value": "six", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5493", "column": "Age", "error_type": "pattern_violation", "error_value": "35 thru 44", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1704", "column": "Person", "error_type": "outliers", "error_value": "six", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1612", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3554", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2268", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "other", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2445", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4117", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "322", "column": "Person", "error_type": "outliers", "error_value": "four", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3565", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8748", "column": "Education", "error_type": "pattern_violation", "error_value": "graduated high school", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "681", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "five", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8498", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5421", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7347", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Marital", "error_type": "pattern_violation", "error_value": "divorced or separated", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8379", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "725", "column": "Marital", "error_type": "outliers", "error_value": "living together or not married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4619", "column": "Sex", "error_type": "pattern_violation", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2509", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4449", "column": "Person under 18", "error_type": "outliers", "error_value": "five or more", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5097", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5675", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6448", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7677", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7599", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6869", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8088", "column": "Sex", "error_type": "pattern_violation", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8750", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "one", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "184", "column": "Person", "error_type": "outliers", "error_value": "seven", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "644", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7679", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8219", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6948", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6823", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3754", "column": "Sex", "error_type": "pattern_violation", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5052", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5074", "column": "Occupation", "error_type": "pattern_violation", "error_value": "professional/managerial", "right_value": "sales worker", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8237", "column": "Hometype", "error_type": "outliers", "error_value": "condominium", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6015", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8693", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "not married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5493", "column": "Occupation", "error_type": "pattern_violation", "error_value": "sales worker", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8339", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3700", "column": "Dual", "error_type": "pattern_violation", "error_value": "not married", "right_value": "yes", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3660", "column": "Sex", "error_type": "pattern_violation", "error_value": "male", "right_value": "female", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6998", "column": "Occupation", "error_type": "outliers", "error_value": "student or hs or college", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2471", "column": "Income", "error_type": "outliers", "error_value": "1", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8081", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5467", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2384", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3825", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "apartment", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5234", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6344", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "65 and over", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1637", "column": "Income", "error_type": "pattern_violation", "error_value": "0", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1737", "column": "Person", "error_type": "outliers", "error_value": "four", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7246", "column": "Education", "error_type": "pattern_violation", "error_value": "graduated high school", "right_value": "grad study", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "170", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2870", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3597", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "rent", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7162", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "college graduate", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "264", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "other", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7006", "column": "Hometype", "error_type": "outliers", "error_value": "house", "right_value": "condominium", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7438", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "five", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5632", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3597", "column": "Person", "error_type": "outliers", "error_value": "six", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3702", "column": "Education", "error_type": "outliers", "error_value": "1 to 3 years of college", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7308", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2300", "column": "Person", "error_type": "outliers", "error_value": "seven", "right_value": "four", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6970", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4390", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5677", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1637", "column": "Person under 18", "error_type": "outliers", "error_value": "two or more", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "520", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7006", "column": "Person under 18", "error_type": "outliers", "error_value": "three", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6948", "column": "Hometype", "error_type": "outliers", "error_value": "other", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7112", "column": "Occupation", "error_type": "pattern_violation", "error_value": "factory worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1927", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2141", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8367", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2407", "column": "Person under 18", "error_type": "outliers", "error_value": "four", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7150", "column": "Marital", "error_type": "outliers", "error_value": "married", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6656", "column": "Hometype", "error_type": "pattern_violation", "error_value": "house", "right_value": "apartment", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2504", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "live with parents/family", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1646", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "black", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6925", "column": "Person", "error_type": "pattern_violation", "error_value": "two", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1669", "column": "Education", "error_type": "pattern_violation", "error_value": "1 to 3 years of college", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8319", "column": "Marital", "error_type": "pattern_violation", "error_value": "married", "right_value": "divorced or separated", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8125", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2471", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "live with parents/family", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2870", "column": "Sex", "error_type": "pattern_violation", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3046", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "one", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3604", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "divorced or separated", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8413", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7880", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "asian", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6306", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7313", "column": "Occupation", "error_type": "pattern_violation", "error_value": "unemployed", "right_value": "retired", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3756", "column": "Marital", "error_type": "pattern_violation", "error_value": "single or never married", "right_value": "divorced or separated", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4449", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "620", "column": "Person under 18", "error_type": "outliers", "error_value": "nine", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "860", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2797", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7276", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7182", "column": "Person", "error_type": "pattern_violation", "error_value": "seven", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8314", "column": "Person", "error_type": "outliers", "error_value": "seven", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7366", "column": "Occupation", "error_type": "outliers", "error_value": "homemaker", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8512", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "386", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6344", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "837", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6556", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6015", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4017", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3356", "column": "Age", "error_type": "outliers", "error_value": "35 thru 44", "right_value": "65 and over", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1697", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6928", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2377", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7306", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "716", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4377", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5700", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7073", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "military", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8147", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "505", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7366", "column": "Person under 18", "error_type": "pattern_violation", "error_value": "none", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8379", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "grade 8 or less", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2405", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "black", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "536", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7312", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6236", "column": "Person", "error_type": "pattern_violation", "error_value": "six", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2168", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3845", "column": "Sex", "error_type": "pattern_violation", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6233", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6015", "column": "Occupation", "error_type": "pattern_violation", "error_value": "student or hs or college", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8339", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5107", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2073", "column": "Householder", "error_type": "outliers", "error_value": "rent", "right_value": "own", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5054", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6788", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "four", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2801", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2555", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6998", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2543", "column": "Age", "error_type": "pattern_violation", "error_value": "25 thru 34", "right_value": "65 and over", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5647", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "divorced or separated", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7893", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "clerical/service worker", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5052", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3702", "column": "Person", "error_type": "pattern_violation", "error_value": "one", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2371", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2339", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5213", "column": "Live", "error_type": "pattern_violation", "error_value": "one to three years", "right_value": "more than ten years", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3845", "column": "Income", "error_type": "outliers", "error_value": "2", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7308", "column": "Person", "error_type": "pattern_violation", "error_value": "four", "right_value": "five", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8176", "column": "Education", "error_type": "pattern_violation", "error_value": "grad study", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8575", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "professional/managerial", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3654", "column": "Ethnic", "error_type": "pattern_violation", "error_value": "white", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7162", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "160", "column": "Person", "error_type": "pattern_violation", "error_value": "three", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4017", "column": "Age", "error_type": "pattern_violation", "error_value": "65 and over", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8125", "column": "Person under 18", "error_type": "outliers", "error_value": "four", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "505", "column": "Occupation", "error_type": "outliers", "error_value": "factory worker/laborer/driver", "right_value": "retired", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8019", "column": "Occupation", "error_type": "pattern_violation", "error_value": "military", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3272", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8320", "column": "Person under 18", "error_type": "outliers", "error_value": "four", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6249", "column": "Age", "error_type": "outliers", "error_value": "75 and over", "right_value": "55 thru 64", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2471", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "factory worker/laborer/driver", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "860", "column": "Sex", "error_type": "pattern_violation", "error_value": "male", "right_value": "female", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "723", "column": "Income", "error_type": "outliers", "error_value": "5000", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1888", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "rent", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1697", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "390", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2471", "column": "Sex", "error_type": "outliers", "error_value": "female", "right_value": "male", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3746", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "321", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2564", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "536", "column": "Householder", "error_type": "missing_value", "error_value": "", "right_value": "live with parents/family", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5506", "column": "Age", "error_type": "outliers", "error_value": "45 thru 54", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8418", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2456", "column": "Income", "error_type": "outliers", "error_value": "88", "right_value": "1", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3826", "column": "Marital", "error_type": "outliers", "error_value": "living together or not married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4844", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8125", "column": "Dual", "error_type": "outliers", "error_value": "not married", "right_value": "yes", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3826", "column": "Person under 18", "error_type": "outliers", "error_value": "three", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5438", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7306", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3670", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1834", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "two", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "753", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "mobile home", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "514", "column": "Occupation", "error_type": "outliers", "error_value": "professional/technical worker", "right_value": "professional/managerial", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3379", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "divorced or separated", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2638", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "single or never married", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4117", "column": "Marital", "error_type": "missing_value", "error_value": "", "right_value": "widowed", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5671", "column": "Person", "error_type": "missing_value", "error_value": "", "right_value": "three", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1240", "column": "Income", "error_type": "outliers", "error_value": "500", "right_value": "0", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8367", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8319", "column": "Language", "error_type": "missing_value", "error_value": "", "right_value": "english", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8025", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "college graduate", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3285", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7984", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7246", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1704", "column": "Education", "error_type": "outliers", "error_value": "grad study", "right_value": "graduated high school", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6923", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2467", "column": "Marital", "error_type": "outliers", "error_value": "single or never married", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8096", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4320", "column": "Occupation", "error_type": "missing_value", "error_value": "", "right_value": "factory worker/laborer/driver", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Person", "error_type": "outliers", "error_value": "five", "right_value": "two", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2407", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "four to six years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6991", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3754", "column": "Person under 18", "error_type": "outliers", "error_value": "seven", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3566", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "14 thru 17", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8589", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "173", "column": "Hometype", "error_type": "outliers", "error_value": "condominium", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "350", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "472", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8575", "column": "Person under 18", "error_type": "outliers", "error_value": "two", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7347", "column": "Age", "error_type": "outliers", "error_value": "65 thru 74", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7276", "column": "Hometype", "error_type": "missing_value", "error_value": "", "right_value": "house", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "617", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2404", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "seven to ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7726", "column": "Person under 18", "error_type": "outliers", "error_value": "five or more", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8506", "column": "Person under 18", "error_type": "outliers", "error_value": "five", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8219", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "more than ten years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3046", "column": "Live", "error_type": "missing_value", "error_value": "", "right_value": "one to three years", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1697", "column": "Education", "error_type": "missing_value", "error_value": "", "right_value": "grades 9 to 11", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2443", "column": "Marital", "error_type": "outliers", "error_value": "widowed", "right_value": "single or never married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6919", "column": "Ethnic", "error_type": "outliers", "error_value": "hispanic", "right_value": "white", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1651", "column": "Dual", "error_type": "outliers", "error_value": "yes", "right_value": "no", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4216", "column": "Person under 18", "error_type": "outliers", "error_value": "six", "right_value": "none", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8459", "column": "Age", "error_type": "outliers", "error_value": "65 thru 74", "right_value": "25 thru 34", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7338", "column": "Hometype", "error_type": "outliers", "error_value": "other", "right_value": "house", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2543", "column": "Occupation", "error_type": "outliers", "error_value": "student or hs or college", "right_value": "retired", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3756", "column": "Education", "error_type": "outliers", "error_value": "college graduate", "right_value": "grades 9 to 11", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7179", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "35 thru 44", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5677", "column": "Age", "error_type": "outliers", "error_value": "65 thru 74", "right_value": "14 thru 17", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3825", "column": "Age", "error_type": "outliers", "error_value": "65 and over", "right_value": "18 thru 24", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5467", "column": "Occupation", "error_type": "outliers", "error_value": "professional/managerial", "right_value": "factory worker/laborer/driver", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6448", "column": "Occupation", "error_type": "outliers", "error_value": "clerical", "right_value": "student or hs or college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3573", "column": "Language", "error_type": "outliers", "error_value": "english", "right_value": "spanish", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3700", "column": "Age", "error_type": "outliers", "error_value": "55 thru 64", "right_value": "45 thru 54", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2253", "column": "Person", "error_type": "outliers", "error_value": "seven", "right_value": "one", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1889", "column": "Person", "error_type": "outliers", "error_value": "nine", "right_value": "three", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6116", "column": "Ethnic", "error_type": "outliers", "error_value": "asian", "right_value": "hispanic", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4183", "column": "Education", "error_type": "outliers", "error_value": "graduated high school", "right_value": "1 to 3 years of college", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8965", "column": "Marital", "error_type": "outliers", "error_value": "widowed", "right_value": "married", "missing_value": "0", "constraint": "", "tuple_pairs": ""}

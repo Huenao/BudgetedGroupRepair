@@ -1,0 +1,16 @@
+# Exact environment inherited from the reference formal experiment.
+# Python 3.10.20
+beautifulsoup4==4.15.0
+lightgbm==4.6.0
+matplotlib==3.10.9
+mwparserfromhell==0.7.2
+numpy==2.2.6
+pandas==2.3.3
+prettytable==3.17.0
+py7zr==1.1.0
+scikit-learn==1.7.2
+scipy==1.15.3
+xgboost==3.2.0
+
+# Test-only dependency used by the reference project.
+pytest==8.4.2

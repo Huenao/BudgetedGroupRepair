@@ -1,0 +1,20 @@
+{
+  "dataset": "restaurant_rule_only",
+  "family": "tableeg",
+  "shape": [
+    864,
+    6
+  ],
+  "oracle_errors": 76,
+  "error_log": {
+    "rows": 77,
+    "error_type_counts": {
+      "rule_violation": 77
+    }
+  },
+  "copied_from": {
+    "dirty.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/restaurant/res_rule/dirty_res_rule.csv",
+    "clean.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/restaurant/clean_restaurant.csv",
+    "error_log.jsonl": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/restaurant/res_rule/error_log.jsonl"
+  }
+}

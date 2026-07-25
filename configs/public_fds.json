@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "source": "Raha baseline DATASET_CONSTRAINTS",
+    "vendored_path": "vendor/raha_source/raha/baselines.py",
+    "scope": "Only public declared FDs; no TableEG error-log fields are used."
+  },
+  "functional_dependencies": {
+    "source/hospital": [
+      {"rule_id": "city_to_zip", "determinant": ["city"], "dependent": "zip"},
+      {"rule_id": "city_to_county", "determinant": ["city"], "dependent": "county"},
+      {"rule_id": "zip_to_city", "determinant": ["zip"], "dependent": "city"},
+      {"rule_id": "zip_to_state", "determinant": ["zip"], "dependent": "state"},
+      {"rule_id": "zip_to_county", "determinant": ["zip"], "dependent": "county"},
+      {"rule_id": "county_to_state", "determinant": ["county"], "dependent": "state"}
+    ],
+    "source/flights": [
+      {"rule_id": "flight_to_actual_departure", "determinant": ["flight"], "dependent": "act_dep_time"},
+      {"rule_id": "flight_to_scheduled_arrival", "determinant": ["flight"], "dependent": "sched_arr_time"},
+      {"rule_id": "flight_to_actual_arrival", "determinant": ["flight"], "dependent": "act_arr_time"},
+      {"rule_id": "flight_to_scheduled_departure", "determinant": ["flight"], "dependent": "sched_dep_time"}
+    ],
+    "source/beers": [
+      {"rule_id": "brewery_to_name", "determinant": ["brewery_id"], "dependent": "brewery_name"},
+      {"rule_id": "brewery_to_city", "determinant": ["brewery_id"], "dependent": "city"},
+      {"rule_id": "brewery_to_state", "determinant": ["brewery_id"], "dependent": "state"}
+    ],
+    "source/rayyan": [
+      {"rule_id": "abbreviation_to_title", "determinant": ["jounral_abbreviation"], "dependent": "journal_title"},
+      {"rule_id": "abbreviation_to_issn", "determinant": ["jounral_abbreviation"], "dependent": "journal_issn"},
+      {"rule_id": "issn_to_title", "determinant": ["journal_issn"], "dependent": "journal_title"}
+    ],
+    "tableeg/flight_10": [
+      {"rule_id": "flight_to_actual_departure", "determinant": ["flight"], "dependent": "act_dep_time"},
+      {"rule_id": "flight_to_scheduled_arrival", "determinant": ["flight"], "dependent": "sched_arr_time"},
+      {"rule_id": "flight_to_actual_arrival", "determinant": ["flight"], "dependent": "act_arr_time"},
+      {"rule_id": "flight_to_scheduled_departure", "determinant": ["flight"], "dependent": "sched_dep_time"}
+    ],
+    "tableeg/flight_20": [
+      {"rule_id": "flight_to_actual_departure", "determinant": ["flight"], "dependent": "act_dep_time"},
+      {"rule_id": "flight_to_scheduled_arrival", "determinant": ["flight"], "dependent": "sched_arr_time"},
+      {"rule_id": "flight_to_actual_arrival", "determinant": ["flight"], "dependent": "act_arr_time"},
+      {"rule_id": "flight_to_scheduled_departure", "determinant": ["flight"], "dependent": "sched_dep_time"}
+    ]
+  }
+}

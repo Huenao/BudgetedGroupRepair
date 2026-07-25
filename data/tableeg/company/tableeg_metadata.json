@@ -1,0 +1,22 @@
+{
+  "dataset": "company",
+  "family": "tableeg",
+  "shape": [
+    497,
+    10
+  ],
+  "oracle_errors": 572,
+  "error_log": {
+    "rows": 572,
+    "error_type_counts": {
+      "pattern_violation": 174,
+      "missing_value": 235,
+      "outliers": 163
+    }
+  },
+  "copied_from": {
+    "dirty.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/Company/dirty_dataset.csv",
+    "clean.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/Company/test_Company.csv",
+    "error_log.jsonl": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/Company/error_log.jsonl"
+  }
+}

@@ -1,0 +1,244 @@
+{"row_id": "4426", "column": "Creator", "error_type": "missing_value", "error_value": "nan", "right_value": "Paul Osborn,James A. Michener", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1187", "column": "RatingCount", "error_type": "missing_value", "error_value": "", "right_value": "478150", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7184", "column": "RatingCount", "error_type": "outliers", "error_value": "150863", "right_value": "1508", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "647", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "23 June 1989 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6220", "column": "RatingCount", "error_type": "outliers", "error_value": "3,908", "right_value": "3908", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6975", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Universal Studios - 100 Universal City Plaza, Universal City, California, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4257", "column": "RatingCount", "error_type": "outliers", "error_value": "291300", "right_value": "2913", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6201", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "15 July 1983 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2455", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "76 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2246", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Austin, Texas, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2374", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "104 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4914", "column": "RatingCount", "error_type": "missing_value", "error_value": "nan", "right_value": "97729", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2511", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "44,672", "right_value": "44672", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4231", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "124 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1628", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "118 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1576", "column": "RatingCount", "error_type": "outliers", "error_value": "13,007", "right_value": "1307", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5397", "column": "RatingCount", "error_type": "outliers", "error_value": "132500", "right_value": "1325", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6335", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "82 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6201", "column": "RatingCount", "error_type": "outliers", "error_value": "106371", "right_value": "10599", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4838", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,804", "right_value": "3804", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2965", "column": "RatingCount", "error_type": "missing_value", "error_value": "nan", "right_value": "401", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5100", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "26,950", "right_value": "26950", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6834", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "106 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7096", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,119", "right_value": "2119", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4358", "column": "RatingCount", "error_type": "outliers", "error_value": "2,202", "right_value": "2202", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6807", "column": "Creator", "error_type": "missing_value", "error_value": "nan", "right_value": "John J. McLaughlin,Scott Lobdell", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7275", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "8 September 1989 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5402", "column": "RatingValue", "error_type": "outliers", "error_value": "8.1", "right_value": "5", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5402", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "26 June 2015 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2679", "column": "Filming Locations", "error_type": "missing_value", "error_value": "", "right_value": "Sykesville, Pennsylvania, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6824", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "25 April 2013 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6250", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "19,754", "right_value": "19754", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2767", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,156", "right_value": "1156", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2998", "column": "RatingCount", "error_type": "outliers", "error_value": "162825", "right_value": "8256", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2386", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "123,887", "right_value": "123887", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6142", "column": "Genre", "error_type": "pattern_violation", "error_value": "Comedy,Crime", "right_value": "Comedy,Crime,Romance", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "234", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,009", "right_value": "3009", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7067", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Langley, British Columbia, Canada", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4905", "column": "Description", "error_type": "missing_value", "error_value": "", "right_value": "A lawyer takes on a negligent homicide case involving a priest who performed an exorcism on a young girl.", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7164", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Warner Brother Theatre, Hill Street, Los Angeles, California, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5732", "column": "RatingCount", "error_type": "outliers", "error_value": "15951", "right_value": "1595", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6033", "column": "RatingCount", "error_type": "outliers", "error_value": "29750", "right_value": "29833", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5544", "column": "RatingCount", "error_type": "outliers", "error_value": "26,352", "right_value": "2636", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6403", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "26 October 1984 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1306", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Berwyn, Illinois, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6038", "column": "RatingCount", "error_type": "missing_value", "error_value": "", "right_value": "23352", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2744", "column": "RatingValue", "error_type": "missing_value", "error_value": "nan", "right_value": "6", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3210", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "98 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1883", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "71,071", "right_value": "71071", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6443", "column": "Creator", "error_type": "missing_value", "error_value": "nan", "right_value": "David Seltzer", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1237", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "136 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2887", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "2000 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1576", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "23 June 2015 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2230", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "131 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3174", "column": "RatingCount", "error_type": "outliers", "error_value": "154,541", "right_value": "893", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6070", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "77 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3410", "column": "RatingCount", "error_type": "outliers", "error_value": "30,000", "right_value": "3000", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5514", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "1 April 2011 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1083", "column": "RatingCount", "error_type": "outliers", "error_value": "18,433", "right_value": "1833", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2926", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "101 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2234", "column": "Release Date", "error_type": "missing_value", "error_value": "N/A", "right_value": "28 March 2008 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5093", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "May 1976 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "168", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "25 November 1936 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7078", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,320", "right_value": "3320", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1483", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "112 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7044", "column": "RatingCount", "error_type": "outliers", "error_value": "13734", "right_value": "1373", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6164", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,324", "right_value": "1324", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5770", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "230,056", "right_value": "230056", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1568", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "194,449", "right_value": "194449", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7343", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "90 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7343", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "6 September 2013 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6308", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "87 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3039", "column": "RatingCount", "error_type": "outliers", "error_value": "209648", "right_value": "2096", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1083", "column": "Id", "error_type": "pattern_violation", "error_value": "bon_voyage_charlie_brown", "right_value": "tt0080461", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3110", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,839", "right_value": "2839", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2921", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "104 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6548", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "10,030", "right_value": "10030", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5858", "column": "Release Date", "error_type": "missing_value", "error_value": "Not Available", "right_value": "3 April 2009 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1203", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "23 March 2012 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4395", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "36,672", "right_value": "36672", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2671", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "83 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6548", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "87 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6123", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "99 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5470", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "104 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2671", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "87,945", "right_value": "87945", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5625", "column": "RatingCount", "error_type": "outliers", "error_value": "185680", "right_value": "18568", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5087", "column": "RatingCount", "error_type": "outliers", "error_value": "340,665", "right_value": "34165", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5470", "column": "RatingCount", "error_type": "outliers", "error_value": "394,301", "right_value": "753", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6038", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "81 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5201", "column": "RatingCount", "error_type": "outliers", "error_value": "140,842", "right_value": "182", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3388", "column": "RatingCount", "error_type": "outliers", "error_value": "30,074", "right_value": "3074", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5045", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,332,322", "right_value": "333322", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7157", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,185", "right_value": "1185", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4909", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "12 April 2002 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3395", "column": "RatingCount", "error_type": "outliers", "error_value": "247,210", "right_value": "24721", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5019", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "165,610", "right_value": "165610", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4958", "column": "RatingCount", "error_type": "outliers", "error_value": "360,950", "right_value": "36095", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6038", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Fort Lauderdale, Florida, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "905", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "148,748", "right_value": "148748", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "239", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,044", "right_value": "1044", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4229", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "130 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6970", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "102 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "662", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "2 August 1989 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1391", "column": "RatingCount", "error_type": "outliers", "error_value": "31256", "right_value": "31", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5847", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,098", "right_value": "1098", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7157", "column": "Filming Locations", "error_type": "missing_value", "error_value": "nan", "right_value": "Metro-Goldwyn-Mayer Studios - 10202 W. Washington Blvd., Culver City, California, USA", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2120", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "101 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1203", "column": "Creator", "error_type": "missing_value", "error_value": "nan", "right_value": "Gary Ross,Suzanne Collins", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3039", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "93 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6975", "column": "RatingCount", "error_type": "outliers", "error_value": "35897", "right_value": "3597", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4331", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "105,054", "right_value": "105054", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5727", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "99 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4909", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "113 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3395", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "14 March 2003 (USA)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3604", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "94 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6403", "column": "RatingCount", "error_type": "outliers", "error_value": "18,575", "right_value": "18575", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3836", "column": "Creator", "error_type": "missing_value", "error_value": "nan", "right_value": "Philip Roth,Nicholas Meyer", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1925", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "9,975", "right_value": "9975", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3848", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "117 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6953", "column": "RatingCount", "error_type": "outliers", "error_value": "4,165", "right_value": "3965", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7184", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "96 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6953", "column": "Description", "error_type": "missing_value", "error_value": "", "right_value": "A reporter moves into the ominous Long Island house to debunk it of the recent supernatural events and becomes besieged by the evil manifestations which are connected to a hell-spawn demon lurking in the basement.", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1987", "column": "Release Date", "error_type": "missing_value", "error_value": "nan", "right_value": "18 December 1961 (Sweden)", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5129", "column": "Creator", "error_type": "missing_value", "error_value": "nan", "right_value": "Terrence McNally,Terrence McNally", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2560", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "90 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5923", "column": "RatingCount", "error_type": "outliers", "error_value": "25865", "right_value": "2356", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97", "column": "RatingCount", "error_type": "outliers", "error_value": "2147483647", "right_value": "2121", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2246", "column": "Duration", "error_type": "missing_value", "error_value": "nan", "right_value": "135 min", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6807", "column": "RatingCount", "error_type": "missing_value", "error_value": "nan", "right_value": "19124", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3166", "column": "RatingValue", "error_type": "outliers", "error_value": "8", "right_value": "7", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6142", "column": "RatingCount", "error_type": "outliers", "error_value": "19,037", "right_value": "1937", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7358", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,892", "right_value": "3892", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "168", "column": "RatingCount", "error_type": "outliers", "error_value": "475", "right_value": "455", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3166", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,032", "right_value": "1032", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5991", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "70,444", "right_value": "70744", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6931", "column": "RatingCount", "error_type": "outliers", "error_value": "2113000", "right_value": "2113", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2887", "column": "RatingCount", "error_type": "outliers", "error_value": "32,270", "right_value": "3227", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5514", "column": "RatingCount", "error_type": "outliers", "error_value": "15570", "right_value": "1557", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "677", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,564", "right_value": "1564", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2673", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "162,613", "right_value": "162613", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3509", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "16,902", "right_value": "16902", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2119", "column": "RatingCount", "error_type": "outliers", "error_value": "172,205", "right_value": "7305", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "507", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "239,219", "right_value": "239219", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4309", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "97,643", "right_value": "97743", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5386", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "72,552", "right_value": "72552", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3409", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,788", "right_value": "3788", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7067", "column": "RatingCount", "error_type": "outliers", "error_value": "109,367", "right_value": "456", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6960", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "6,245", "right_value": "6245", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2625", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "22,267", "right_value": "22267", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "495", "column": "RatingCount", "error_type": "outliers", "error_value": "1585428", "right_value": "1585", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7164", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,165", "right_value": "1165", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5494", "column": "RatingCount", "error_type": "outliers", "error_value": "744,000", "right_value": "744", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6112", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "19,648", "right_value": "19648", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2921", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "11,772", "right_value": "11772", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "854", "column": "RatingCount", "error_type": "outliers", "error_value": "8,744", "right_value": "8744", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "647", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "97,241", "right_value": "97241", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3193", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "14,591", "right_value": "14591", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4231", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "83,616", "right_value": "83616", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4671", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "5,271", "right_value": "5271", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1392", "column": "RatingCount", "error_type": "outliers", "error_value": "243460", "right_value": "24346", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6335", "column": "RatingCount", "error_type": "outliers", "error_value": "12,005", "right_value": "6025", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7266", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,329", "right_value": "1329", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4229", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "82,500", "right_value": "82500", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6970", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "65,488", "right_value": "65488", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5814", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "148,502", "right_value": "148502", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2744", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "46,262", "right_value": "46262", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "23", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "7,135", "right_value": "7135", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "351", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "103,371", "right_value": "103371", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4963", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "277,367", "right_value": "277367", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3836", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "24,542", "right_value": "24542", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1628", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "120,871", "right_value": "120871", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6070", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "9,054", "right_value": "9054", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6109", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "62,888", "right_value": "62888", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7232", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,974", "right_value": "2974", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2145", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "228,053", "right_value": "228053", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3084", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,525", "right_value": "1525", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5451", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,781", "right_value": "1781", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4691", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "198,568", "right_value": "198568", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3025", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "10,840", "right_value": "10840", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4909", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "3,050", "right_value": "3050", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1413", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "120,793", "right_value": "120793", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "662", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "34,079", "right_value": "34079", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "734", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "268,942", "right_value": "268942", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6123", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "20,644", "right_value": "20644", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2923", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "27,057", "right_value": "27057", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5186", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "129,200", "right_value": "129200", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1821", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "38,013", "right_value": "38013", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6075", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "32,650", "right_value": "32650", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "908", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "285,559", "right_value": "285559", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1518", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "15,093", "right_value": "15093", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "697", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "152,212", "right_value": "152212", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6834", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "87,067", "right_value": "87067", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2560", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "10,176", "right_value": "10176", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2243", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "177,448", "right_value": "177448", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1034", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,814", "right_value": "2814", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6586", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,413", "right_value": "1413", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3026", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,590", "right_value": "2590", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6336", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "73,777", "right_value": "73777", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5514", "column": "Id", "error_type": "pattern_violation", "error_value": "judas_kiss", "right_value": "tt1242642", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5402", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,124", "right_value": "1124", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2234", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "181,664", "right_value": "181664", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4426", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "4,062", "right_value": "4062", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1539", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "43,227", "right_value": "43227", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5772", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "109,695", "right_value": "109695", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2366", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "33,993", "right_value": "33993", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5174", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "107,294", "right_value": "107294", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5775", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "98,235", "right_value": "98235", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2806", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "11,837", "right_value": "11837", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2679", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "151,733", "right_value": "151733", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2374", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "78,172", "right_value": "78172", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6755", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,482", "right_value": "2482", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4137", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "20,846", "right_value": "20846", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3039", "column": "Id", "error_type": "pattern_violation", "error_value": "take_me_out_to_the_ball_game", "right_value": "tt0041944", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "902", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "33,850", "right_value": "33850", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2847", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "24,351", "right_value": "24351", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1987", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "38,835", "right_value": "38835", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1606", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "153,533", "right_value": "153533", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4916", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "36,976", "right_value": "36976", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7182", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,157", "right_value": "2157", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "7071", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "29,041", "right_value": "29041", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2246", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "143,527", "right_value": "143527", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4034", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,465", "right_value": "1465", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "881", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "215,340", "right_value": "215340", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1703", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "12,197", "right_value": "12197", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2494", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,925", "right_value": "2925", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6339", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "10,941", "right_value": "10941", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2677", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "233,873", "right_value": "233873", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2262", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "56,513", "right_value": "56513", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1237", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "457,317", "right_value": "457317", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5162", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "91,273", "right_value": "91273", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3186", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "8,762", "right_value": "8762", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3210", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "1,112", "right_value": "1112", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1203", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "645,461", "right_value": "645461", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5727", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "392,537", "right_value": "392537", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1306", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "15,725", "right_value": "15725", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5007", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "93,446", "right_value": "93446", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2289", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "6,643", "right_value": "6643", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6308", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "32,847", "right_value": "32847", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6443", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "2,814", "right_value": "2814", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "925", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "32,519", "right_value": "32519", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2230", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "99,132", "right_value": "99132", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5623", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "19,842", "right_value": "19842", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "2171", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "103,585", "right_value": "103585", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "906", "column": "RatingCount", "error_type": "pattern_violation", "error_value": "271,767", "right_value": "271767", "missing_value": "0", "constraint": "", "tuple_pairs": ""}

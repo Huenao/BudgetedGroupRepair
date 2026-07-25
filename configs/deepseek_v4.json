@@ -1,0 +1,23 @@
+{
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-v4-flash",
+  "api_key_env": "DEEPSEEK_API_KEY",
+  "timeout_seconds": 300,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "concurrency": 4,
+  "max_retries": 5,
+  "prompt_schema_version": "bgr-no-baran-v1",
+  "completion_token_ceiling": {
+    "singleton": 192,
+    "group_base": 64,
+    "per_cell": 192,
+    "formula": "size == 1 ? 192 : 64 + 192 * size"
+  },
+  "extra_body": {"thinking": {"type": "disabled"}},
+  "contexts": {
+    "similar_row_count": 5,
+    "similar_value_row_cap": 5000,
+    "column_top_values": 12
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "dataset": "marketing",
+  "family": "tableeg",
+  "shape": [
+    483,
+    15
+  ],
+  "oracle_errors": 723,
+  "error_log": {
+    "rows": 723,
+    "error_type_counts": {
+      "pattern_violation": 241,
+      "missing_value": 241,
+      "outliers": 241
+    }
+  },
+  "copied_from": {
+    "dirty.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/Marketing/dirty_dataset.csv",
+    "clean.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/Marketing/test_Marketing.csv",
+    "error_log.jsonl": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/Marketing/error_log.jsonl"
+  }
+}

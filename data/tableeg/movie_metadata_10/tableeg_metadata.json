@@ -1,0 +1,22 @@
+{
+  "dataset": "movie_metadata_10",
+  "family": "tableeg",
+  "shape": [
+    266,
+    18
+  ],
+  "oracle_errors": 244,
+  "error_log": {
+    "rows": 244,
+    "error_type_counts": {
+      "missing_value": 72,
+      "outliers": 43,
+      "pattern_violation": 129
+    }
+  },
+  "copied_from": {
+    "dirty.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/movie_metadata/movie_10/dirty_dataset_10.csv",
+    "clean.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/movie_metadata/test_movies.csv",
+    "error_log.jsonl": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/movie_metadata/movie_10/error_log_10.jsonl"
+  }
+}

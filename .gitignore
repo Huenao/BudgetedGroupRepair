@@ -1,0 +1,30 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local environments and secrets
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Experiment outputs
+runs/**
+!runs/.gitkeep
+report.html
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp

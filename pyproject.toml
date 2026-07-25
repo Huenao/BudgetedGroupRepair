@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "budgeted-group-repair-no-baran"
+version = "0.1.0"
+description = "Leakage-safe no-Baran-prompt Budgeted Group Repair experiments"
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+  "numpy",
+  "pandas",
+  "scipy",
+  "scikit-learn",
+  "lightgbm",
+  "xgboost",
+  "beautifulsoup4",
+  "mwparserfromhell",
+  "py7zr",
+  "matplotlib",
+  "prettytable",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+budgeted-group-repair-no-baran = "budgeted_group_repair_no_baran.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

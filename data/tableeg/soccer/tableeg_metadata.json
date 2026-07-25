@@ -1,0 +1,22 @@
+{
+  "dataset": "soccer",
+  "family": "tableeg",
+  "shape": [
+    1999,
+    11
+  ],
+  "oracle_errors": 1883,
+  "error_log": {
+    "rows": 1883,
+    "error_type_counts": {
+      "rule_violation": 739,
+      "outliers": 209,
+      "pattern_violation": 935
+    }
+  },
+  "copied_from": {
+    "dirty.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/soccer/dirty_dataset.csv",
+    "clean.csv": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/soccer/clean_soccer.csv",
+    "error_log.jsonl": "/home/huwentao/hwt/project/DataBase/DataCleaning/TableEG/TableEG_output/soccer/error_log.jsonl"
+  }
+}

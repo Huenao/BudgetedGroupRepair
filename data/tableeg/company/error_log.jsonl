@@ -1,0 +1,572 @@
+{"row_id": "64665", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64732", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "32883", "column": "Country", "error_type": "pattern_violation", "error_value": "Colombia", "right_value": "colombia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "77909", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10778", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "42545", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80452", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80104", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88308", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oklahoma", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "20684", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "51665", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128703", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "120453", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94743", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "georgia", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19532", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "102768", "column": "Country", "error_type": "pattern_violation", "error_value": "Netherlands", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "15019", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "40381", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "104032", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "idaho", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123427", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "11474", "column": "Country", "error_type": "pattern_violation", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111865", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "tennessee", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80452", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "121473", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "16379", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60246", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "84629", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "22739", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "georgia", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97199", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "108881", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "35972", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6534", "column": "Country", "error_type": "outliers", "error_value": "Germany", "right_value": "germany", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "31790", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13671", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "91695", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "11868", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124738", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "33697", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "pennsylvania", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97853", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62942", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "43595", "column": "State", "error_type": "pattern_violation", "error_value": "North Carolina", "right_value": "north carolina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "108805", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81645", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "95528", "column": "Country", "error_type": "outliers", "error_value": "Vietnam", "right_value": "vietnam", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "18653", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19122", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87014", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "tennessee", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110865", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "99610", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81551", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13950", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123575", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19244", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60477", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10732", "column": "Country", "error_type": "pattern_violation", "error_value": "Turkey", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66424", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123722", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "192", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80315", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "89076", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "48993", "column": "Country", "error_type": "pattern_violation", "error_value": "El Salvador", "right_value": "el salvador", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "34772", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "79907", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "26364", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9850", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62963", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111865", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66929", "column": "Country", "error_type": "outliers", "error_value": "Spain", "right_value": "spain", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124369", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "119641", "column": "Country", "error_type": "outliers", "error_value": "Germany", "right_value": "austria", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62963", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "kansas", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "114274", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maryland", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13090", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87014", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111742", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70318", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "40242", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88242", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "25529", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "23870", "column": "Country", "error_type": "pattern_violation", "error_value": "Puerto Rico", "right_value": "puerto rico", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "28445", "column": "Country", "error_type": "pattern_violation", "error_value": "France", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8442", "column": "Country", "error_type": "outliers", "error_value": "Malaysia", "right_value": "malaysia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88979", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81431", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "39218", "column": "Country", "error_type": "outliers", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "42670", "column": "Country", "error_type": "outliers", "error_value": "Malaysia", "right_value": "malaysia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19244", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9679", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118588", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "pennsylvania", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "41180", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "115673", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "25370", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92864", "column": "Country", "error_type": "pattern_violation", "error_value": "Comoros", "right_value": "comoros", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "119641", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64732", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "43595", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "101340", "column": "Country", "error_type": "outliers", "error_value": "Norway", "right_value": "norway", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117092", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "18653", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65071", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "14856", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "12047", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "89076", "column": "Country", "error_type": "outliers", "error_value": "China", "right_value": "china", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "44361", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87074", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "69843", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "120367", "column": "Country", "error_type": "outliers", "error_value": "Netherlands", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "121473", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "30008", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "texas", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "53606", "column": "State", "error_type": "outliers", "error_value": "North Carolina", "right_value": "south carolina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64085", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "arizona", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "39927", "column": "Country", "error_type": "pattern_violation", "error_value": "Brazil", "right_value": "brazil", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128356", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "109022", "column": "Country", "error_type": "pattern_violation", "error_value": "Bahrain", "right_value": "bahrain", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88979", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123722", "column": "Country", "error_type": "pattern_violation", "error_value": "Argentina", "right_value": "argentina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "3169", "column": "Country", "error_type": "pattern_violation", "error_value": "Italy", "right_value": "italy", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117845", "column": "Country", "error_type": "pattern_violation", "error_value": "Colombia", "right_value": "colombia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128289", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13090", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110481", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "texas", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "84535", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "31790", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "73358", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118567", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94777", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124505", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80293", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87071", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123441", "column": "Country", "error_type": "outliers", "error_value": "Netherlands", "right_value": "russian federation", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "51665", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "98776", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90199", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "116653", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124966", "column": "Country", "error_type": "outliers", "error_value": "Netherlands", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70153", "column": "Country", "error_type": "pattern_violation", "error_value": "Netherlands", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "48371", "column": "Country", "error_type": "outliers", "error_value": "Germany", "right_value": "germany", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "79612", "column": "Country", "error_type": "pattern_violation", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "16379", "column": "Country", "error_type": "pattern_violation", "error_value": "France", "right_value": "france", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92818", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "74908", "column": "Country", "error_type": "outliers", "error_value": "Pakistan", "right_value": "pakistan", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "98591", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "121423", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "32883", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "127425", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "25529", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maryland", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124369", "column": "Country", "error_type": "outliers", "error_value": "Kenya", "right_value": "kenya", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "39218", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "42692", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118676", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66234", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100379", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9772", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "22739", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "40381", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "53280", "column": "Country", "error_type": "pattern_violation", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117178", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117845", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "127609", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80104", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111806", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "arizona", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19818", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118588", "column": "Country", "error_type": "pattern_violation", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "83378", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "11030", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97055", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65479", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94310", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62160", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62879", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1011", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38048", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "brazil", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "23346", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "114897", "column": "Country", "error_type": "pattern_violation", "error_value": "Colombia", "right_value": "colombia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "20477", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "28445", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9632", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110913", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "49904", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "74948", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oregon", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61770", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "france", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "105843", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oregon", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "108805", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "28604", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "86080", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "86080", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111742", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9679", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "192", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "30555", "column": "Country", "error_type": "outliers", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100231", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87071", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90840", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "85069", "column": "Country", "error_type": "pattern_violation", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128847", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62315", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "37397", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "47252", "column": "Country", "error_type": "outliers", "error_value": "France", "right_value": "france", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "45946", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "99824", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117792", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "75832", "column": "State", "error_type": "outliers", "error_value": "California", "right_value": "california", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13331", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "84535", "column": "Country", "error_type": "outliers", "error_value": "Romania", "right_value": "romania", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "104032", "column": "Country", "error_type": "outliers", "error_value": "Japan", "right_value": "japan", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65096", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19532", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "27701", "column": "Country", "error_type": "pattern_violation", "error_value": "Netherlands", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "43521", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "126356", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "99157", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "84513", "column": "Country", "error_type": "pattern_violation", "error_value": "Netherlands", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10979", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128564", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65436", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87823", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "101428", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "86420", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62951", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "33570", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61829", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61153", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124966", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "vermont", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "85792", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "23638", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "58695", "column": "Country", "error_type": "pattern_violation", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10979", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "uganda", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118676", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80293", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "12339", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "30008", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "mexico", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "22948", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128289", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "24878", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "36322", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "114793", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "41285", "column": "Country", "error_type": "outliers", "error_value": "Denmark", "right_value": "denmark", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "36870", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64085", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "42670", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "40650", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110046", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66401", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "34981", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "127827", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "86420", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94688", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "27758", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88312", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "netherlands", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66401", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "84629", "column": "Country", "error_type": "pattern_violation", "error_value": "New Zealand", "right_value": "new zealand", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "114274", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "86880", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "puerto rico", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65436", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "121706", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "28604", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "104295", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62315", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "83378", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "25057", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90440", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "53280", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "vermont", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "52314", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "120367", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64465", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "122505", "column": "Country", "error_type": "outliers", "error_value": "Spain", "right_value": "spain", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "20765", "column": "State", "error_type": "outliers", "error_value": "Colorado", "right_value": "colorado", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97573", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "pennsylvania", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "95817", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123427", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "argentina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81204", "column": "Country", "error_type": "pattern_violation", "error_value": "Mexico", "right_value": "mexico", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64465", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "idaho", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61666", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "florida", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "57312", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "32634", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "12339", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60320", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "new jersey", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1087", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "116255", "column": "Country", "error_type": "outliers", "error_value": "Poland", "right_value": "poland", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "126592", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38068", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124184", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97686", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117792", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117673", "column": "Country", "error_type": "outliers", "error_value": "Kenya", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97686", "column": "Country", "error_type": "pattern_violation", "error_value": "Italy", "right_value": "italy", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "49345", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90597", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "102567", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "54417", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90597", "column": "Country", "error_type": "pattern_violation", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "51225", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "18224", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94777", "column": "Country", "error_type": "pattern_violation", "error_value": "Colombia", "right_value": "colombia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124184", "column": "State", "error_type": "outliers", "error_value": "Ohio", "right_value": "ohio", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88554", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65071", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87074", "column": "Country", "error_type": "outliers", "error_value": "China", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "98776", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "18224", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "chile", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "76712", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "76374", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "new jersey", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81838", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "indiana", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61666", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "89502", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "43525", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "rhode island", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90440", "column": "Country", "error_type": "pattern_violation", "error_value": "Brazil", "right_value": "brazil", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "120128", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38048", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "93910", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "57745", "column": "Country", "error_type": "pattern_violation", "error_value": "Nepal", "right_value": "nepal", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "78712", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "germany", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "48993", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "missouri", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117763", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "58695", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "46996", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "99157", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "12047", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "76628", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128356", "column": "Country", "error_type": "outliers", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9011", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "49904", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64916", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "63846", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "32634", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "22600", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4617", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "83953", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "82428", "column": "Country", "error_type": "pattern_violation", "error_value": "France", "right_value": "france", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "98650", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "51540", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38068", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "41852", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "pennsylvania", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1011", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "72888", "column": "Country", "error_type": "pattern_violation", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "91695", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "71766", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110913", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "11474", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "washington", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38658", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "73358", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oregon", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "20684", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "30751", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "78547", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97199", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100677", "column": "Country", "error_type": "pattern_violation", "error_value": "Switzerland", "right_value": "switzerland", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8700", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128847", "column": "Country", "error_type": "pattern_violation", "error_value": "Nepal", "right_value": "nepal", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "71766", "column": "Country", "error_type": "pattern_violation", "error_value": "Kenya", "right_value": "kenya", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "26364", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "64665", "column": "State", "error_type": "outliers", "error_value": "Pennsylvania", "right_value": "pennsylvania", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "54417", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "massachusetts", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "27975", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38267", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "new jersey", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "11868", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "83412", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oregon", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88308", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81264", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "nevada", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "104729", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "21408", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70645", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "63846", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61153", "column": "Country", "error_type": "pattern_violation", "error_value": "Netherlands", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81981", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1087", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111421", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38306", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "25057", "column": "Country", "error_type": "outliers", "error_value": "France", "right_value": "france", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "1169", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10810", "column": "Country", "error_type": "outliers", "error_value": "Sweden", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "91707", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "127003", "column": "Country", "error_type": "outliers", "error_value": "Finland", "right_value": "finland", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "44152", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62942", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "32836", "column": "Country", "error_type": "outliers", "error_value": "Malaysia", "right_value": "malaysia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117178", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81981", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "14822", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "63046", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "120486", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "26047", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70539", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "35972", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "texas", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "59413", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97055", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "florida", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "85792", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65758", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "53960", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92864", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6229", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "33744", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "vermont", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "48723", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "102768", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "125320", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "78079", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "34772", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110481", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "108881", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60031", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "indiana", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60031", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10027", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "82786", "column": "Country", "error_type": "outliers", "error_value": "Nigeria", "right_value": "nigeria", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "89693", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100396", "column": "Country", "error_type": "outliers", "error_value": "Serbia", "right_value": "bulgaria", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "53606", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80806", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "texas", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "69820", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "77905", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92622", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81645", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88572", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65096", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "105843", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "italy", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "40650", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "21408", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8700", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94688", "column": "State", "error_type": "pattern_violation", "error_value": "Pennsylvania", "right_value": "pennsylvania", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "56979", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "papua new guinea", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "61770", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "127824", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "98024", "column": "Country", "error_type": "outliers", "error_value": "Kenya", "right_value": "kenya", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80315", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "63232", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "96929", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "79612", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "north dakota", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "15019", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9452", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "86880", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "112758", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "31700", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100631", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70007", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "110046", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "georgia", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "18914", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oklahoma", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "43366", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80625", "column": "Country", "error_type": "pattern_violation", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38267", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38306", "column": "Country", "error_type": "pattern_violation", "error_value": "Ireland", "right_value": "ireland", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92818", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92359", "column": "Country", "error_type": "outliers", "error_value": "Ghana", "right_value": "ghana", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "41285", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "44424", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9013", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "44152", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10240", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "indiana", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "75341", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "85069", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "17599", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "australia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10240", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128703", "column": "State", "error_type": "outliers", "error_value": "Pennsylvania", "right_value": "pennsylvania", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "103233", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "80806", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "85843", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62310", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "30599", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "washington", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87634", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "11030", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alabama", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62310", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8697", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "15911", "column": "State", "error_type": "outliers", "error_value": "New Jersey", "right_value": "new jersey", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "105316", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "22714", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "104295", "column": "State", "error_type": "pattern_violation", "error_value": "Texas", "right_value": "texas", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13331", "column": "Country", "error_type": "pattern_violation", "error_value": "Nepal", "right_value": "nepal", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "33697", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "florida", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62028", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "40242", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "florida", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "95285", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "argentina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "104729", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128564", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60246", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "north carolina", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100631", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "73210", "column": "Country", "error_type": "pattern_violation", "error_value": "Trinidad and Tobago", "right_value": "trinidad and tobago", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65758", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "28745", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "123441", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "6644", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alabama", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "47883", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118988", "column": "State", "error_type": "outliers", "error_value": "New York", "right_value": "new york", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "39927", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "alaska", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "120453", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "91707", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "florida", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10027", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "98024", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "michigan", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "58295", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "128102", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9322", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "114897", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "north carolina", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "69833", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "87676", "column": "Country", "error_type": "pattern_violation", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "26515", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70645", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "125320", "column": "Country", "error_type": "pattern_violation", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62951", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "pennsylvania", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "31700", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "51225", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111862", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "100977", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "53960", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "pennsylvania", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "47192", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "kentucky", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "72976", "column": "Country", "error_type": "pattern_violation", "error_value": "Maldives", "right_value": "maldives", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70318", "column": "Country", "error_type": "outliers", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "62028", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "76995", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "canada", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "38430", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70007", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66424", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "26515", "column": "Country", "error_type": "outliers", "error_value": "Thailand", "right_value": "thailand", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81431", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "65479", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "96929", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "new jersey", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "60477", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "missouri", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "58187", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "37232", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "kentucky", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "83953", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90923", "column": "Country", "error_type": "pattern_violation", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "19818", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "76525", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "101381", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "70539", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "indonesia", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "9452", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "texas", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "94743", "column": "Country", "error_type": "pattern_violation", "error_value": "Taiwan", "right_value": "china", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "99610", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97853", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "20559", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117101", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "oklahoma", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "69820", "column": "Country", "error_type": "outliers", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "43868", "column": "Country", "error_type": "outliers", "error_value": "Argentina", "right_value": "argentina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "8697", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "63049", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10475", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "21740", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "louisiana", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "4602", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "44424", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "philippines", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "107583", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "92321", "column": "Country", "error_type": "pattern_violation", "error_value": "Austria", "right_value": "austria", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "82786", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "hawaii", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "95285", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111862", "column": "Country", "error_type": "outliers", "error_value": "Australia", "right_value": "argentina", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "47965", "column": "Country", "error_type": "pattern_violation", "error_value": "Mexico", "right_value": "mexico", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "124485", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "north carolina", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "50258", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "66234", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "france", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "121706", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "111352", "column": "Country", "error_type": "pattern_violation", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "74908", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "14223", "column": "Country", "error_type": "outliers", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "127827", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "75832", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "54462", "column": "Country", "error_type": "outliers", "error_value": "South Africa", "right_value": "south africa", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "42545", "column": "State", "error_type": "pattern_violation", "error_value": "California", "right_value": "california", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "97874", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "119328", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "california", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90569", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "90016", "column": "State", "error_type": "pattern_violation", "error_value": "Rhode Island", "right_value": "rhode island", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "10810", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "79936", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "88572", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "arizona", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "37397", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "florida", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "58295", "column": "Country", "error_type": "pattern_violation", "error_value": "India", "right_value": "india", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "122834", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "13671", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "112710", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "maine", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "79907", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "ohio", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "34342", "column": "Country", "error_type": "outliers", "error_value": "Canada", "right_value": "peru", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "81838", "column": "Country", "error_type": "outliers", "error_value": "Turkey", "right_value": "turkey", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "5931", "column": "State", "error_type": "missing_value", "error_value": "", "right_value": "massachusetts", "missing_value": "1", "constraint": "", "tuple_pairs": ""}
+{"row_id": "118988", "column": "Country", "error_type": "outliers", "error_value": "United States", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "63049", "column": "Country", "error_type": "outliers", "error_value": "Indonesia", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "117101", "column": "Country", "error_type": "pattern_violation", "error_value": "Ecuador", "right_value": "united states", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
+{"row_id": "113509", "column": "Country", "error_type": "pattern_violation", "error_value": "United Kingdom", "right_value": "united kingdom", "missing_value": "0", "constraint": "", "tuple_pairs": ""}
