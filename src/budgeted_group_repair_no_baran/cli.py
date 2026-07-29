@@ -145,6 +145,11 @@ def _add_router_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> N
         default=DEFAULT_RESPONSE_REUSE_RUN,
     )
     parser.add_argument(
+        "--router-artifact-reuse-run",
+        type=Path,
+        help="completed Router-v3 run supplying request-identical gate artifacts",
+    )
+    parser.add_argument(
         "--experiment-config",
         type=Path,
         default=DEFAULT_ROUTER_CONFIG,
@@ -261,6 +266,11 @@ def _router_runner(args: argparse.Namespace) -> Any:
         resume=bool(args.resume),
         baran_source_run=Path(args.source_run),
         response_reuse_run=Path(args.response_reuse_run),
+        router_artifact_reuse_run=(
+            Path(args.router_artifact_reuse_run)
+            if args.router_artifact_reuse_run is not None
+            else None
+        ),
     )
 
 

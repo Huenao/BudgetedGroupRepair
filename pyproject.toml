@@ -13,6 +13,7 @@ dependencies = [
   "pandas",
   "scipy",
   "scikit-learn",
+  "catboost==1.2.10",
   "lightgbm",
   "xgboost",
   "beautifulsoup4",

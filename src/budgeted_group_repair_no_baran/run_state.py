@@ -34,6 +34,10 @@ BINDING_KEYS = (
     "baran_source_manifest_sha256",
     "response_reuse_run",
     "response_reuse_manifest_sha256",
+    "router_artifact_reuse_run",
+    "router_artifact_reuse_manifest_sha256",
+    "router_comparison_run",
+    "router_comparison_manifest_sha256",
     "binding_fingerprint",
 )
 _SENSITIVE_KEY_PARTS = ("api_key", "access_token", "bearer", "secret", "password", "cookie")

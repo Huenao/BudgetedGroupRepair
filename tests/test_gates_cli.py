@@ -80,6 +80,16 @@ def test_cli_requires_paid_cap_and_env_parser_never_interpolates(tmp_path) -> No
         ]
     )
     assert plan.experiment_config == Path("configs/experiment.json")
+    router = parse_args(
+        [
+            "plan-router-run",
+            "--run-id",
+            "router-sweep",
+            "--router-artifact-reuse-run",
+            "runs/router-v3-parent",
+        ]
+    )
+    assert router.router_artifact_reuse_run == Path("runs/router-v3-parent")
     env = tmp_path / "safe.env"
     env.write_text("DEEPSEEK_API_KEY='literal-$VALUE'\n", encoding="utf-8")
     target: dict[str, str] = {}

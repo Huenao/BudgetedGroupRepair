@@ -1,6 +1,7 @@
 # Exact environment inherited from the reference formal experiment.
 # Python 3.10.20
 beautifulsoup4==4.15.0
+catboost==1.2.10
 lightgbm==4.6.0
 matplotlib==3.10.9
 mwparserfromhell==0.7.2

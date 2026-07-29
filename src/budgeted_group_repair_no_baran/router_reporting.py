@@ -405,8 +405,25 @@ def build_router_report(
 ) -> dict[str, Any]:
     """No-Baran CLI wrapper with the package root supplied automatically."""
 
+    root = Path(run_dir).expanduser().resolve()
+    manifest_path = root / "run_manifest.json"
+    if manifest_path.is_file():
+        manifest = _read_json_object(manifest_path)
+        experiment = manifest.get("experiment_config", {})
+        if (
+            isinstance(experiment, Mapping)
+            and str(experiment.get("router_revision", ""))
+            in {
+                "router_v3_exact_size_conditioned",
+                "router_v3_budget_sweep_exact_size_conditioned",
+                "router_v3_catboost_exact_size_conditioned",
+            }
+        ):
+            from .router_reporting_v3 import build_router_v3_report
+
+            return build_router_v3_report(root, output_path=output_path)
     return build_report(
-        run_dir,
+        root,
         project_root=Path(__file__).resolve().parents[2],
         output_path=output_path,
     )

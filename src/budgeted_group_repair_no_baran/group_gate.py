@@ -17,13 +17,14 @@ predictions from leave-one-family-out replicas.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from importlib.metadata import version as package_version
 import math
 from numbers import Real
 from statistics import median
 from typing import Any, Literal, Mapping, Sequence, TypeAlias
 
 
-Backend: TypeAlias = Literal["lightgbm", "xgboost"]
+Backend: TypeAlias = Literal["catboost", "lightgbm", "xgboost"]
 FeatureInput: TypeAlias = Any
 
 _FORBIDDEN_FEATURES = frozenset(
@@ -192,6 +193,98 @@ class PairFeatureEncoder:
             raise RuntimeError("PairFeatureEncoder has not been fitted")
 
 
+class CatBoostFeatureEncoder:
+    """Train-only schema adapter that preserves native categorical values."""
+
+    _MISSING_CATEGORY = "__BGR_MISSING_CATEGORY__"
+
+    def __init__(self) -> None:
+        self._columns: tuple[_ColumnSpec, ...] = ()
+        self._fitted = False
+
+    @property
+    def feature_names(self) -> tuple[str, ...]:
+        self._require_fitted()
+        return tuple(column.name for column in self._columns)
+
+    @property
+    def categorical_feature_indices(self) -> tuple[int, ...]:
+        self._require_fitted()
+        return tuple(
+            index
+            for index, column in enumerate(self._columns)
+            if column.kind == "categorical"
+        )
+
+    def fit(self, features: FeatureInput) -> "CatBoostFeatureEncoder":
+        records, names = _as_records(features)
+        if not records:
+            raise ValueError("features must contain at least one row")
+        _reject_forbidden_features(names)
+        if not names:
+            names = ["__bias__"]
+            records = [{"__bias__": 0.0} for _ in records]
+
+        columns: list[_ColumnSpec] = []
+        for name in names:
+            values = [record.get(name) for record in records]
+            observed = [value for value in values if not _is_missing(value)]
+            numeric = bool(observed) and all(_is_numeric(value) for value in observed)
+            if numeric:
+                finite = [float(value) for value in observed if _is_finite_number(value)]
+                fill = float(median(finite)) if finite else 0.0
+                columns.append(_ColumnSpec(name=name, kind="numeric", numeric_fill=fill))
+            else:
+                vocabulary = tuple(sorted({_category_token(value) for value in observed}))
+                columns.append(
+                    _ColumnSpec(name=name, kind="categorical", categories=vocabulary)
+                )
+        self._columns = tuple(columns)
+        self._fitted = True
+        return self
+
+    def transform(self, features: FeatureInput) -> list[list[object]]:
+        self._require_fitted()
+        records, names = _as_records(features)
+        _reject_forbidden_features(names)
+        matrix: list[list[object]] = []
+        for record in records:
+            row: list[object] = []
+            for column in self._columns:
+                value = record.get(column.name)
+                if column.kind == "numeric":
+                    row.append(
+                        float(value)
+                        if not _is_missing(value) and _is_finite_number(value)
+                        else column.numeric_fill
+                    )
+                elif _is_missing(value):
+                    row.append(self._MISSING_CATEGORY)
+                else:
+                    row.append(_category_token(value))
+            matrix.append(row)
+        return matrix
+
+    def fit_transform(self, features: FeatureInput) -> list[list[object]]:
+        return self.fit(features).transform(features)
+
+    def as_dict(self) -> dict[str, object]:
+        self._require_fitted()
+        return {
+            "kind": "catboost_native_categorical",
+            "missing_category": self._MISSING_CATEGORY,
+            "categorical_feature_indices": list(self.categorical_feature_indices),
+            "columns": [column.as_dict() for column in self._columns],
+        }
+
+    def to_dict(self) -> dict[str, object]:
+        return self.as_dict()
+
+    def _require_fitted(self) -> None:
+        if not self._fitted:
+            raise RuntimeError("CatBoostFeatureEncoder has not been fitted")
+
+
 class _ConstantProbabilityModel:
     def __init__(self, probability: float) -> None:
         self.probability = _clip_probability(probability)
@@ -207,7 +300,7 @@ class _ConstantProbabilityModel:
 class _FittedHeads:
     family_left_out: str | None
     rows: int
-    encoder: PairFeatureEncoder
+    encoder: PairFeatureEncoder | CatBoostFeatureEncoder
     helpful_model: object
     harmful_model: object
 
@@ -269,7 +362,7 @@ def executable_use_llm(item: Mapping[str, object] | object | None) -> bool:
 
 
 class GroupUpliftGate:
-    """Shared LightGBM/XGBoost helpful/harmful model for cell-query pairs."""
+    """Shared tabular helpful/harmful model for cell-query pairs."""
 
     def __init__(
         self,
@@ -279,8 +372,8 @@ class GroupUpliftGate:
         gamma: float = 1.0,
         random_state: int = 42,
     ) -> None:
-        if backend not in {"lightgbm", "xgboost"}:
-            raise ValueError("backend must be 'lightgbm' or 'xgboost'")
+        if backend not in {"catboost", "lightgbm", "xgboost"}:
+            raise ValueError("backend must be 'catboost', 'lightgbm', or 'xgboost'")
         _validate_penalty("rho", rho)
         _validate_penalty("gamma", gamma)
         self.backend = backend
@@ -400,6 +493,7 @@ class GroupUpliftGate:
         assert self._full is not None
         return {
             "backend": self.backend,
+            "backend_version": package_version(self.backend),
             "rho": self.rho,
             "gamma": self.gamma,
             "random_state": self.random_state,
@@ -419,18 +513,34 @@ class GroupUpliftGate:
         *,
         family_left_out: str | None,
     ) -> _FittedHeads:
-        encoder = PairFeatureEncoder()
+        encoder: PairFeatureEncoder | CatBoostFeatureEncoder
+        encoder = (
+            CatBoostFeatureEncoder()
+            if self.backend == "catboost"
+            else PairFeatureEncoder()
+        )
         matrix = encoder.fit_transform(features)
         return _FittedHeads(
             family_left_out=family_left_out,
             rows=len(matrix),
             encoder=encoder,
-            helpful_model=self._fit_binary_head(matrix, helpful),
-            harmful_model=self._fit_binary_head(matrix, harmful),
+            helpful_model=self._fit_binary_head(
+                matrix, helpful, encoder.categorical_feature_indices
+                if isinstance(encoder, CatBoostFeatureEncoder)
+                else ()
+            ),
+            harmful_model=self._fit_binary_head(
+                matrix, harmful, encoder.categorical_feature_indices
+                if isinstance(encoder, CatBoostFeatureEncoder)
+                else ()
+            ),
         )
 
     def _fit_binary_head(
-        self, matrix: list[list[float]], labels: Sequence[int]
+        self,
+        matrix: list[list[object]],
+        labels: Sequence[int],
+        categorical_feature_indices: Sequence[int] = (),
     ) -> object:
         values = tuple(int(label) for label in labels)
         if not values or any(label not in {0, 1} for label in values):
@@ -438,10 +548,38 @@ class GroupUpliftGate:
         if len(set(values)) == 1:
             return _ConstantProbabilityModel(float(values[0]))
         model = self._new_backend_model()
-        model.fit(matrix, list(values))
+        if self.backend == "catboost":
+            model.fit(
+                matrix,
+                list(values),
+                cat_features=list(categorical_feature_indices),
+            )
+        else:
+            model.fit(matrix, list(values))
         return model
 
     def _new_backend_model(self) -> object:
+        if self.backend == "catboost":
+            try:
+                from catboost import CatBoostClassifier
+            except ImportError as exc:  # pragma: no cover - environment-specific
+                raise ImportError(
+                    "CatBoost backend requested; install the project's locked dependencies"
+                ) from exc
+            return CatBoostClassifier(
+                loss_function="Logloss",
+                eval_metric="Logloss",
+                iterations=200,
+                learning_rate=0.05,
+                depth=6,
+                l2_leaf_reg=3.0,
+                random_seed=self.random_state,
+                task_type="CPU",
+                thread_count=1,
+                allow_writing_files=False,
+                verbose=False,
+            )
+
         if self.backend == "lightgbm":
             try:
                 from lightgbm import LGBMClassifier
@@ -521,10 +659,16 @@ def _heads_metadata(fitted: _FittedHeads) -> dict[str, object]:
 def _model_metadata(model: object) -> dict[str, object]:
     if isinstance(model, _ConstantProbabilityModel):
         return model.as_dict()
-    return {"kind": "classifier", "class_name": type(model).__name__}
+    metadata: dict[str, object] = {
+        "kind": "classifier",
+        "class_name": type(model).__name__,
+    }
+    if type(model).__name__ == "CatBoostClassifier" and hasattr(model, "get_params"):
+        metadata["parameters"] = dict(model.get_params())
+    return metadata
 
 
-def _predict_positive(model: object, matrix: list[list[float]]) -> list[float]:
+def _predict_positive(model: object, matrix: Sequence[Sequence[object]]) -> list[float]:
     if isinstance(model, _ConstantProbabilityModel):
         return model.predict_positive(len(matrix))
     probabilities = model.predict_proba(matrix)
