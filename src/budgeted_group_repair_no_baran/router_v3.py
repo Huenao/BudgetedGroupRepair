@@ -1,4 +1,4 @@
-"""Resumable Router-v2 orchestration for No-Baran-Prompt Group Repair.
+"""Resumable Router-v3 orchestration for No-Baran-Prompt Group Repair.
 
 The runner keeps the online path physically separate from evaluation labels:
 group generation, prompting, gating, selection, and verification receive only
@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, brier_score_loss
 
-from .baran import assert_online_baran_record_safe
+from .baran import assert_online_baran_record_safe, run_baran
 from .cell_features import CellFeatures
 from .data import (
     EXPECTED_DATASET_COUNT,
@@ -90,7 +90,6 @@ from .verifier import GroupRepairVerifier, RankedRepairCandidate, VerifierConfig
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_GATE_BACKENDS = ("lightgbm", "xgboost")
 CATBOOST_GATE_BACKENDS = ("catboost",)
-ROUTER_V2_REVISION = "router_v2_mixed_training"
 ROUTER_V3_REVISION = "router_v3_exact_size_conditioned"
 ROUTER_V3_BUDGET_SWEEP_REVISION = (
     "router_v3_budget_sweep_exact_size_conditioned"
@@ -99,12 +98,6 @@ ROUTER_V3_CATBOOST_REVISION = "router_v3_catboost_exact_size_conditioned"
 ROUTER_V3_VARIANTS = ("1", "2", "4", "8", "all")
 ROUTER_V3_SWEEP_VARIANTS = ("2", "4")
 ROUTER_V3_SWEEP_BUDGETS = (0.01, 0.05, 0.1, 0.2, 0.5)
-# Frozen complete Router-v2 runs keep their original implementation binding.
-# Their validator still independently rebuilds coverage, metrics, costs, and
-# provenance below; this allow-list avoids rewriting those immutable manifests.
-FROZEN_ROUTER_V2_IMPLEMENTATION_SHA256 = frozenset(
-    {"46fb0387afc3bdad4c3370f94781fbfcb31015666e5bd019e8c0e5c1f2cabc57"}
-)
 FROZEN_ROUTER_V3_IMPLEMENTATION_SHA256 = frozenset(
     {"979d3992fee2f99cd489009f468faa1e564994dfb5174778ea1302b9fe7784b5"}
 )
@@ -156,6 +149,16 @@ REQUIRED_STAGES = (
     "metrics",
     "audit",
 )
+BASELINE_REQUIRED_STAGES = (
+    "input_validation",
+    "baran",
+    "groups",
+    "response_reuse",
+    "model_preflight",
+    "selected_llm",
+    "final_records",
+    "metrics",
+)
 
 MODEL_FEATURE_COLUMNS = (
     "dirty_type",
@@ -193,7 +196,7 @@ def target_order() -> tuple[tuple[str, str], ...]:
 
 
 def generation_order() -> tuple[tuple[str, str], ...]:
-    """Return the five Source plus all nine TableEG datasets needed by v2."""
+    """Return the five Source plus all nine TableEG datasets used by Router-v3."""
 
     return full_target_order()
 
@@ -467,7 +470,7 @@ def _basic_item_valid(
 
 
 class ExperimentRunner:
-    """Execute the No-Baran Router-v2 calibration and nine-target matrix."""
+    """Execute the No-Baran Router-v3 calibration and nine-target matrix."""
 
     def __init__(
         self,
@@ -475,17 +478,24 @@ class ExperimentRunner:
         state: RunState,
         experiment_config: Mapping[str, object],
         llm_config: Mapping[str, object],
+        *,
+        provider_token_cap: int | None = None,
+        allow_uncapped_provider_usage: bool = False,
     ) -> None:
         self.paths = paths
         self.state = state
         self.experiment_config = dict(experiment_config)
         self.llm_config = dict(llm_config)
         self.router_revision = str(
-            self.experiment_config.get("router_revision", ROUTER_V2_REVISION)
+            self.experiment_config.get("router_revision", ROUTER_V3_REVISION)
         )
         manifest = state.manifest
-        self.baran_source_run = Path(str(manifest["baran_source_run"])).resolve()
-        self.response_reuse_run = Path(str(manifest["response_reuse_run"])).resolve()
+        baran_source = str(manifest.get("baran_source_run") or "").strip()
+        response_source = str(manifest.get("response_reuse_run") or "").strip()
+        self.baran_source_run = Path(baran_source).resolve() if baran_source else None
+        self.response_reuse_run = (
+            Path(response_source).resolve() if response_source else None
+        )
         artifact_source = str(manifest.get("router_artifact_reuse_run", ""))
         self.router_artifact_reuse_run = (
             Path(artifact_source).resolve() if artifact_source else None
@@ -494,6 +504,8 @@ class ExperimentRunner:
         self.router_comparison_run = (
             Path(comparison_source).resolve() if comparison_source else None
         )
+        self.provider_token_cap = provider_token_cap
+        self.allow_uncapped_provider_usage = bool(allow_uncapped_provider_usage)
         self.fd_registry = load_public_fds(paths.project_root / "configs" / "public_fds.json")
         self._datasets: dict[tuple[str, str], LoadedDataset] = {}
         self._baran: dict[tuple[str, str], list[dict[str, object]]] = {}
@@ -505,7 +517,6 @@ class ExperimentRunner:
                 f"prompt_information_policy must be {INFORMATION_POLICY!r}"
             )
         if self.router_revision not in {
-            ROUTER_V2_REVISION,
             ROUTER_V3_REVISION,
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
@@ -526,8 +537,6 @@ class ExperimentRunner:
                 raise ValueError(
                     "Router-v3 CatBoost gate_backends must be exactly catboost"
                 )
-            if self.router_comparison_run is None:
-                raise ValueError("Router-v3 CatBoost requires a comparison run")
         elif len(backends) != 2 or set(backends) != set(EXPECTED_GATE_BACKENDS):
             raise ValueError("gate_backends must contain exactly lightgbm and xgboost")
         if str(self.llm_config.get("model")) != "deepseek-v4-flash":
@@ -544,25 +553,16 @@ class ExperimentRunner:
                 "invalid_response_policy must be one of "
                 + ", ".join(INVALID_RESPONSE_POLICIES)
             )
-        if self.is_router_v3:
-            variants = self._router_training_variants()
-            expected_variants = (
-                ROUTER_V3_SWEEP_VARIANTS
-                if self.is_router_v3_budget_sweep
-                else ROUTER_V3_VARIANTS
+        variants = self._router_training_variants()
+        expected_variants = (
+            ROUTER_V3_SWEEP_VARIANTS
+            if self.is_router_v3_budget_sweep
+            else ROUTER_V3_VARIANTS
+        )
+        if tuple(variants) != expected_variants:
+            raise ValueError(
+                "Router-v3 variant matrix does not match its frozen revision"
             )
-            if tuple(variants) != expected_variants:
-                raise ValueError(
-                    "Router-v3 variant matrix does not match its frozen revision"
-                )
-
-    @property
-    def is_router_v3(self) -> bool:
-        return self.router_revision in {
-            ROUTER_V3_REVISION,
-            ROUTER_V3_BUDGET_SWEEP_REVISION,
-            ROUTER_V3_CATBOOST_REVISION,
-        }
 
     @property
     def is_router_v3_budget_sweep(self) -> bool:
@@ -585,11 +585,6 @@ class ExperimentRunner:
         )
 
     def _router_budget_shares(self) -> tuple[float, ...]:
-        if not self.is_router_v3:
-            return tuple(
-                float(value)
-                for value in self.experiment_config.get("budget_shares", ())
-            )
         raw = tuple(
             float(value)
             for value in self.experiment_config.get("budget_shares", ())
@@ -676,6 +671,9 @@ class ExperimentRunner:
         baran_source_run: str | Path | None = None,
         response_reuse_run: str | Path | None = None,
         router_artifact_reuse_run: str | Path | None = None,
+        router_comparison_run: str | Path | None = None,
+        provider_token_cap: int | None = None,
+        allow_uncapped_provider_usage: bool = False,
     ) -> "ExperimentRunner":
         root = Path(project_root).resolve()
         data = Path(data_root).resolve()
@@ -695,17 +693,42 @@ class ExperimentRunner:
         else:
             config = requested_config
             llm_config_file = requested_llm_config
-        baran_source = Path(baran_source_run).resolve() if baran_source_run is not None else None
-        response_source = Path(response_reuse_run).resolve() if response_reuse_run is not None else None
-        artifact_source = (
-            Path(router_artifact_reuse_run).resolve()
-            if router_artifact_reuse_run is not None
-            else None
+        existing_manifest = (
+            load_json(resolved_run / "run_manifest.json")
+            if resume and (resolved_run / "run_manifest.json").is_file()
+            else {}
         )
-        if baran_source is None or not (baran_source / "run_manifest.json").is_file():
-            raise FileNotFoundError("Router-v2 requires a verified Baran source run")
-        if response_source is None or not (response_source / "run_manifest.json").is_file():
-            raise FileNotFoundError("Router-v2 requires a No-Baran response-reuse source run")
+
+        def optional_source(
+            requested: str | Path | None,
+            manifest_field: str,
+        ) -> Path | None:
+            value = requested
+            if value is None:
+                stored = str(existing_manifest.get(manifest_field) or "").strip()
+                value = stored or None
+            return Path(value).resolve() if value is not None else None
+
+        baran_source = optional_source(baran_source_run, "baran_source_run")
+        response_source = optional_source(response_reuse_run, "response_reuse_run")
+        artifact_source = (
+            optional_source(
+                router_artifact_reuse_run,
+                "router_artifact_reuse_run",
+            )
+        )
+        comparison_source = optional_source(
+            router_comparison_run,
+            "router_comparison_run",
+        )
+        for label, source in (
+            ("Baran", baran_source),
+            ("response reuse", response_source),
+        ):
+            if source is not None and not (source / "run_manifest.json").is_file():
+                raise FileNotFoundError(
+                    f"{label} source has no run_manifest.json: {source}"
+                )
         if artifact_source is not None and not (
             artifact_source / "run_manifest.json"
         ).is_file():
@@ -714,9 +737,8 @@ class ExperimentRunner:
             )
         experiment_config = load_json(config)
         llm_config = load_json(llm_config_file)
-        comparison_source: Path | None = None
         comparison_value = str(experiment_config.get("comparison_run", "")).strip()
-        if comparison_value:
+        if comparison_source is None and comparison_value:
             comparison_path = Path(comparison_value)
             comparison_source = (
                 comparison_path.resolve()
@@ -748,14 +770,20 @@ class ExperimentRunner:
             prompt_schema_version=str(llm_config.get("prompt_schema_version", PROMPT_SCHEMA_VERSION)),
             prompt_schema_sha256=prompt_sha,
         )
-        source_binding = {
-            "baran_source_run": str(baran_source),
-            "baran_source_manifest_sha256": sha256_file(
-                baran_source / "run_manifest.json"
+        source_binding: dict[str, object] = {
+            "baran_source_run": str(baran_source) if baran_source is not None else None,
+            "baran_source_manifest_sha256": (
+                sha256_file(baran_source / "run_manifest.json")
+                if baran_source is not None
+                else None
             ),
-            "response_reuse_run": str(response_source),
-            "response_reuse_manifest_sha256": sha256_file(
-                response_source / "run_manifest.json"
+            "response_reuse_run": (
+                str(response_source) if response_source is not None else None
+            ),
+            "response_reuse_manifest_sha256": (
+                sha256_file(response_source / "run_manifest.json")
+                if response_source is not None
+                else None
             ),
         }
         if artifact_source is not None:
@@ -839,7 +867,14 @@ class ExperimentRunner:
             runs,
             resolved_run,
         )
-        return cls(paths, state, experiment_config, llm_config)
+        return cls(
+            paths,
+            state,
+            experiment_config,
+            llm_config,
+            provider_token_cap=provider_token_cap,
+            allow_uncapped_provider_usage=allow_uncapped_provider_usage,
+        )
 
     def _dataset(self, suite: str, dataset: str) -> LoadedDataset:
         key = (suite, dataset)
@@ -922,16 +957,34 @@ class ExperimentRunner:
     ) -> None:
         """Stop before a batch whose retry worst case can cross the run cap."""
 
-        raw_cap = self.experiment_config.get("max_estimated_tokens_safety_cap")
-        if raw_cap is None:
+        cap = self._effective_provider_cap(require=True)
+        if cap is None:
             return
-        cap = int(raw_cap)
         attempts = int(self.llm_config.get("max_retries", 0)) + 1
         projected = self._provider_safety_debit() + attempts * sum(
             max(0, int(value)) for value in estimated_tokens
         )
         if projected > cap:
             raise SafetyCapExceeded(phase + " retry-adjusted batch", projected, cap)
+
+    def _effective_provider_cap(self, *, require: bool) -> int | None:
+        if self.allow_uncapped_provider_usage:
+            return None
+        raw_cap = (
+            self.provider_token_cap
+            if self.provider_token_cap is not None
+            else self.experiment_config.get("max_estimated_tokens_safety_cap")
+        )
+        if raw_cap is None:
+            if require:
+                raise ValueError(
+                    "provider execution requires --token-cap or explicit --no-token-cap"
+                )
+            return None
+        cap = int(raw_cap)
+        if cap <= 0:
+            raise ValueError("provider token cap must be positive")
+        return cap
 
     def validate_inputs(self) -> dict[str, object]:
         """Validate immutable inputs and materialize the run-local manifest."""
@@ -948,26 +1001,53 @@ class ExperimentRunner:
         self.state.update_stage("input_validation", "complete", **audit.as_dict())
         return audit.as_dict()
 
-    def run_baran_stage(self) -> dict[str, object]:
-        """Import the frozen, label-free Baran reference for the 14-dataset union."""
+    def run_baran_stage(
+        self,
+        datasets: Sequence[tuple[str, str]] | None = None,
+    ) -> dict[str, object]:
+        """Run Baran locally or import a bound label-free 14-dataset ledger."""
 
+        dataset_order = tuple(datasets) if datasets is not None else generation_order()
         expected_total = 0
         completed: list[str] = []
-        for suite, dataset in generation_order():
+        fresh_datasets = 0
+        imported_datasets = 0
+        for suite, dataset in dataset_order:
             loaded = self._dataset(suite, dataset)
             expected = len(loaded.safe_cells())
             expected_total += expected
             path = self._baran_path(suite, dataset)
             records = read_jsonl(path) if path.is_file() else []
             if len(records) != expected:
-                source = (
-                    self.baran_source_run
-                    / "baran"
-                    / f"{_dataset_key(suite, dataset)}.jsonl"
-                )
-                if not source.is_file():
-                    raise FileNotFoundError(f"Baran source is missing {suite}/{dataset}")
-                records = read_jsonl(source)
+                if self.baran_source_run is not None:
+                    source = (
+                        self.baran_source_run
+                        / "baran"
+                        / f"{_dataset_key(suite, dataset)}.jsonl"
+                    )
+                    if not source.is_file():
+                        raise FileNotFoundError(
+                            f"Baran source is missing {suite}/{dataset}"
+                        )
+                    records = read_jsonl(source)
+                    imported_datasets += 1
+                else:
+                    records = run_baran(
+                        loaded,
+                        loaded.oracle_cells(include_annotations=False),
+                        self.paths.vendor_root,
+                        labeling_budget=int(
+                            self.experiment_config.get("baran_labeling_budget", 20)
+                        ),
+                        seed=int(self.experiment_config.get("baran_seed", 16)),
+                        workers=int(self.experiment_config.get("baran_workers", 4)),
+                        multiprocessing_start_method=str(
+                            self.experiment_config.get(
+                                "baran_multiprocessing_start_method", "spawn"
+                            )
+                        ),
+                    )
+                    fresh_datasets += 1
                 write_jsonl(path, records)
             if len(records) != expected or len({str(row.get("cell_id")) for row in records}) != expected:
                 raise ValueError(f"invalid Baran coverage for {suite}/{dataset}")
@@ -980,24 +1060,45 @@ class ExperimentRunner:
                 "running",
                 completed_datasets=completed,
                 records=sum(len(self._baran[key]) for key in self._baran),
-                source_run=str(self.baran_source_run),
+                fresh_datasets=fresh_datasets,
+                imported_datasets=imported_datasets,
+                source_run=(
+                    str(self.baran_source_run)
+                    if self.baran_source_run is not None
+                    else None
+                ),
             )
-        if expected_total != EXPECTED_ORACLE_ERROR_COUNT:
-            raise ValueError(f"Baran expected-cell count is {expected_total}, not {EXPECTED_ORACLE_ERROR_COUNT}")
+        frozen_total = (
+            EXPECTED_ORACLE_ERROR_COUNT
+            if dataset_order == generation_order()
+            else TEST_TARGET_CELL_COUNT if dataset_order == target_order() else expected_total
+        )
+        if expected_total != frozen_total:
+            raise ValueError(
+                f"Baran expected-cell count is {expected_total}, not {frozen_total}"
+            )
         self.state.update_stage(
             "baran",
             "complete",
             datasets=len(completed),
             records=expected_total,
-            fresh=False,
-            imported=True,
-            source_run=str(self.baran_source_run),
+            fresh=self.baran_source_run is None,
+            imported=self.baran_source_run is not None,
+            fresh_datasets=fresh_datasets,
+            imported_datasets=imported_datasets,
+            source_run=(
+                str(self.baran_source_run)
+                if self.baran_source_run is not None
+                else None
+            ),
         )
         return {
             "datasets": len(completed),
             "records": expected_total,
-            "fresh": False,
-            "imported": True,
+            "fresh": self.baran_source_run is None,
+            "imported": self.baran_source_run is not None,
+            "fresh_datasets": fresh_datasets,
+            "imported_datasets": imported_datasets,
         }
 
     @staticmethod
@@ -1082,15 +1183,19 @@ class ExperimentRunner:
                 )
         return rows
 
-    def generate_groups_stage(self) -> dict[str, object]:
+    def generate_groups_stage(
+        self,
+        datasets: Sequence[tuple[str, str]] | None = None,
+    ) -> dict[str, object]:
         """Build every fixed query action and its safe cell-query feature rows."""
 
+        dataset_order = tuple(datasets) if datasets is not None else generation_order()
         registry = self.fd_registry
         query_total = 0
         incidence_total = 0
         completed: list[str] = []
         seen_query_ids: set[str] = set()
-        for suite, dataset in generation_order():
+        for suite, dataset in dataset_order:
             loaded = self._dataset(suite, dataset)
             safe = loaded.safe_view()
             baran = self._load_baran(suite, dataset)
@@ -1190,17 +1295,42 @@ class ExperimentRunner:
         )
         return {"datasets": len(completed), "queries": query_total, "incidences": incidence_total}
 
-    def import_reusable_no_baran_responses_stage(self) -> dict[str, object]:
-        """Seed the v2 checkpoint with request-identical successful v1 responses."""
+    def import_reusable_no_baran_responses_stage(
+        self,
+        datasets: Sequence[tuple[str, str]] | None = None,
+    ) -> dict[str, object]:
+        """Optionally seed the checkpoint with request-identical responses."""
 
+        dataset_order = tuple(datasets) if datasets is not None else generation_order()
         provenance_path = self.paths.run_dir / "provenance" / "response_reuse.json"
         checkpoint_path = self.paths.llm_dir / "group_query_checkpoint.jsonl"
         if provenance_path.is_file():
             return load_json(provenance_path)
         if checkpoint_path.is_file() and read_jsonl(checkpoint_path):
             raise RuntimeError(
-                "response reuse must be frozen before any v2 provider checkpoint exists"
+                "response reuse must be frozen before any provider checkpoint exists"
             )
+        if self.response_reuse_run is None:
+            summary: dict[str, object] = {
+                "source_run": None,
+                "source_rows": 0,
+                "imported_rows": 0,
+                "imported_success_rows": 0,
+                "imported_terminal_failure_rows": 0,
+                "terminal_failures_frozen": self.freezes_reused_terminal_failures,
+                "rejected": {},
+                "matching_fields": [
+                    "query_id",
+                    "prompt_hash",
+                    "provider_request_hash",
+                    "model",
+                    "prompt_schema_version",
+                ],
+                "physical_calls_saved_only": True,
+            }
+            write_json(provenance_path, summary)
+            self.state.update_stage("response_reuse", "complete", **summary)
+            return summary
         source_checkpoint = (
             self.response_reuse_run / "llm" / "shared" / "group_query_checkpoint.jsonl"
         )
@@ -1221,7 +1351,7 @@ class ExperimentRunner:
         )
         imported: list[dict[str, object]] = []
         rejected = Counter()
-        for suite, dataset in generation_order():
+        for suite, dataset in dataset_order:
             for action in self._load_actions(suite, dataset):
                 source = latest.get((action.query_id, action.prompt_hash))
                 if source is None:
@@ -1281,137 +1411,6 @@ class ExperimentRunner:
         self.state.update_stage("response_reuse", "complete", **summary)
         return summary
 
-    def _reuse_router_v3_parent_calibration(self) -> dict[str, object]:
-        """Bind immutable Router-v2 calibration artifacts into a Router-v3 run."""
-
-        if not self.is_router_v3:
-            return {"reused": False}
-        provenance_path = self.paths.run_dir / "provenance" / "reuse_manifest.json"
-        if provenance_path.is_file() and self.state.stage_completed("calibration_llm"):
-            return load_json(provenance_path)
-
-        parent = self.response_reuse_run
-        required = (
-            parent / "llm" / "calibration_queries.jsonl",
-            parent / "llm" / "calibration_execution.jsonl",
-            parent / "llm" / "calibration_pair_labels.csv",
-        )
-        missing = [str(path) for path in required if not path.is_file()]
-        if missing:
-            raise FileNotFoundError(
-                "Router-v3 response-reuse run is not a complete Router-v2 parent: "
-                + ", ".join(missing)
-            )
-
-        identity_files: list[tuple[Path, Path]] = [
-            (self.paths.run_dir / "input_data_manifest.json", parent / "input_data_manifest.json"),
-        ]
-        for suite, dataset in generation_order():
-            key = _dataset_key(suite, dataset)
-            identity_files.extend(
-                (
-                    (self.paths.baran_dir / f"{key}.jsonl", parent / "baran" / f"{key}.jsonl"),
-                    (
-                        self.paths.cell_features_dir / f"{key}.csv",
-                        parent / "cell_features" / f"{key}.csv",
-                    ),
-                    (
-                        self.paths.groups_dir / "candidates" / f"{key}.jsonl",
-                        parent / "groups" / "candidates" / f"{key}.jsonl",
-                    ),
-                    (
-                        self.paths.groups_dir / "memberships" / f"{key}.csv",
-                        parent / "groups" / "memberships" / f"{key}.csv",
-                    ),
-                )
-            )
-        mismatches: list[str] = []
-        artifact_rows: list[dict[str, object]] = []
-        for current, source in identity_files:
-            if not current.is_file() or not source.is_file():
-                mismatches.append(f"missing:{current}:{source}")
-                continue
-            current_hash = sha256_file(current)
-            source_hash = sha256_file(source)
-            artifact_rows.append(
-                {
-                    "artifact": str(current.relative_to(self.paths.run_dir)),
-                    "current_sha256": current_hash,
-                    "parent_sha256": source_hash,
-                    "matches": current_hash == source_hash,
-                }
-            )
-            if current_hash != source_hash:
-                mismatches.append(str(current.relative_to(self.paths.run_dir)))
-        current_plan = self.paths.llm_dir / "calibration_queries.jsonl"
-        parent_plan = parent / "llm" / "calibration_queries.jsonl"
-        if sha256_file(current_plan) != sha256_file(parent_plan):
-            mismatches.append("llm/calibration_queries.jsonl")
-        if mismatches:
-            raise ValueError(
-                "Router-v3 parent artifact identity mismatch: " + ", ".join(mismatches)
-            )
-
-        execution_rows = read_jsonl(parent / "llm" / "calibration_execution.jsonl")
-        label_frame = _read_csv(parent / "llm" / "calibration_pair_labels.csv")
-        planned = {
-            (str(row["query_id"]), str(row["prompt_hash"]))
-            for row in read_jsonl(current_plan)
-        }
-        executed = {
-            (str(row.get("query_id", "")), str(row.get("prompt_hash", "")))
-            for row in execution_rows
-        }
-        if len(execution_rows) != 8_197 or executed != planned:
-            raise ValueError("Router-v2 parent calibration execution is incomplete")
-        if len(label_frame) != 16_451:
-            raise ValueError("Router-v2 parent calibration labels are incomplete")
-        shutil.copyfile(
-            parent / "llm" / "calibration_execution.jsonl",
-            self.paths.llm_dir / "calibration_execution.jsonl",
-        )
-        shutil.copyfile(
-            parent / "llm" / "calibration_pair_labels.csv",
-            self.paths.llm_dir / "calibration_pair_labels.csv",
-        )
-        parent_fallback = (
-            parent / "llm" / "offline_group_calibration_baran_fallbacks.jsonl"
-        )
-        if parent_fallback.is_file():
-            shutil.copyfile(
-                parent_fallback,
-                self.paths.llm_dir
-                / "offline_group_calibration_baran_fallbacks.jsonl",
-            )
-        summary: dict[str, object] = {
-            "reused": True,
-            "router_revision": self.router_revision,
-            "parent_run": str(parent),
-            "parent_manifest_sha256": sha256_file(parent / "run_manifest.json"),
-            "identity_artifacts": artifact_rows,
-            "identity_artifact_count": len(artifact_rows),
-            "calibration_queries": len(execution_rows),
-            "calibration_pair_labels": len(label_frame),
-            "calibration_queries_sha256": sha256_file(parent_plan),
-            "calibration_execution_sha256": sha256_file(
-                parent / "llm" / "calibration_execution.jsonl"
-            ),
-            "calibration_pair_labels_sha256": sha256_file(
-                parent / "llm" / "calibration_pair_labels.csv"
-            ),
-            "target_labels_or_responses_used_before_selection": False,
-            "logical_cost_preserved": True,
-        }
-        write_json(provenance_path, summary)
-        self.state.update_stage(
-            "calibration_llm",
-            "complete",
-            reused_from_parent=True,
-            queries=len(execution_rows),
-            pair_labels=len(label_frame),
-            parent_run=str(parent),
-        )
-        return summary
 
     @staticmethod
     def _calibration_sample(
@@ -1533,7 +1532,6 @@ class ExperimentRunner:
         self.generate_groups_stage()
         reuse = self.import_reusable_no_baran_responses_stage()
         plan = self.plan_calibration_stage()
-        parent_reuse = self._reuse_router_v3_parent_calibration()
         return {
             "run_dir": str(self.paths.run_dir),
             "data": {
@@ -1545,7 +1543,6 @@ class ExperimentRunner:
             },
             "calibration": plan,
             "response_reuse": reuse,
-            "parent_router_reuse": parent_reuse,
             "api_called": False,
         }
 
@@ -1899,7 +1896,7 @@ class ExperimentRunner:
         return labels
 
     def run_calibration_stage(self) -> dict[str, object]:
-        if self.is_router_v3 and self.state.stage_completed("calibration_llm"):
+        if self.state.stage_completed("calibration_llm"):
             execution = read_jsonl(
                 self.paths.llm_dir / "calibration_execution.jsonl"
             )
@@ -1907,7 +1904,11 @@ class ExperimentRunner:
                 self.paths.llm_dir / "calibration_pair_labels.csv"
             )
             return {
-                "reused_from_parent": True,
+                "reused_from_parent": bool(
+                    _stage_details(self.state.manifest.get("stages", {}).get(
+                        "calibration_llm", {}
+                    )).get("reused_from_parent", False)
+                ) if isinstance(self.state.manifest.get("stages"), Mapping) else False,
                 "queries": len(execution),
                 "pair_labels": len(labels),
                 "successful_queries": sum(
@@ -1977,6 +1978,25 @@ class ExperimentRunner:
                 f"offline calibration has {summary['failed_queries']} failed queries; "
                 "resume the same run to retry them"
             )
+        write_json(
+            self.paths.run_dir / "provenance" / "calibration.json",
+            {
+                "mode": "fresh_or_checkpoint_resumed",
+                "calibration_queries": len(actions),
+                "calibration_pair_labels": len(labels),
+                "calibration_queries_sha256": sha256_file(
+                    self.paths.llm_dir / "calibration_queries.jsonl"
+                ),
+                "calibration_execution_sha256": sha256_file(
+                    self.paths.llm_dir / "calibration_execution.jsonl"
+                ),
+                "calibration_pair_labels_sha256": sha256_file(
+                    self.paths.llm_dir / "calibration_pair_labels.csv"
+                ),
+                "target_labels_or_responses_used_before_selection": False,
+                "logical_cost_preserved": True,
+            },
+        )
         self.state.update_stage("calibration_llm", "complete", **summary)
         return summary
 
@@ -1992,47 +2012,17 @@ class ExperimentRunner:
         return frame
 
     def _scenario_specs(self) -> tuple[dict[str, object], ...]:
-        if self.is_router_v3:
-            return tuple(
-                {
-                    "scenario": "size_conditioned",
-                    "group_size_variant": variant,
-                    "allowed_sizes": sizes,
-                    "budget_share": budget,
-                }
-                for variant, sizes in self._router_training_variants().items()
-                for budget in self._router_budget_shares()
-            )
-        budgets = tuple(float(value) for value in self.experiment_config.get("budget_shares", ()))
-        specs: list[dict[str, object]] = [
+        return tuple(
             {
-                "scenario": "main",
-                "group_size_variant": "all",
-                "allowed_sizes": (1, 2, 4, 8),
+                "scenario": "size_conditioned",
+                "group_size_variant": variant,
+                "allowed_sizes": sizes,
                 "budget_share": budget,
             }
-            for budget in budgets
-        ]
-        ablation = self.experiment_config.get("group_size_ablation", {})
-        if not isinstance(ablation, Mapping):
-            raise ValueError("group_size_ablation must be an object")
-        beta = float(ablation.get("budget_share", 0.2))
-        variants = ablation.get("variants", {})
-        if not isinstance(variants, Mapping):
-            raise ValueError("group_size_ablation.variants must be an object")
-        for variant in sorted(variants, key=lambda value: int(str(value))):
-            raw_sizes = variants.get(variant)
-            if not isinstance(raw_sizes, list):
-                raise ValueError(f"missing exact-size ablation variant {variant}")
-            specs.append(
-                {
-                    "scenario": "size_ablation",
-                    "group_size_variant": variant,
-                    "allowed_sizes": tuple(int(value) for value in raw_sizes),
-                    "budget_share": beta,
-                }
-            )
-        return tuple(specs)
+            for variant, sizes in self._router_training_variants().items()
+            for budget in self._router_budget_shares()
+        )
+
 
     def _prediction_path(
         self,
@@ -2041,10 +2031,13 @@ class ExperimentRunner:
         suite: str,
         dataset: str,
     ) -> Path:
-        base = self.paths.gates_dir / backend
-        if self.is_router_v3:
-            base = base / f"variant_{variant}"
-        return base / f"{_dataset_key(suite, dataset)}.csv"
+        return (
+            self.paths.gates_dir
+            / backend
+            / f"variant_{variant}"
+            / f"{_dataset_key(suite, dataset)}.csv"
+        )
+
 
     def _selection_path(
         self,
@@ -2069,129 +2062,10 @@ class ExperimentRunner:
         all_pairs: pd.DataFrame,
         labels: pd.DataFrame,
     ) -> dict[str, object]:
-        """Evaluate LOFO routeability after selections are frozen; never gate Phase 3."""
+        """Evaluate size-conditioned LOFO routeability after selections freeze."""
 
-        if self.is_router_v3:
-            return self._build_router_v3_diagnostics(all_pairs, labels)
+        return self._build_router_v3_diagnostics(all_pairs, labels)
 
-        rows: list[dict[str, object]] = []
-        for dataset in sorted(
-            value for suite, value in generation_order() if suite == "tableeg"
-        ):
-            train_safe, target_safe, _ = split_for_target(
-                all_pairs,
-                "tableeg",
-                dataset,
-                enforce_target_unlabeled=True,
-            )
-            train = train_safe.merge(
-                labels,
-                how="inner",
-                on=["cell_id", "query_id"],
-                validate="one_to_one",
-            )
-            target = target_safe.merge(
-                labels,
-                how="inner",
-                on=["cell_id", "query_id"],
-                validate="one_to_one",
-            )
-            if train.empty or target.empty:
-                raise ValueError(f"empty diagnostic fold for tableeg/{dataset}")
-            helpful = [int(value) for value in target["helpful"]]
-            harmful = [int(value) for value in target["harmful"]]
-            for backend in EXPECTED_GATE_BACKENDS:
-                gate = GroupUpliftGate(
-                    backend,  # type: ignore[arg-type]
-                    rho=float(self.experiment_config.get("harm_penalty_rho", 1.0)),
-                    gamma=float(
-                        self.experiment_config.get("uncertainty_penalty_gamma", 1.0)
-                    ),
-                    random_state=int(self.experiment_config.get("seed", 42)),
-                ).fit(
-                    train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records"),
-                    [bool(int(value)) for value in train["baran_correct"]],
-                    [bool(int(value)) for value in train["llm_correct_in_query"]],
-                    [bool(int(value)) for value in train["executable_propose"]],
-                    [base_family(value) for value in train["dataset"].astype(str)],
-                )
-                predicted = gate.predict(
-                    target.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records")
-                )
-                q_helpful = [float(value.q_helpful) for value in predicted]
-                q_harmful = [float(value.q_harmful) for value in predicted]
-                ranked = sorted(
-                    range(len(predicted)),
-                    key=lambda index: (
-                        -float(predicted[index].conservative_uplift),
-                        str(target.iloc[index]["query_id"]),
-                        str(target.iloc[index]["cell_id"]),
-                    ),
-                )
-                top_count = max(1, math.ceil(0.1 * len(ranked)))
-                top = ranked[:top_count]
-                helpful_prevalence = sum(helpful) / len(helpful)
-                harmful_prevalence = sum(harmful) / len(harmful)
-                rows.append(
-                    {
-                        "backend": backend,
-                        "target_suite": "tableeg",
-                        "target_dataset": dataset,
-                        "train_pairs": len(train),
-                        "test_pairs": len(target),
-                        "helpful_prevalence": helpful_prevalence,
-                        "helpful_auprc": (
-                            float(average_precision_score(helpful, q_helpful))
-                            if len(set(helpful)) > 1
-                            else helpful_prevalence
-                        ),
-                        "helpful_brier": float(
-                            brier_score_loss(helpful, q_helpful)
-                        ),
-                        "harmful_prevalence": harmful_prevalence,
-                        "harmful_auprc": (
-                            float(average_precision_score(harmful, q_harmful))
-                            if len(set(harmful)) > 1
-                            else harmful_prevalence
-                        ),
-                        "harmful_brier": float(
-                            brier_score_loss(harmful, q_harmful)
-                        ),
-                        "top_ranked_pairs": top_count,
-                        "top_ranked_observed_uplift": sum(
-                            helpful[index] - harmful[index] for index in top
-                        )
-                        / top_count,
-                        "diagnostic_only": True,
-                    }
-                )
-        _write_csv(self.paths.metrics_dir / "routeability_by_dataset.csv", rows)
-        by_backend: dict[str, list[dict[str, object]]] = defaultdict(list)
-        for row in rows:
-            by_backend[str(row["backend"])].append(row)
-        macro = {
-            backend: {
-                field: statistics.fmean(float(row[field]) for row in values)
-                for field in (
-                    "helpful_auprc",
-                    "helpful_brier",
-                    "harmful_auprc",
-                    "harmful_brier",
-                    "top_ranked_observed_uplift",
-                )
-            }
-            for backend, values in sorted(by_backend.items())
-        }
-        summary: dict[str, object] = {
-            "diagnostic_only": True,
-            "phase3_blocked": False,
-            "folds": len(rows),
-            "tableeg_datasets": 9,
-            "macro": macro,
-        }
-        write_json(self.paths.metrics_dir / "routeability_summary.json", summary)
-        self.state.update_stage("router_diagnostics", "complete", **summary)
-        return summary
 
     def _build_router_v3_diagnostics(
         self,
@@ -2354,331 +2228,10 @@ class ExperimentRunner:
         return int(costs.sum())
 
     def train_and_select_stage(self) -> dict[str, object]:
-        """Fit family-holdout gates and select every backend/scenario/budget."""
+        """Fit size-conditioned family-holdout gates and select every slice."""
 
-        if self.is_router_v3:
-            return self._train_and_select_router_v3()
+        return self._train_and_select_router_v3()
 
-        if not self.state.stage_completed("calibration_llm"):
-            raise RuntimeError("router training requires a complete calibration ledger")
-        planned = {
-            (str(row["query_id"]), str(row["prompt_hash"]))
-            for row in read_jsonl(self.paths.llm_dir / "calibration_queries.jsonl")
-        }
-        executed_rows = read_jsonl(self.paths.llm_dir / "calibration_execution.jsonl")
-        executed = {
-            (str(row.get("query_id", "")), str(row.get("prompt_hash", "")))
-            for row in executed_rows
-        }
-        if len(executed) != len(executed_rows) or executed != planned:
-            raise ValueError("calibration execution ledger coverage or uniqueness failed")
-        if any(
-            row.get("model_matches_request", True) is False
-            or str(row.get("model", "")) != str(self.llm_config["model"])
-            for row in executed_rows
-            if row.get("status") == "success"
-        ):
-            raise ValueError("calibration execution ledger contains a model mismatch")
-        all_pairs = self._all_pair_features()
-        labels = _read_csv(self.paths.llm_dir / "calibration_pair_labels.csv")
-        label_columns = (
-            "cell_id",
-            "query_id",
-            "baran_correct",
-            "llm_correct_in_query",
-            "executable_propose",
-            "helpful",
-            "harmful",
-        )
-        labels = labels.loc[:, list(label_columns)].copy()
-        if labels.duplicated(["cell_id", "query_id"]).any():
-            raise ValueError("calibration labels contain duplicate cell-query pairs")
-        selection_rows: list[dict[str, object]] = []
-        logical_rows: list[dict[str, object]] = []
-        split_rows: list[dict[str, object]] = []
-        union_ids: set[str] = set()
-        total_prediction_rows = 0
-
-        for suite, dataset in target_order():
-            train_safe, test, base_audit = split_for_target(
-                all_pairs,
-                suite,
-                dataset,
-                enforce_target_unlabeled=True,
-            )
-            train = train_safe.merge(
-                labels,
-                how="inner",
-                on=["cell_id", "query_id"],
-                validate="one_to_one",
-            )
-            if train.empty:
-                raise ValueError(f"no sampled calibration labels for target {suite}/{dataset}")
-            actions = {action.query_id: action for action in self._load_actions(suite, dataset)}
-            expected_pairs = sum(action.group_size for action in actions.values())
-            if len(test) != expected_pairs:
-                raise ValueError(f"test pair table is incomplete for {suite}/{dataset}")
-            reference_cost = self._singleton_reference_cost(test)
-            print(
-                f"[gate] {suite}/{dataset}: train={len(train)} pairs, test={len(test)} pairs",
-                flush=True,
-            )
-            for backend in EXPECTED_GATE_BACKENDS:
-                prediction_path = (
-                    self.paths.gates_dir
-                    / backend
-                    / f"{_dataset_key(suite, dataset)}.csv"
-                )
-                predictions = _read_csv(prediction_path) if prediction_path.is_file() else pd.DataFrame()
-                if len(predictions) != len(test):
-                    gate = GroupUpliftGate(
-                        backend,  # type: ignore[arg-type]
-                        rho=float(self.experiment_config.get("harm_penalty_rho", 1.0)),
-                        gamma=float(self.experiment_config.get("uncertainty_penalty_gamma", 1.0)),
-                        random_state=int(self.experiment_config.get("seed", 42)),
-                    )
-                    gate.fit(
-                        train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records"),
-                        [bool(int(value)) for value in train["baran_correct"]],
-                        [bool(int(value)) for value in train["llm_correct_in_query"]],
-                        [bool(int(value)) for value in train["executable_propose"]],
-                        [base_family(value) for value in train["dataset"].astype(str)],
-                    )
-                    predicted = gate.predict(
-                        test.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records")
-                    )
-                    predictions = test.loc[
-                        :,
-                        [
-                            "suite",
-                            "dataset",
-                            "cell_id",
-                            "query_id",
-                            "group_signature",
-                            "group_view",
-                            "group_size",
-                            "estimated_total_tokens",
-                        ],
-                    ].copy()
-                    for field in (
-                        "q_helpful",
-                        "q_harmful",
-                        "net_gain",
-                        "sigma",
-                        "conservative_uplift",
-                    ):
-                        predictions[field] = [prediction.as_dict()[field] for prediction in predicted]
-                    _write_csv(prediction_path, predictions.to_dict("records"))
-                    write_json(
-                        prediction_path.with_suffix(".metadata.json"),
-                        {
-                            "target_suite": suite,
-                            "target_dataset": dataset,
-                            "model": gate.metadata(),
-                            "model_feature_columns": list(MODEL_FEATURE_COLUMNS),
-                            "target_labels_used": False,
-                            "target_responses_used_before_selection": False,
-                        },
-                    )
-                total_prediction_rows += len(predictions)
-                split_rows.append(
-                    {
-                        **base_audit.as_dict(),
-                        "backend": backend,
-                        "train_test_row_overlap": base_audit.train_test_row_identity_overlap,
-                        "train_pair_rows_after_sampling": len(train),
-                        "test_pair_rows": len(test),
-                        "target_group_label_used": False,
-                        "target_response_used_before_selection": False,
-                        "target_response_visible_before_selection": False,
-                    }
-                )
-                gains = [
-                    PairGain(
-                        str(row.cell_id),
-                        str(row.query_id),
-                        max(0.0, float(row.conservative_uplift)),
-                    )
-                    for row in predictions.itertuples(index=False)
-                ]
-                objective = GroupUpliftObjective(gains)
-                costs = {
-                    query_id: float(action.estimated_total_tokens)
-                    for query_id, action in actions.items()
-                }
-                for spec in self._scenario_specs():
-                    scenario = str(spec["scenario"])
-                    variant = str(spec["group_size_variant"])
-                    budget_share = float(spec["budget_share"])
-                    allowed = {int(value) for value in spec["allowed_sizes"]}  # type: ignore[union-attr]
-                    candidates = tuple(
-                        sorted(
-                            query_id
-                            for query_id, action in actions.items()
-                            if action.group_size in allowed
-                        )
-                    )
-                    budget = int(round(reference_cost * budget_share))
-                    result = select_queries(
-                        objective,
-                        costs,
-                        budget,
-                        candidates=candidates,
-                    )
-                    if result.total_cost > budget + 1e-9:
-                        raise AssertionError("selection exceeded its estimated-token budget")
-                    selected_ids = tuple(result.selected_query_ids)
-                    union_ids.update(selected_ids)
-                    covered = [cell_id for query_id in selected_ids for cell_id in actions[query_id].cell_ids]
-                    path = self._selection_path(
-                        backend, scenario, variant, budget_share, suite, dataset
-                    )
-                    write_json(
-                        path,
-                        {
-                            **result.as_dict(),
-                            "suite": suite,
-                            "dataset": dataset,
-                            "backend": backend,
-                            "scenario": scenario,
-                            "group_size_variant": variant,
-                            "allowed_group_sizes": sorted(allowed),
-                            "budget_share": budget_share,
-                            "budget_reference_tokens": reference_cost,
-                            "selected_cell_incidence": len(covered),
-                            "unique_covered_cells": len(set(covered)),
-                        },
-                    )
-                    selection_rows.append(
-                        {
-                            "suite": suite,
-                            "dataset": dataset,
-                            "backend": backend,
-                            "scenario": scenario,
-                            "group_size_variant": variant,
-                            "budget_share": budget_share,
-                            "budget_reference_tokens": reference_cost,
-                            "budget_estimated_tokens": budget,
-                            "selected_groups": len(selected_ids),
-                            "selected_estimated_tokens": int(result.total_cost),
-                            "budget_slack_tokens": int(budget - result.total_cost),
-                            "objective_value": result.objective_value,
-                            "algorithm": result.algorithm,
-                            "unique_covered_cells": len(set(covered)),
-                            "covered_cell_incidences": len(covered),
-                            "overlap_incidences": len(covered) - len(set(covered)),
-                            "within_budget": True,
-                        }
-                    )
-                    for query_id in selected_ids:
-                        action = actions[query_id]
-                        logical_rows.append(
-                            {
-                                "target_suite": suite,
-                                "target_dataset": dataset,
-                                "backend": backend,
-                                "scenario": scenario,
-                                "group_size_variant": variant,
-                                "budget_share": budget_share,
-                                "query_id": query_id,
-                                "prompt_hash": action.prompt_hash,
-                                "selected": True,
-                                "estimated_tokens": action.estimated_total_tokens,
-                                "actual_tokens_if_available": "",
-                                "logical_api_calls": 1,
-                                "physical_api_calls": 0,
-                                "covered_cells": action.group_size,
-                                "accepted_llm_cells": 0,
-                            }
-                        )
-
-        _write_csv(self.paths.gates_dir / "split_audit.csv", split_rows)
-        for backend in EXPECTED_GATE_BACKENDS:
-            parts = [
-                _read_csv(self.paths.gates_dir / backend / f"{_dataset_key(suite, dataset)}.csv")
-                for suite, dataset in target_order()
-            ]
-            _write_csv(
-                self.paths.gates_dir / f"{backend}_pair_predictions.csv",
-                pd.concat(parts, ignore_index=True).to_dict("records"),
-            )
-        _write_csv(self.paths.metrics_dir / "selection_audit.csv", selection_rows)
-
-        calibration_ids = {
-            str(row["query_id"])
-            for row in read_jsonl(self.paths.llm_dir / "calibration_queries.jsonl")
-        }
-        calibration_cached_ids = {
-            str(row.get("query_id"))
-            for row in read_jsonl(self.paths.llm_dir / "calibration_execution.jsonl")
-            if row.get("status") == "success"
-        }
-        online_ids = sorted(union_ids - calibration_cached_ids)
-        calibration_estimate = int(load_json(self.paths.llm_dir / "calibration_plan.json")["estimated_tokens"])
-        online_id_set = set(online_ids)
-        online_estimate = 0
-        found_online: set[str] = set()
-        for target_suite, target_dataset in target_order():
-            for action in self._load_actions(target_suite, target_dataset):
-                if action.query_id in online_id_set:
-                    online_estimate += action.estimated_total_tokens
-                    found_online.add(action.query_id)
-        if found_online != online_id_set:
-            raise ValueError("selected online union references missing query actions")
-        preflight_path = self.paths.llm_dir / "model_preflight.json"
-        preflight_estimate = (
-            int(load_json(preflight_path).get("estimated_total_tokens", 0) or 0)
-            if preflight_path.is_file()
-            else 1_722
-        )
-        combined_estimate = calibration_estimate + online_estimate + preflight_estimate
-        raw_cap = self.experiment_config.get("max_estimated_tokens_safety_cap")
-        safety_cap = None if raw_cap is None else int(raw_cap)
-        union_plan = {
-            "selected_union_queries": len(union_ids),
-            "calibration_cache_queries_in_union": len(union_ids & calibration_cached_ids),
-            "failed_calibration_queries_retried_online": len(
-                union_ids & (calibration_ids - calibration_cached_ids)
-            ),
-            "online_physical_queries": len(online_ids),
-            "offline_calibration_estimated_tokens": calibration_estimate,
-            "online_union_estimated_tokens": online_estimate,
-            "model_preflight_estimated_tokens": preflight_estimate,
-            "combined_physical_estimated_tokens": combined_estimate,
-            "safety_cap": safety_cap,
-            "query_ids": sorted(union_ids),
-            "online_query_ids": online_ids,
-        }
-        write_json(self.paths.llm_dir / "selected_union_plan.json", union_plan)
-        if safety_cap is not None and combined_estimate > safety_cap:
-            self.state.update_stage(
-                "gate_selection", "safety_cap_exceeded", **union_plan
-            )
-            raise SafetyCapExceeded("calibration plus selected online union", combined_estimate, safety_cap)
-        response_index = self._response_index()
-        for row in logical_rows:
-            response = response_index.get((str(row["query_id"]), str(row["prompt_hash"])))
-            actual = _actual_tokens(response)
-            row["actual_tokens_if_available"] = "" if actual is None else actual
-            row["physical_api_calls"] = int(str(row["query_id"]) in online_ids)
-        _write_csv(
-            self.paths.metrics_dir / "logical_budget_ledger.csv",
-            logical_rows,
-            columns=LOGICAL_LEDGER_COLUMNS,
-        )
-        self.build_router_diagnostics_stage(all_pairs, labels)
-        self.state.update_stage(
-            "gate_selection",
-            "complete",
-            prediction_rows=total_prediction_rows,
-            selection_slices=len(selection_rows),
-            **{key: value for key, value in union_plan.items() if key not in {"query_ids", "online_query_ids"}},
-        )
-        return {
-            "prediction_rows": total_prediction_rows,
-            "selection_slices": len(selection_rows),
-            **union_plan,
-        }
 
     def _reuse_router_v3_gate_artifacts(self) -> dict[str, object]:
         """Copy request-independent k=2/4 LightGBM predictions from frozen v3."""
@@ -3366,7 +2919,7 @@ class ExperimentRunner:
         return index
 
     def run_selected_llm_stage(self) -> dict[str, object]:
-        if self.is_router_v3 and not self.state.stage_completed("model_preflight"):
+        if not self.state.stage_completed("model_preflight"):
             raise RuntimeError("Router-v3 selected execution requires model preflight")
         plan = load_json(self.paths.llm_dir / "selected_union_plan.json")
         union_ids = {str(value) for value in plan.get("query_ids", [])}
@@ -3456,202 +3009,10 @@ class ExperimentRunner:
         }
 
     def build_final_records_stage(self) -> dict[str, object]:
-        """Reconstruct every logical slice and arbitrate overlapping outputs."""
+        """Build both baselines and every Router-v3 BGR method slice."""
 
-        if self.is_router_v3:
-            return self._build_final_records_router_v3()
+        return self._build_final_records_router_v3()
 
-        response_index = self._response_index()
-        final_path = self.paths.final_dir / "all_methods.jsonl"
-        records: list[dict[str, object]] = []
-        for suite, dataset in target_order():
-            dataset_record_start = len(records)
-            loaded = self._dataset(suite, dataset)
-            safe = loaded.safe_view()
-            cells = tuple(safe.cells)
-            cell_by_id = {str(cell.cell_id): cell for cell in cells}
-            clean = self._clean_value_map(loaded, cells)
-            baran = {str(row["cell_id"]): row for row in self._load_baran(suite, dataset)}
-            rules = fds_for_dataset(self.fd_registry, suite, dataset)
-            verifier_raw = self.experiment_config.get("verifier", {})
-            verifier_config = VerifierConfig(
-                **dict(verifier_raw) if isinstance(verifier_raw, Mapping) else {}
-            )
-            verifier = GroupRepairVerifier(
-                safe.dirty,
-                cells,
-                rules,
-                verifier_config,
-            )
-            actions = {action.query_id: action for action in self._load_actions(suite, dataset)}
-            for cell_id in sorted(cell_by_id):
-                records.append(self._compact_baran_record(baran[cell_id], clean[cell_id]))
-
-            for backend in EXPECTED_GATE_BACKENDS:
-                prediction_frame = _read_csv(
-                    self.paths.gates_dir / backend / f"{_dataset_key(suite, dataset)}.csv"
-                )
-                uplift = {
-                    (str(row.cell_id), str(row.query_id)): float(row.conservative_uplift)
-                    for row in prediction_frame.itertuples(index=False)
-                }
-                # A cell-query proposal and its pre-selection uplift are fixed
-                # for a backend.  Cache dirty-only verification across the five
-                # budgets and four size variants; only arbitration visibility
-                # changes between logical slices.
-                verification_cache: dict[tuple[str, str], object] = {}
-                for spec in self._scenario_specs():
-                    scenario = str(spec["scenario"])
-                    variant = str(spec["group_size_variant"])
-                    budget_share = float(spec["budget_share"])
-                    selection = load_json(
-                        self._selection_path(
-                            backend, scenario, variant, budget_share, suite, dataset
-                        )
-                    )
-                    selected_ids = tuple(str(value) for value in selection.get("selected_query_ids", []))
-                    selected_by_cell: dict[str, list[str]] = defaultdict(list)
-                    for query_id in selected_ids:
-                        for cell_id in actions[query_id].cell_ids:
-                            selected_by_cell[cell_id].append(query_id)
-                    for cell_id in sorted(cell_by_id):
-                        candidates: list[RankedRepairCandidate] = []
-                        for query_id in selected_by_cell.get(cell_id, []):
-                            action = actions[query_id]
-                            response = response_index.get((query_id, action.prompt_hash), {})
-                            response_usable = (
-                                response.get("status") == "success"
-                                and response.get("model_matches_request", True) is not False
-                            )
-                            raw_items = response.get("items", []) if response_usable else []
-                            item = next(
-                                (
-                                    raw
-                                    for raw in raw_items
-                                    if isinstance(raw, Mapping)
-                                    and str(raw.get("cell_id")) == cell_id
-                                ),
-                                None,
-                            ) if isinstance(raw_items, list) else None
-                            if isinstance(item, Mapping):
-                                item = {**dict(item), "parse_status": "ok_item"}
-                            candidates.append(
-                                RankedRepairCandidate(
-                                    query_id=query_id,
-                                    item=item or {"parse_status": "missing_item"},
-                                    conservative_uplift=uplift[(cell_id, query_id)],
-                                    cost=action.estimated_total_tokens,
-                                    group_size=action.group_size,
-                                )
-                            )
-                        ordered_candidates = sorted(
-                            candidates,
-                            key=lambda candidate: (
-                                -candidate.conservative_uplift,
-                                candidate.cost,
-                                candidate.group_size,
-                                candidate.query_id,
-                            ),
-                        )
-                        attempted_query_ids: list[str] = []
-                        rejected_reasons: list[str] = []
-                        decision = None
-                        for candidate in ordered_candidates:
-                            attempted_query_ids.append(candidate.query_id)
-                            cache_key = (cell_id, candidate.query_id)
-                            if cache_key not in verification_cache:
-                                verification_cache[cache_key] = verifier.verify(
-                                    cell_by_id[cell_id],
-                                    baran[cell_id],
-                                    candidate.item,
-                                    candidate.conservative_uplift,
-                                    query_id=candidate.query_id,
-                                )
-                            candidate_decision = verification_cache[cache_key]
-                            if bool(getattr(candidate_decision, "accept_llm")):
-                                decision = candidate_decision
-                                break
-                            rejected_reasons.append(
-                                str(getattr(candidate_decision, "reason"))
-                            )
-                        if decision is None:
-                            decision = verifier.arbitrate(
-                                cell_by_id[cell_id], baran[cell_id], ()
-                            ).decision
-                            verification_reason = (
-                                "all_candidates_rejected"
-                                if ordered_candidates
-                                else "no_candidate"
-                            )
-                        else:
-                            verification_reason = str(getattr(decision, "reason"))
-                        parse_status = (
-                            "ok_llm"
-                            if decision.accept_llm
-                            else str(baran[cell_id].get("parse_status", "no_prediction"))
-                        )
-                        prediction = decision.final_prediction
-                        correct = bool(
-                            parse_status.startswith("ok")
-                            and normalize_for_match(prediction)
-                            == normalize_for_match(clean[cell_id])
-                        )
-                        record = {
-                            "cell_id": cell_id,
-                            "suite": suite,
-                            "dataset": dataset,
-                            "method": f"budgeted_group_{backend}",
-                            "scenario": scenario,
-                            "backend": backend,
-                            "budget_share": budget_share,
-                            "group_size_variant": variant,
-                            "prediction": prediction,
-                            "clean_value": clean[cell_id],
-                            "parse_status": parse_status,
-                            "valid_prediction": parse_status.startswith("ok"),
-                            "correct_repair": correct,
-                            "final_source": decision.final_source,
-                            "accepted_llm": decision.accept_llm,
-                            "selected_query_id": decision.query_id,
-                            "verification_reason": verification_reason,
-                            "verification_score": decision.score,
-                            "conservative_uplift": decision.conservative_uplift,
-                            "selected_queries_covering_cell": len(candidates),
-                            "attempted_query_count": len(attempted_query_ids),
-                            "rejected_candidate_count": len(rejected_reasons),
-                        }
-                        records.append(record)
-            write_jsonl(
-                self.paths.final_dir
-                / "per_dataset"
-                / f"{_dataset_key(suite, dataset)}.jsonl",
-                records[dataset_record_start:],
-            )
-            print(f"[final] {suite}/{dataset}: cumulative records={len(records)}", flush=True)
-
-        write_jsonl(final_path, records)
-
-        expected = {
-            (suite, dataset): {
-                str(cell.cell_id) for cell in self._dataset(suite, dataset).safe_cells()
-            }
-            for suite, dataset in target_order()
-        }
-        audit = verify_records(records, expected_cell_ids=expected)
-        if not bool(audit.get("ok")):
-            raise ValueError("final per-cell record coverage/annotation audit failed")
-        write_json(self.paths.metrics_dir / "record_audit.json", audit)
-        summary = {
-            "records": len(records),
-            "slices": int(audit["slices"]),
-            "unique_records": int(audit["unique_records"]),
-            "accepted_llm_records": sum(
-                bool(record.get("accepted_llm")) for record in records
-            ),
-            "coverage_ok": True,
-        }
-        self.state.update_stage("final_records", "complete", **summary)
-        return summary
 
     @staticmethod
     def _compact_llm_only_record(
@@ -3725,6 +3086,212 @@ class ExperimentRunner:
             "selected_query_id": action.query_id,
             "llm_decision": decision or "missing",
             "baran_fallback_used": False,
+        }
+
+    def _full_singleton_actions(self) -> tuple[GroupQueryAction, ...]:
+        actions: list[GroupQueryAction] = []
+        for suite, dataset in target_order():
+            singletons = [
+                action
+                for action in self._load_actions(suite, dataset)
+                if action.group_view == "singleton" and action.group_size == 1
+            ]
+            expected = len(self._dataset(suite, dataset).safe_cells())
+            if len(singletons) != expected:
+                raise ValueError(
+                    f"singleton coverage failure for {suite}/{dataset}: "
+                    f"expected={expected}, observed={len(singletons)}"
+                )
+            actions.extend(singletons)
+        if len(actions) != TEST_TARGET_CELL_COUNT:
+            raise ValueError(
+                "formal singleton baseline must contain exactly "
+                f"{TEST_TARGET_CELL_COUNT:,} queries"
+            )
+        if len({action.query_id for action in actions}) != len(actions):
+            raise ValueError("formal singleton baseline contains duplicate query IDs")
+        return tuple(sorted(actions, key=lambda value: value.query_id))
+
+    def plan_full_baselines_stage(self) -> dict[str, object]:
+        """Plan the formal nine-dataset baselines without training a Router."""
+
+        self.validate_inputs()
+        baran = self.run_baran_stage(target_order())
+        groups = self.generate_groups_stage(target_order())
+        reuse = self.import_reusable_no_baran_responses_stage(target_order())
+        actions = self._full_singleton_actions()
+        response_index = self._response_index()
+        cached_success = {
+            action.query_id
+            for action in actions
+            if (response := response_index.get((action.query_id, action.prompt_hash)))
+            is not None
+            and response.get("status") == "success"
+        }
+        cached_failure = {
+            action.query_id
+            for action in actions
+            if (response := response_index.get((action.query_id, action.prompt_hash)))
+            is not None
+            and response.get("status") != "success"
+        }
+        terminal_ids = cached_success | cached_failure
+        online_actions = [
+            action for action in actions if action.query_id not in terminal_ids
+        ]
+        online_estimate = sum(
+            int(action.estimated_total_tokens) for action in online_actions
+        )
+        plan: dict[str, object] = {
+            "run_kind": "full_baselines",
+            "router_trained": False,
+            "test_datasets": len(TEST_TARGETS),
+            "test_oracle_cells": TEST_TARGET_CELL_COUNT,
+            "selected_union_queries": len(actions),
+            "bgr_selected_union_queries": 0,
+            "llm_only_singleton_queries": len(actions),
+            "cached_success_queries_in_union": len(cached_success),
+            "cached_terminal_failure_queries_in_union": len(cached_failure),
+            "cached_terminal_queries_in_union": len(terminal_ids),
+            "online_physical_queries": len(online_actions),
+            "online_union_estimated_tokens": online_estimate,
+            "query_ids": [action.query_id for action in actions],
+            "bgr_query_ids": [],
+            "llm_only_query_ids": [action.query_id for action in actions],
+            "online_query_ids": [action.query_id for action in online_actions],
+            "cached_failure_query_ids": sorted(cached_failure),
+        }
+        write_json(self.paths.llm_dir / "selected_union_plan.json", plan)
+        return {
+            "baran": baran,
+            "groups": groups,
+            "response_reuse": reuse,
+            "selected_union": plan,
+            "api_called": False,
+        }
+
+    def build_baseline_records_stage(self) -> dict[str, object]:
+        """Materialize only Baran and pure No-Baran singleton LLM records."""
+
+        response_index = self._response_index()
+        records: list[dict[str, object]] = []
+        for suite, dataset in target_order():
+            loaded = self._dataset(suite, dataset)
+            cells = tuple(loaded.safe_view().cells)
+            clean = self._clean_value_map(loaded, cells)
+            baran = {
+                str(row["cell_id"]): row
+                for row in self._load_baran(suite, dataset)
+            }
+            singleton_by_cell = {
+                action.cell_ids[0]: action
+                for action in self._load_actions(suite, dataset)
+                if action.group_view == "singleton" and action.group_size == 1
+            }
+            for cell in sorted(cells, key=lambda value: str(value.cell_id)):
+                cell_id = str(cell.cell_id)
+                action = singleton_by_cell[cell_id]
+                response = response_index.get((action.query_id, action.prompt_hash))
+                if response is None:
+                    raise ValueError(
+                        f"singleton response ledger is missing {action.query_id}"
+                    )
+                records.append(self._compact_baran_record(baran[cell_id], clean[cell_id]))
+                records.append(
+                    self._compact_llm_only_record(
+                        action,
+                        response,
+                        cell,
+                        clean[cell_id],
+                    )
+                )
+        expected = TEST_TARGET_CELL_COUNT * 2
+        if len(records) != expected:
+            raise ValueError(
+                f"baseline cell ledger contains {len(records)} rows, expected {expected}"
+            )
+        audit = verify_records(records)
+        if not bool(audit.get("ok")):
+            raise ValueError(f"baseline record audit failed: {audit}")
+        if any(
+            row.get("baran_fallback_used") is not False
+            for row in records
+            if str(row.get("method")) == "llm_only"
+        ):
+            raise ValueError("LLM-only baseline contains a Baran fallback")
+        write_jsonl(self.paths.final_dir / "all_methods.jsonl", records)
+        write_json(self.paths.metrics_dir / "record_audit.json", audit)
+        summary = {
+            "records": len(records),
+            "method_slices": 2,
+            "baran_records": TEST_TARGET_CELL_COUNT,
+            "llm_only_records": TEST_TARGET_CELL_COUNT,
+            "llm_only_baran_fallbacks": 0,
+            "coverage_ok": True,
+        }
+        self.state.update_stage("final_records", "complete", **summary)
+        return summary
+
+    def build_baseline_metrics_stage(self) -> dict[str, object]:
+        records = read_jsonl(self.paths.final_dir / "all_methods.jsonl")
+        summaries = summarize_records(records, strict=True)
+        _write_csv(self.paths.metrics_dir / "method_metrics.csv", summaries)
+        summary = {
+            "method_metric_rows": len(summaries),
+            "methods": ["baran", "llm_only"],
+            "datasets": len(TEST_TARGETS),
+            "cells_per_method": TEST_TARGET_CELL_COUNT,
+        }
+        self.state.update_stage("metrics", "complete", **summary)
+        return summary
+
+    def run_full_baselines(
+        self,
+        *,
+        baseline_dir: str | Path,
+        output_dir: str | Path,
+        bootstrap_replicates: int = 2_000,
+        bootstrap_seed: int = 45,
+        confidence: float = 0.95,
+    ) -> dict[str, object]:
+        """Run, resume, and analyze the two complete formal baselines."""
+
+        plan = self.plan_full_baselines_stage()
+        preflight = self.check_model()
+        selected = self.run_selected_llm_stage()
+        final = self.build_baseline_records_stage()
+        metrics = self.build_baseline_metrics_stage()
+        self.state.complete(
+            required_stages=BASELINE_REQUIRED_STAGES,
+            completed_matrix={
+                "run_kind": "full_baselines",
+                "datasets": len(TEST_TARGETS),
+                "baselines": ["baran_only", "llm_only"],
+                "method_slices": 2,
+                "cell_records": TEST_TARGET_CELL_COUNT * 2,
+                "router_trained": False,
+            },
+        )
+        validation = validate_run(self.paths.run_dir, require_complete=True)
+        from .full_complementarity import build_full_complementarity
+
+        analysis = build_full_complementarity(
+            self.paths.run_dir,
+            baseline_dir=baseline_dir,
+            output_dir=output_dir,
+            bootstrap_replicates=bootstrap_replicates,
+            bootstrap_seed=bootstrap_seed,
+            confidence=confidence,
+        )
+        return {
+            "run_dir": str(self.paths.run_dir),
+            "plan": plan,
+            "model_preflight": preflight,
+            "selected_llm": selected,
+            "final": final,
+            "metrics": metrics,
+            "validation": validation,
+            "complementarity": analysis,
         }
 
     def _build_final_records_router_v3(self) -> dict[str, object]:
@@ -4223,154 +3790,10 @@ class ExperimentRunner:
         return [offline, online_row, total]
 
     def build_metrics_stage(self) -> dict[str, object]:
-        if self.is_router_v3:
-            return self._build_metrics_router_v3()
-        records = read_jsonl(self.paths.final_dir / "all_methods.jsonl")
-        summaries = summarize_records(records, strict=True)
-        comparisons = compare_methods(records, baseline="baran", strict=True)
-        aubc_input = [
-            row
-            for row in summaries
-            if str(row.get("method")) == "baran"
-            or (
-                str(row.get("scenario")) == "main"
-                and str(row.get("group_size_variant")) == "all"
-            )
-        ]
-        aubc = compute_aubc(
-            aubc_input,
-            baseline_method="baran",
-            metric="f1",
-            max_budget=0.5,
-        )
-        _write_csv(self.paths.metrics_dir / "method_metrics.csv", summaries)
-        _write_csv(self.paths.metrics_dir / "comparison_vs_baran.csv", comparisons)
-        primary = [
-            row
-            for row in comparisons
-            if str(row.get("scenario")) == "main"
-            and str(row.get("group_size_variant")) == "all"
-            and math.isclose(float(row.get("budget_share") or 0.0), 0.2, abs_tol=1e-12)
-        ]
-        _write_csv(self.paths.metrics_dir / "primary_vs_baran.csv", primary)
-        budget_curves = [
-            row
-            for row in summaries
-            if str(row.get("method")) != "baran"
-            and str(row.get("scenario")) == "main"
-            and str(row.get("group_size_variant")) == "all"
-        ]
-        _write_csv(self.paths.metrics_dir / "budget_curves.csv", budget_curves)
-        size_rows = [
-            row
-            for row in summaries
-            if str(row.get("method")) != "baran"
-            and str(row.get("scenario")) == "size_ablation"
-            and str(row.get("group_size_variant")) in {"1", "4"}
-        ]
-        _write_csv(self.paths.metrics_dir / "size_ablation.csv", size_rows)
-        _write_csv(self.paths.metrics_dir / "aubc.csv", aubc)
+        """Build the Router-v3 metric, comparison, and statistical artifacts."""
 
-        selection = _read_csv(self.paths.metrics_dir / "selection_audit.csv")
-        selected_union = {
-            str(value)
-            for value in load_json(self.paths.llm_dir / "selected_union_plan.json").get("query_ids", [])
-        }
-        selected_sizes: dict[str, int] = {}
-        for target_suite, target_dataset in target_order():
-            for action in self._load_actions(target_suite, target_dataset):
-                if action.query_id in selected_union:
-                    selected_sizes[action.query_id] = action.group_size
-        group_rows: list[dict[str, object]] = []
-        for row in selection.to_dict("records"):
-            selection_doc = load_json(
-                self._selection_path(
-                    str(row["backend"]),
-                    str(row["scenario"]),
-                    str(row["group_size_variant"]),
-                    float(row["budget_share"]),
-                    str(row["suite"]),
-                    str(row["dataset"]),
-                )
-            )
-            sizes = [
-                selected_sizes[str(query_id)]
-                for query_id in selection_doc.get("selected_query_ids", [])
-            ]
-            group_rows.append(
-                {
-                    **row,
-                    "mean_group_size": statistics.fmean(sizes) if sizes else 0.0,
-                    "median_group_size": statistics.median(sizes) if sizes else 0.0,
-                    "maximum_group_size": max(sizes, default=0),
-                    "singleton_selected": sum(size == 1 for size in sizes),
-                    "non_singleton_selected": sum(size > 1 for size in sizes),
-                }
-            )
-        _write_csv(self.paths.metrics_dir / "group_metrics.csv", group_rows)
-        labels = _read_csv(self.paths.llm_dir / "calibration_pair_labels.csv")
-        _write_csv(
-            self.paths.metrics_dir / "batch_interference.csv",
-            self._batch_interference_rows(labels),
-        )
-        _write_csv(self.paths.metrics_dir / "api_cost_audit.csv", self._api_cost_rows())
+        return self._build_metrics_router_v3()
 
-        logical_path = self.paths.metrics_dir / "logical_budget_ledger.csv"
-        logical = _read_csv(logical_path)
-        responses = self._response_index()
-        plan = load_json(self.paths.llm_dir / "selected_union_plan.json")
-        online_ids = {str(value) for value in plan.get("online_query_ids", [])}
-        accepted_counts: Counter[tuple[str, str, str, str, str, float, str]] = Counter()
-        for record in records:
-            if not bool(record.get("accepted_llm")) or not record.get("selected_query_id"):
-                continue
-            accepted_counts[
-                (
-                    str(record.get("suite")),
-                    str(record.get("dataset")),
-                    str(record.get("backend")),
-                    str(record.get("scenario")),
-                    str(record.get("group_size_variant")),
-                    float(record.get("budget_share") or 0.0),
-                    str(record.get("selected_query_id")),
-                )
-            ] += 1
-        charged_physical: set[str] = set()
-        for index, row in logical.iterrows():
-            response = responses.get((str(row["query_id"]), str(row["prompt_hash"])))
-            actual = _actual_tokens(response)
-            logical.at[index, "actual_tokens_if_available"] = "" if actual is None else actual
-            query_id = str(row["query_id"])
-            physical = query_id in online_ids and query_id not in charged_physical
-            logical.at[index, "physical_api_calls"] = int(physical)
-            if physical:
-                charged_physical.add(query_id)
-            logical.at[index, "accepted_llm_cells"] = accepted_counts[
-                (
-                    str(row["target_suite"]),
-                    str(row["target_dataset"]),
-                    str(row["backend"]),
-                    str(row["scenario"]),
-                    str(row["group_size_variant"]),
-                    float(row["budget_share"]),
-                    query_id,
-                )
-            ]
-        _write_csv(
-            logical_path,
-            logical.to_dict("records"),
-            columns=LOGICAL_LEDGER_COLUMNS,
-        )
-
-        summary = {
-            "method_metric_rows": len(summaries),
-            "primary_comparison_rows": len(primary),
-            "budget_curve_rows": len(budget_curves),
-            "size_ablation_rows": len(size_rows),
-            "aubc_rows": len(aubc),
-        }
-        self.state.update_stage("metrics", "complete", **summary)
-        return summary
 
     def _catboost_comparison_records(self) -> list[dict[str, object]]:
         """Load only frozen 20% LightGBM/XGBoost slices for CatBoost comparison."""
@@ -4378,7 +3801,7 @@ class ExperimentRunner:
         if not self.is_router_v3_catboost:
             return []
         if self.router_comparison_run is None:
-            raise ValueError("Router-v3 CatBoost comparison run is not bound")
+            return []
         source = self.router_comparison_run
         source_manifest_path = source / "run_manifest.json"
         source_records_path = source / "final" / "all_methods.jsonl"
@@ -4449,7 +3872,7 @@ class ExperimentRunner:
                 for variant in self._router_training_variants()
                 for budget in self._router_budget_shares()
             ]
-            if self.is_router_v3_catboost
+            if comparison_records
             else []
         )
         series_order = [
@@ -5025,7 +4448,7 @@ class ExperimentRunner:
         )
 
         router_comparison_rows: list[dict[str, object]] = []
-        if self.is_router_v3_catboost:
+        if self.is_router_v3_catboost and self.router_comparison_run is not None:
             comparison_records = self._catboost_comparison_records()
             comparison_summaries = [
                 row
@@ -5258,7 +4681,7 @@ class ExperimentRunner:
         return audit
 
     def run_all(self) -> dict[str, object]:
-        """Execute and independently validate the entire requested matrix."""
+        """Execute and independently validate the entire Router-v3 matrix."""
 
         plan = self.plan_run()
         preflight = self.check_model()
@@ -5269,33 +4692,24 @@ class ExperimentRunner:
         metrics = self.build_metrics_stage()
         audit = self.build_audit_stage()
         validate_run(self.paths.run_dir, require_complete=False)
-        completed_matrix = (
-            {
-                "datasets": len(TEST_TARGETS),
-                "baselines": ["baran_only", "llm_only"],
-                "backends": len(self._active_gate_backends()),
-                "budget_shares": list(self._router_budget_shares()),
-                "group_size_variants": list(self._router_training_variants()),
-                "method_slices": 2
-                + len(self._active_gate_backends()) * len(self._scenario_specs()),
-                "cell_records": TEST_TARGET_CELL_COUNT
-                * (
-                    2
-                    + len(self._active_gate_backends())
-                    * len(self._scenario_specs())
-                ),
-                "selection_slices": len(TEST_TARGETS)
-                * len(self._active_gate_backends())
-                * len(self._scenario_specs()),
-            }
-            if self.is_router_v3
-            else {
-                "datasets": len(TEST_TARGETS),
-                "backends": 2,
-                "main_budgets": [0.01, 0.05, 0.1, 0.2, 0.5],
-                "group_size_variants": ["1", "4"],
-            }
-        )
+        completed_matrix = {
+            "datasets": len(TEST_TARGETS),
+            "baselines": ["baran_only", "llm_only"],
+            "backends": len(self._active_gate_backends()),
+            "budget_shares": list(self._router_budget_shares()),
+            "group_size_variants": list(self._router_training_variants()),
+            "method_slices": 2
+            + len(self._active_gate_backends()) * len(self._scenario_specs()),
+            "cell_records": TEST_TARGET_CELL_COUNT
+            * (
+                2
+                + len(self._active_gate_backends())
+                * len(self._scenario_specs())
+            ),
+            "selection_slices": len(TEST_TARGETS)
+            * len(self._active_gate_backends())
+            * len(self._scenario_specs()),
+        }
         self.state.complete(
             required_stages=REQUIRED_STAGES,
             completed_matrix=completed_matrix,
@@ -5317,6 +4731,7 @@ class ExperimentRunner:
             "audit": audit,
             "validation": validation,
         }
+
 
 
 _RECOVERY_LINKED_ROOTS = frozenset({"baran", "cell_features", "groups"})
@@ -5508,6 +4923,9 @@ def _validate_router_v3_run(
         raise ValueError("run fingerprint drift: implementation_sha256")
     sweep = revision == ROUTER_V3_BUDGET_SWEEP_REVISION
     catboost_run = revision == ROUTER_V3_CATBOOST_REVISION
+    catboost_comparison = bool(
+        catboost_run and str(manifest.get("router_comparison_run") or "").strip()
+    )
     expected_backends = (
         CATBOOST_GATE_BACKENDS
         if catboost_run
@@ -5552,7 +4970,10 @@ def _validate_router_v3_run(
         ("baran_source_run", "baran_source_manifest_sha256"),
         ("response_reuse_run", "response_reuse_manifest_sha256"),
     ):
-        source = Path(str(manifest.get(path_field, ""))).resolve()
+        raw_source = str(manifest.get(path_field) or "").strip()
+        if not raw_source:
+            continue
+        source = Path(raw_source).resolve()
         source_manifest = source / "run_manifest.json"
         if (
             not source_manifest.is_file()
@@ -5568,7 +4989,7 @@ def _validate_router_v3_run(
             != str(manifest.get("router_artifact_reuse_manifest_sha256", ""))
         ):
             raise ValueError("run fingerprint source drift: router_artifact_reuse_run")
-    if catboost_run:
+    if catboost_comparison:
         source = Path(str(manifest.get("router_comparison_run", ""))).resolve()
         source_manifest = source / "run_manifest.json"
         if (
@@ -5596,60 +5017,53 @@ def _validate_router_v3_run(
         ):
             raise ValueError("Router-v3 completion addendum changed")
     response_reuse = load_json(root / "provenance" / "response_reuse.json")
-    reuse_checkpoint = Path(str(response_reuse.get("source_checkpoint", ""))).resolve()
-    if (
-        not reuse_checkpoint.is_file()
-        or sha256_file(reuse_checkpoint)
-        != str(response_reuse.get("source_checkpoint_sha256", ""))
-        or set(response_reuse.get("matching_fields", []))
-        != {
+    if set(response_reuse.get("matching_fields", [])) != {
             "query_id",
             "prompt_hash",
             "provider_request_hash",
             "model",
             "prompt_schema_version",
-        }
-    ):
+        }:
         raise ValueError("Router-v3 strict response-reuse provenance failed")
+    response_source = str(response_reuse.get("source_run") or "").strip()
+    if response_source:
+        reuse_checkpoint = Path(
+            str(response_reuse.get("source_checkpoint", ""))
+        ).resolve()
+        if (
+            not reuse_checkpoint.is_file()
+            or sha256_file(reuse_checkpoint)
+            != str(response_reuse.get("source_checkpoint_sha256", ""))
+        ):
+            raise ValueError("Router-v3 strict response-reuse provenance failed")
+    elif int(response_reuse.get("imported_rows", -1)) != 0:
+        raise ValueError("fresh Router-v3 run declares imported responses")
     if catboost_run and response_reuse.get("terminal_failures_frozen") is not True:
         raise ValueError("Router-v3 CatBoost terminal failure reuse is not frozen")
-    reuse = load_json(root / "provenance" / "reuse_manifest.json")
-    parent = Path(str(reuse.get("parent_run", ""))).resolve()
+    calibration_plan = read_jsonl(root / "llm" / "calibration_queries.jsonl")
+    calibration_execution = read_jsonl(
+        root / "llm" / "calibration_execution.jsonl"
+    )
+    calibration_labels = _read_csv(
+        root / "llm" / "calibration_pair_labels.csv"
+    )
+    planned_calibration = {
+        (str(row.get("query_id", "")), str(row.get("prompt_hash", "")))
+        for row in calibration_plan
+    }
+    executed_calibration = {
+        (str(row.get("query_id", "")), str(row.get("prompt_hash", "")))
+        for row in calibration_execution
+    }
     if (
-        parent != Path(str(manifest.get("response_reuse_run", ""))).resolve()
-        or not (parent / "run_manifest.json").is_file()
-        or sha256_file(parent / "run_manifest.json")
-        != str(reuse.get("parent_manifest_sha256", ""))
-        or int(reuse.get("calibration_queries", -1)) != 8_197
-        or int(reuse.get("calibration_pair_labels", -1)) != 16_451
-        or reuse.get("logical_cost_preserved") is not True
-        or reuse.get("target_labels_or_responses_used_before_selection") is not False
+        len(calibration_plan) != 8_197
+        or len(planned_calibration) != len(calibration_plan)
+        or len(calibration_execution) != len(calibration_plan)
+        or executed_calibration != planned_calibration
+        or len(calibration_labels) != 16_451
+        or calibration_labels.duplicated(["cell_id", "query_id"]).any()
     ):
-        raise ValueError("Router-v3 calibration reuse provenance failed")
-    for relative, field in (
-        ("llm/calibration_queries.jsonl", "calibration_queries_sha256"),
-        ("llm/calibration_execution.jsonl", "calibration_execution_sha256"),
-        ("llm/calibration_pair_labels.csv", "calibration_pair_labels_sha256"),
-    ):
-        path = root / relative
-        if not path.is_file() or sha256_file(path) != str(reuse.get(field, "")):
-            raise ValueError(f"Router-v3 reused calibration drift: {relative}")
-    identity_rows = reuse.get("identity_artifacts", [])
-    if not isinstance(identity_rows, list) or not identity_rows:
-        raise ValueError("Router-v3 reuse manifest has no identity artifacts")
-    for row in identity_rows:
-        if not isinstance(row, Mapping) or row.get("matches") is not True:
-            raise ValueError("Router-v3 reuse manifest contains an identity mismatch")
-        relative = str(row.get("artifact", ""))
-        local = root / relative
-        source = parent / relative
-        if (
-            not local.is_file()
-            or not source.is_file()
-            or sha256_file(local) != str(row.get("current_sha256", ""))
-            or sha256_file(source) != str(row.get("parent_sha256", ""))
-        ):
-            raise ValueError("Router-v3 reused identity artifact changed")
+        raise ValueError("Router-v3 calibration artifacts are incomplete")
 
     data_root_value = manifest.get("data_root")
     if not isinstance(data_root_value, str) or not data_root_value:
@@ -5779,7 +5193,7 @@ def _validate_router_v3_run(
     f1_matrix = _read_csv(root / "metrics" / "per_dataset_f1_matrix.csv")
     paired = _read_csv(root / "metrics" / "paired_statistics.csv")
     expected_detailed = expected_dataset_slices
-    comparator_count = 4 if catboost_run else 2
+    comparator_count = 4 if catboost_comparison else 2
     expected_paired = (
         len(TEST_TARGETS)
         * len(expected_backends)
@@ -6152,7 +5566,7 @@ def _validate_router_v3_run(
                 "Router-v3 20% F1 or LLM-upgraded cells differ from parent"
             )
 
-    if catboost_run:
+    if catboost_comparison:
         comparison_reuse = load_json(
             root / "provenance" / "comparison_reuse.json"
         )
@@ -6364,541 +5778,141 @@ def _validate_router_v3_run(
     }
 
 
-def validate_run(run_dir: str | Path, *, require_complete: bool = True) -> dict[str, object]:
-    """Independently recompute coverage and metrics from the final cell ledger."""
+def _validate_full_baseline_run(
+    root: Path,
+    manifest: Mapping[str, object],
+    *,
+    require_complete: bool,
+) -> dict[str, object]:
+    """Validate a completed baseline-only run without Router artifacts."""
 
-    root = Path(run_dir).resolve()
-    manifest = load_json(root / "run_manifest.json")
-    experiment = manifest.get("experiment_config", {})
-    if (
-        isinstance(experiment, Mapping)
-        and str(experiment.get("router_revision", ""))
-        in {
-            ROUTER_V3_REVISION,
-            ROUTER_V3_BUDGET_SWEEP_REVISION,
-            ROUTER_V3_CATBOOST_REVISION,
-        }
-    ):
-        return _validate_router_v3_run(
-            root,
-            manifest,
-            require_complete=require_complete,
-        )
+    if require_complete and manifest.get("status") != "complete":
+        raise ValueError("full baseline run is not marked complete")
     current_implementation = _hash_tree(
         PROJECT_ROOT / "src" / "budgeted_group_repair_no_baran", (".py",)
     )
-    bound_implementation = str(manifest.get("implementation_sha256", ""))
-    if (
-        bound_implementation != current_implementation
-        and bound_implementation not in FROZEN_ROUTER_V2_IMPLEMENTATION_SHA256
+    if str(manifest.get("implementation_sha256", "")) != current_implementation:
+        raise ValueError("baseline run fingerprint drift: implementation_sha256")
+    for field, bound_name in (
+        ("experiment_config_sha256", "bound_experiment_config.json"),
+        ("llm_config_sha256", "bound_llm_config.json"),
     ):
-        raise ValueError("run fingerprint drift: implementation_sha256")
-    for field, config_path in (
-        ("experiment_config_sha256", PROJECT_ROOT / "configs" / "experiment_router_v2.json"),
-        ("llm_config_sha256", PROJECT_ROOT / "configs" / "deepseek_v4.json"),
-    ):
-        if str(manifest.get(field, "")) != sha256_file(config_path):
-            raise ValueError(f"run fingerprint drift: {field}")
-    if str(manifest.get("model", "")) != "deepseek-v4-flash":
-        raise ValueError("run fingerprint model mismatch")
-    if str(manifest.get("prompt_schema_version", "")) != PROMPT_SCHEMA_VERSION:
-        raise ValueError("run fingerprint prompt schema mismatch")
-    expected_prompt_sha = canonical_json_sha256(
-        {"schema": PROMPT_SCHEMA_VERSION, "system_prompt": SYSTEM_PROMPT}
-    )
-    if str(manifest.get("prompt_schema_sha256", "")) != expected_prompt_sha:
-        raise ValueError("run fingerprint prompt content mismatch")
+        bound = root / bound_name
+        if not bound.is_file() or str(manifest.get(field, "")) != sha256_file(bound):
+            raise ValueError(f"baseline run fingerprint drift: {field}")
     for path_field, hash_field in (
         ("baran_source_run", "baran_source_manifest_sha256"),
         ("response_reuse_run", "response_reuse_manifest_sha256"),
     ):
-        source = Path(str(manifest.get(path_field, ""))).resolve()
-        source_manifest = source / "run_manifest.json"
+        raw_source = str(manifest.get(path_field) or "").strip()
+        if not raw_source:
+            continue
+        source_manifest = Path(raw_source).resolve() / "run_manifest.json"
         if (
             not source_manifest.is_file()
             or sha256_file(source_manifest) != str(manifest.get(hash_field, ""))
         ):
-            raise ValueError(f"run fingerprint source drift: {path_field}")
-    reuse_provenance = load_json(root / "provenance" / "response_reuse.json")
-    reuse_checkpoint = Path(str(reuse_provenance.get("source_checkpoint", ""))).resolve()
-    if (
-        not reuse_checkpoint.is_file()
-        or sha256_file(reuse_checkpoint)
-        != str(reuse_provenance.get("source_checkpoint_sha256", ""))
-    ):
-        raise ValueError("response-reuse source checkpoint drift")
-    _validate_recovery_provenance(root, manifest)
-    completion_recovery = manifest.get("completion_recovery")
-    if completion_recovery is not None:
-        if not isinstance(completion_recovery, Mapping):
-            raise ValueError("completion_recovery must be an object")
-        addendum_relative = _strict_snapshot_path(
-            completion_recovery.get("addendum", "")
-        )
-        addendum_path = (root / addendum_relative).resolve()
-        try:
-            addendum_path.relative_to(root)
-        except ValueError as error:
-            raise ValueError("completion recovery addendum is not run-local") from error
-        if (
-            not addendum_path.is_file()
-            or sha256_file(addendum_path)
-            != str(completion_recovery.get("sha256", ""))
-        ):
-            raise ValueError("completion recovery addendum is missing or changed")
-    record_audit = load_json(root / "metrics" / "record_audit.json")
-    formal_audit = load_json(root / "metrics" / "formal_run_audit.json")
-    leakage_audit = load_json(root / "metrics" / "leakage_audit.json")
-    metrics = _read_csv(root / "metrics" / "method_metrics.csv")
-    primary = _read_csv(root / "metrics" / "primary_vs_baran.csv")
-    budget = _read_csv(root / "metrics" / "budget_curves.csv")
-    size = _read_csv(root / "metrics" / "size_ablation.csv")
-    selection = _read_csv(root / "metrics" / "selection_audit.csv")
-    split = _read_csv(root / "gates" / "split_audit.csv")
-    api_cost = _read_csv(root / "metrics" / "api_cost_audit.csv")
+            raise ValueError(f"baseline run source drift: {path_field}")
 
-    final_records = read_jsonl(root / "final" / "all_methods.jsonl")
-    expected_targets = set(target_order())
+    records = read_jsonl(root / "final" / "all_methods.jsonl")
+    baran = [row for row in records if str(row.get("method")) == "baran"]
+    llm_only = [
+        row for row in records if str(row.get("method")) == "llm_only"
+    ]
+    if len(records) != TEST_TARGET_CELL_COUNT * 2:
+        raise ValueError("baseline run cell ledger size differs")
+    from .full_complementarity import pair_baseline_records
 
-    def budget_value(value: object) -> float | None:
-        if value in {None, ""}:
-            return None
-        return round(float(value), 12)
-
-    def slice_key(row: Mapping[str, object]) -> tuple[object, ...]:
-        return (
-            str(row.get("method", "")),
-            str(row.get("scenario", "")),
-            str(row.get("backend", "")),
-            budget_value(row.get("budget_share")),
-            str(row.get("group_size_variant", "")),
+    paired = pair_baseline_records(baran, llm_only)
+    summaries = summarize_records(records, strict=True)
+    reported = _read_csv(root / "metrics" / "method_metrics.csv")
+    if len(reported) != len(summaries):
+        raise ValueError("baseline method metric row count differs")
+    reported_index = {
+        (
+            str(row.get("scope", "")),
             str(row.get("suite", "")),
             str(row.get("dataset", "")),
-        )
-
-    baseline = [
-        row
-        for row in final_records
-        if slice_key(row)[:5] == ("baran", "baseline", "none", None, "all")
-    ]
-    baseline_targets = {
-        (str(row.get("suite", "")), str(row.get("dataset", "")))
-        for row in baseline
+            str(row.get("method", "")),
+        ): row
+        for row in reported.to_dict("records")
     }
-    if baseline_targets != expected_targets:
-        raise ValueError("final Baran baseline does not cover the exact nine target datasets")
-    data_root_value = manifest.get("data_root")
-    if not isinstance(data_root_value, str) or not data_root_value:
-        raise ValueError("run manifest has no bound data_root")
-    data_root = Path(data_root_value).resolve()
-    validate_manifest(data_root, require_portable=True)
-    expected_cells = {
-        (suite, dataset): {
-            str(cell.cell_id)
-            for cell in load_dataset(suite, dataset, data_root).safe_cells()
-        }
-        for suite, dataset in target_order()
-    }
-    if sum(len(values) for values in expected_cells.values()) != TEST_TARGET_CELL_COUNT:
-        raise ValueError("final Baran baseline cell universe is not exactly 22,198 cells")
-
-    expected_slices: set[tuple[object, ...]] = set()
-    main_budgets_expected = (0.01, 0.05, 0.1, 0.2, 0.5)
-    size_variants_expected = ("1", "4")
-    for suite, dataset in target_order():
-        expected_slices.add(("baran", "baseline", "none", None, "all", suite, dataset))
-        for backend in EXPECTED_GATE_BACKENDS:
-            method = f"budgeted_group_{backend}"
-            for share in main_budgets_expected:
-                expected_slices.add(
-                    (method, "main", backend, share, "all", suite, dataset)
-                )
-            for variant in size_variants_expected:
-                expected_slices.add(
-                    (method, "size_ablation", backend, 0.2, variant, suite, dataset)
-                )
-    observed_slices = {slice_key(row) for row in final_records}
-    if observed_slices != expected_slices:
-        raise ValueError(
-            "final cell ledger scenario matrix differs: "
-            f"missing={len(expected_slices - observed_slices)}, "
-            f"extra={len(observed_slices - expected_slices)}"
-        )
-    independent_record_audit = verify_records(
-        final_records,
-        expected_cell_ids=expected_cells,
-    )
-    if independent_record_audit.get("ok") is not True:
-        raise ValueError("independent final cell-ledger coverage audit failed")
-    expected_slice_count = len(TEST_TARGETS) * (
-        1 + len(EXPECTED_GATE_BACKENDS) * (
-            len(main_budgets_expected) + len(size_variants_expected)
-        )
-    )
-    expected_record_count = TEST_TARGET_CELL_COUNT * (
-        1 + len(EXPECTED_GATE_BACKENDS) * (
-            len(main_budgets_expected) + len(size_variants_expected)
-        )
-    )
-    if (
-        int(independent_record_audit.get("records", 0)) != expected_record_count
-        or int(independent_record_audit.get("unique_records", 0)) != expected_record_count
-        or int(independent_record_audit.get("slices", 0)) != expected_slice_count
-    ):
-        raise ValueError(
-            "final cell ledger does not contain the exact Router-v2 target matrix"
-        )
-
-    independent_metrics = summarize_records(final_records, strict=True)
-    independent_comparisons = compare_methods(
-        final_records, baseline="baran", strict=True
-    )
-
-    metric_key_fields = (
-        "method",
-        "scenario",
-        "backend",
-        "budget_share",
-        "group_size_variant",
-        "scope",
-        "suite",
-        "dataset",
-    )
-    metric_value_fields = (
-        "true_error_cells",
-        "predicted_repairs",
-        "correct_repairs",
-        "precision",
-        "recall",
-        "f1",
-        "baseline_precision",
-        "baseline_recall",
-        "baseline_f1",
-        "precision_delta",
-        "recall_delta",
-        "f1_delta",
-    )
-
-    def metric_key(row: Mapping[str, object]) -> tuple[object, ...]:
-        values: list[object] = []
-        for field in metric_key_fields:
-            raw = row.get(field)
-            values.append(budget_value(raw) if field == "budget_share" else str(raw))
-        return tuple(values)
-
-    def assert_metric_table(
-        name: str,
-        actual_frame: pd.DataFrame,
-        expected_rows: Sequence[Mapping[str, object]],
-    ) -> None:
-        actual_rows = actual_frame.to_dict("records")
-        actual_index = {metric_key(row): row for row in actual_rows}
-        expected_index = {metric_key(row): row for row in expected_rows}
-        if len(actual_index) != len(actual_rows):
-            raise ValueError(f"{name} contains duplicate metric keys")
-        if set(actual_index) != set(expected_index):
-            raise ValueError(
-                f"{name} metric matrix differs: "
-                f"missing={len(set(expected_index) - set(actual_index))}, "
-                f"extra={len(set(actual_index) - set(expected_index))}"
-            )
-        for key, expected_row in expected_index.items():
-            actual_row = actual_index[key]
-            for field in metric_value_fields:
-                if field not in expected_row:
-                    continue
-                if field not in actual_row:
-                    raise ValueError(f"{name} is missing metric column {field!r}")
-                expected_value = float(expected_row[field])
-                actual_value = float(actual_row[field])
-                if not math.isclose(
-                    actual_value, expected_value, rel_tol=1e-12, abs_tol=1e-12
-                ):
-                    raise ValueError(f"{name} metric mismatch for {field} at {key}")
-
-    assert_metric_table("method_metrics.csv", metrics, independent_metrics)
-    independent_primary = [
-        row
-        for row in independent_comparisons
-        if str(row.get("scenario")) == "main"
-        and str(row.get("group_size_variant")) == "all"
-        and math.isclose(float(row.get("budget_share") or 0.0), 0.2, abs_tol=1e-12)
-    ]
-    independent_budget = [
-        row
-        for row in independent_metrics
-        if str(row.get("method")) != "baran"
-        and str(row.get("scenario")) == "main"
-        and str(row.get("group_size_variant")) == "all"
-    ]
-    independent_size = [
-        row
-        for row in independent_metrics
-        if str(row.get("method")) != "baran"
-        and str(row.get("scenario")) == "size_ablation"
-        and str(row.get("group_size_variant")) in set(size_variants_expected)
-    ]
-    assert_metric_table("primary_vs_baran.csv", primary, independent_primary)
-    assert_metric_table("budget_curves.csv", budget, independent_budget)
-    assert_metric_table("size_ablation.csv", size, independent_size)
-
-    expected_methods = {"baran", "budgeted_group_lightgbm", "budgeted_group_xgboost"}
-    methods = set(metrics["method"].astype(str))
-    if methods != expected_methods:
-        raise ValueError(f"method metric methods differ: {sorted(methods)}")
-    expected_metric_rows = (len(TEST_TARGETS) + 2) * (
-        1 + len(EXPECTED_GATE_BACKENDS) * (
-            len(main_budgets_expected) + len(size_variants_expected)
-        )
-    )
-    expected_primary_rows = (len(TEST_TARGETS) + 2) * len(EXPECTED_GATE_BACKENDS)
-    if len(metrics) != expected_metric_rows:
-        raise ValueError(
-            f"method_metrics.csv must contain {expected_metric_rows} rows, found {len(metrics)}"
-        )
-    if len(primary) != expected_primary_rows:
-        raise ValueError(
-            f"primary_vs_baran.csv must contain {expected_primary_rows} rows, found {len(primary)}"
-        )
-    main_budgets = {
-        round(float(value), 8)
-        for value in budget["budget_share"].tolist()
-    }
-    if main_budgets != {0.01, 0.05, 0.1, 0.2, 0.5}:
-        raise ValueError(f"budget curve points differ: {sorted(main_budgets)}")
-    variants = {str(value) for value in size["group_size_variant"].tolist()}
-    if variants != set(size_variants_expected):
-        raise ValueError(f"size-ablation variants differ: {sorted(variants)}")
-    expected_selection_keys = {
-        (suite, dataset, backend, "main", "all", round(share, 12))
-        for suite, dataset in target_order()
-        for backend in EXPECTED_GATE_BACKENDS
-        for share in main_budgets_expected
-    } | {
-        (suite, dataset, backend, "size_ablation", variant, 0.2)
-        for suite, dataset in target_order()
-        for backend in EXPECTED_GATE_BACKENDS
-        for variant in size_variants_expected
-    }
-    selection_keys = {
+    expected_index = {
         (
-            str(row.suite),
-            str(row.dataset),
-            str(row.backend),
-            str(row.scenario),
-            str(row.group_size_variant),
-            round(float(row.budget_share), 12),
-        )
-        for row in selection.itertuples(index=False)
+            str(row.get("scope", "")),
+            str(row.get("suite", "")),
+            str(row.get("dataset", "")),
+            str(row.get("method", "")),
+        ): row
+        for row in summaries
     }
-    expected_selection_count = len(expected_selection_keys)
-    if len(selection) != expected_selection_count or selection_keys != expected_selection_keys:
-        raise ValueError(
-            "selection_audit.csv does not contain the exact Router-v2 slice matrix"
-        )
-    action_rows: dict[tuple[str, str], dict[str, dict[str, object]]] = {}
-    singleton_references: dict[tuple[str, str], int] = {}
-    for suite, dataset in target_order():
-        rows = read_jsonl(
-            root / "groups" / "candidates" / f"{_dataset_key(suite, dataset)}.jsonl"
-        )
-        indexed = {str(row.get("query_id", "")): row for row in rows}
-        if len(indexed) != len(rows) or not indexed:
-            raise ValueError(f"candidate query ledger is empty or duplicated for {suite}/{dataset}")
-        action_rows[(suite, dataset)] = indexed
-        singleton_references[(suite, dataset)] = sum(
-            int(row.get("estimated_total_tokens", 0) or 0)
-            for row in rows
-            if int(row.get("group_size", 0) or 0) == 1
-            and str(row.get("group_view", "")) == "singleton"
-        )
-        if singleton_references[(suite, dataset)] <= 0:
-            raise ValueError(f"singleton reference is missing for {suite}/{dataset}")
-
-    for row in selection.itertuples(index=False):
-        suite = str(row.suite)
-        dataset = str(row.dataset)
-        backend = str(row.backend)
-        scenario = str(row.scenario)
-        variant = str(row.group_size_variant)
-        share = float(row.budget_share)
-        reference = singleton_references[(suite, dataset)]
-        expected_budget = int(round(reference * share))
-        if int(row.budget_reference_tokens) != reference:
-            raise ValueError("selection audit singleton reference cost disagrees with candidates")
-        if int(row.budget_estimated_tokens) != expected_budget:
-            raise ValueError("selection audit budget is not the declared singleton-cost share")
-        document = load_json(
-            root
-            / "selections"
-            / backend
-            / scenario
-            / f"variant_{variant}"
-            / _budget_label(share)
-            / f"{_dataset_key(suite, dataset)}.json"
-        )
-        raw_ids = document.get("selected_query_ids", [])
-        if not isinstance(raw_ids, list):
-            raise ValueError("selection document selected_query_ids must be an array")
-        selected_ids = [str(value) for value in raw_ids]
-        if len(selected_ids) != len(set(selected_ids)):
-            raise ValueError("selection document contains duplicate query IDs")
-        candidates = action_rows[(suite, dataset)]
-        if any(query_id not in candidates for query_id in selected_ids):
-            raise ValueError("selection document references an unknown candidate query")
-        allowed_sizes = (
-            {1, 2, 4, 8}
-            if scenario == "main"
-            else ({1} if variant == "1" else {1, int(variant)})
-        )
-        if any(
-            int(candidates[query_id].get("group_size", 0) or 0) not in allowed_sizes
-            for query_id in selected_ids
-        ):
-            raise ValueError("selection document violates its group-size variant")
-        recomputed_cost = sum(
-            int(candidates[query_id].get("estimated_total_tokens", 0) or 0)
-            for query_id in selected_ids
-        )
-        if (
-            recomputed_cost != int(row.selected_estimated_tokens)
-            or recomputed_cost != int(float(document.get("total_cost", -1)))
-            or recomputed_cost > expected_budget
-        ):
-            raise ValueError("selection cost does not match its candidate query ledger")
-    expected_split_count = len(TEST_TARGETS) * len(EXPECTED_GATE_BACKENDS)
-    if len(split) != expected_split_count:
-        raise ValueError(
-            f"split_audit.csv must contain {expected_split_count} rows, found {len(split)}"
-        )
-    split_keys = {
-        (str(row.target_suite), str(row.target_dataset), str(row.backend))
-        for row in split.itertuples(index=False)
-    }
-    expected_split_keys = {
-        (suite, dataset, backend)
-        for suite, dataset in target_order()
-        for backend in EXPECTED_GATE_BACKENDS
-    }
-    if split_keys != expected_split_keys:
-        raise ValueError("split_audit.csv target/backend matrix is incomplete")
-    for column in (
-        "train_test_cell_overlap",
-        "train_test_base_family_overlap",
-        "train_test_row_identity_overlap",
-        "train_test_query_overlap",
-        "train_test_group_signature_overlap",
-        "validation_cells",
-    ):
-        if bool((pd.to_numeric(split[column], errors="raise") != 0).any()):
-            raise ValueError(f"split_audit.csv has non-zero leakage field {column}")
-    for column in (
-        "target_in_train",
-        "target_group_label_used",
-        "target_response_used_before_selection",
-        "target_response_visible_before_selection",
-    ):
-        normalized = split[column].astype(str).str.strip().str.lower()
-        if not normalized.isin({"0", "false", "no"}).all():
-            raise ValueError(
-                f"split_audit.csv leakage field {column} must be explicitly false"
-            )
-    if bool(
-        (
-            pd.to_numeric(selection["selected_estimated_tokens"], errors="raise")
-            > pd.to_numeric(selection["budget_estimated_tokens"], errors="raise")
-        ).any()
-    ):
-        raise ValueError("one or more logical selections exceed their budget")
-    expected_phases = {
-        "offline_group_calibration",
-        "online_selected_union",
-        "total_fresh_experiment",
-    }
-    if set(api_cost["phase"].astype(str)) != expected_phases:
-        raise ValueError("api_cost_audit.csv phases are incomplete")
-    if api_cost["phase"].astype(str).duplicated().any():
-        raise ValueError("api_cost_audit.csv contains duplicate phases")
-    total_cost = api_cost.loc[
-        api_cost["phase"].astype(str) == "total_fresh_experiment"
-    ].iloc[0]
-    if int(total_cost["physical_requests"]) < 1:
-        raise ValueError("api_cost_audit.csv reports no physical model requests")
-    _validate_api_cost_resolution(api_cost)
-    audit_runner = object.__new__(ExperimentRunner)
-    audit_runner.paths = ExperimentPaths(
-        root,
-        data_root,
-        root / "bound_experiment_config.json",
-        root / "bound_llm_config.json",
-        root,
-        root.parent,
-        root,
-    )
-    recomputed_cost_rows = {
-        str(row["phase"]): row for row in audit_runner._api_cost_rows()
-    }
-    reported_cost_rows = {
-        str(row["phase"]): row for row in api_cost.to_dict("records")
-    }
-    for phase, expected_row in recomputed_cost_rows.items():
-        actual_row = reported_cost_rows[phase]
-        for field in (
-            "records",
-            "physical_requests",
-            "attempts",
-            "prompt_tokens",
-            "completion_tokens",
-            "total_tokens",
-            "cache_hits",
-            "failed_records",
-            "provider_failed_records",
-            "historical_failed_records",
-            "operational_fallback_records",
-            "operational_fallback_cells",
-            "unresolved_operational_failures",
-            "unknown_usage_records",
-            "unknown_usage_attempts",
-        ):
-            if int(float(actual_row.get(field, -1))) != int(expected_row[field]):
-                raise ValueError(
-                    f"api_cost_audit.csv disagrees with append-only ledger: {phase}/{field}"
-                )
+    if set(reported_index) != set(expected_index):
+        raise ValueError("baseline method metric identity differs")
+    for key, expected in expected_index.items():
+        actual = reported_index[key]
+        for field in ("predicted_repairs", "correct_repairs", "precision", "recall", "f1"):
+            if not math.isclose(
+                float(actual[field]),
+                float(expected[field]),
+                rel_tol=1e-12,
+                abs_tol=1e-12,
+            ):
+                raise ValueError(f"baseline metric mismatch: {field}/{key}")
+    plan = load_json(root / "llm" / "selected_union_plan.json")
     if (
-        record_audit.get("ok") is not True
-        or formal_audit.get("ok") is not True
-        or leakage_audit.get("ok") is not True
+        plan.get("run_kind") != "full_baselines"
+        or int(plan.get("llm_only_singleton_queries", -1))
+        != TEST_TARGET_CELL_COUNT
+        or int(plan.get("bgr_selected_union_queries", -1)) != 0
     ):
-        raise ValueError("record, leakage, or formal audit is not successful")
-    for field in ("records", "unique_records", "slices"):
-        if int(record_audit.get(field, -1)) != int(independent_record_audit[field]):
-            raise ValueError(f"record_audit.json disagrees with independent {field}")
+        raise ValueError("baseline singleton plan differs")
     stages = manifest.get("stages", {})
-    if not isinstance(stages, Mapping):
-        raise ValueError("run manifest stages must be an object")
-    missing_stages = [
-        stage
-        for stage in REQUIRED_STAGES
-        if not isinstance(stages.get(stage), Mapping)
+    if not isinstance(stages, Mapping) or any(
+        not isinstance(stages.get(stage), Mapping)
         or stages[stage].get("status") != "complete"  # type: ignore[index]
-    ]
-    if missing_stages:
-        raise ValueError(f"run manifest has incomplete stages: {missing_stages}")
-    if require_complete and manifest.get("status") != "complete":
-        raise ValueError("run manifest is not marked complete")
+        for stage in BASELINE_REQUIRED_STAGES
+    ):
+        raise ValueError("baseline run has incomplete stages")
     return {
         "ok": True,
+        "run_kind": "full_baselines",
         "run_dir": str(root),
         "status": str(manifest.get("status", "")),
-        "method_metric_rows": len(metrics),
-        "primary_comparison_rows": len(primary),
-        "budget_curve_rows": len(budget),
-        "size_ablation_rows": len(size),
-        "selection_rows": len(selection),
-        "split_rows": len(split),
-        "record_count": int(record_audit.get("records", 0)),
+        "datasets": len(TEST_TARGETS),
+        "cells_per_method": TEST_TARGET_CELL_COUNT,
+        "record_count": len(records),
+        "paired_cells": len(paired),
+        "method_metric_rows": len(summaries),
         "independently_recomputed": True,
     }
+
+
+def validate_run(
+    run_dir: str | Path,
+    *,
+    require_complete: bool = True,
+) -> dict[str, object]:
+    """Independently validate a Router-v3 run from its frozen artifacts."""
+
+    root = Path(run_dir).resolve()
+    manifest = load_json(root / "run_manifest.json")
+    completed_matrix = manifest.get("completed_matrix", {})
+    if (
+        isinstance(completed_matrix, Mapping)
+        and completed_matrix.get("run_kind") == "full_baselines"
+    ):
+        return _validate_full_baseline_run(
+            root,
+            manifest,
+            require_complete=require_complete,
+        )
+    return _validate_router_v3_run(
+        root,
+        manifest,
+        require_complete=require_complete,
+    )
+
+
 
 
 def finalize_existing_run(run_dir: str | Path) -> dict[str, object]:
@@ -6945,15 +5959,6 @@ def finalize_existing_run(run_dir: str | Path) -> dict[str, object]:
     write_json(addendum_path, addendum)
     state = RunState(root, manifest_path)
     experiment = manifest.get("experiment_config", {})
-    is_router_v3 = (
-        isinstance(experiment, Mapping)
-        and str(experiment.get("router_revision", ""))
-        in {
-            ROUTER_V3_REVISION,
-            ROUTER_V3_BUDGET_SWEEP_REVISION,
-            ROUTER_V3_CATBOOST_REVISION,
-        }
-    )
     v3_backends = (
         [str(value) for value in experiment.get("gate_backends", [])]
         if isinstance(experiment, Mapping)
@@ -6971,28 +5976,19 @@ def finalize_existing_run(run_dir: str | Path) -> dict[str, object]:
         else []
     )
     v3_method_slices = 2 + len(v3_backends) * len(v3_variants) * len(v3_budgets)
-    completed_matrix = (
-        {
-            "datasets": len(TEST_TARGETS),
-            "baselines": ["baran_only", "llm_only"],
-            "backends": len(v3_backends),
-            "budget_shares": v3_budgets,
-            "group_size_variants": v3_variants,
-            "method_slices": v3_method_slices,
-            "cell_records": TEST_TARGET_CELL_COUNT * v3_method_slices,
-            "selection_slices": len(TEST_TARGETS)
-            * len(v3_backends)
-            * len(v3_variants)
-            * len(v3_budgets),
-        }
-        if is_router_v3
-        else {
-            "datasets": len(TEST_TARGETS),
-            "backends": 2,
-            "main_budgets": [0.01, 0.05, 0.1, 0.2, 0.5],
-            "group_size_variants": ["1", "4"],
-        }
-    )
+    completed_matrix = {
+        "datasets": len(TEST_TARGETS),
+        "baselines": ["baran_only", "llm_only"],
+        "backends": len(v3_backends),
+        "budget_shares": v3_budgets,
+        "group_size_variants": v3_variants,
+        "method_slices": v3_method_slices,
+        "cell_records": TEST_TARGET_CELL_COUNT * v3_method_slices,
+        "selection_slices": len(TEST_TARGETS)
+        * len(v3_backends)
+        * len(v3_variants)
+        * len(v3_budgets),
+    }
     state.complete(
         required_stages=REQUIRED_STAGES,
         completed_matrix=completed_matrix,
@@ -7012,6 +6008,7 @@ def finalize_existing_run(run_dir: str | Path) -> dict[str, object]:
 
 
 __all__ = [
+    "BASELINE_REQUIRED_STAGES",
     "CATBOOST_GATE_BACKENDS",
     "EXPECTED_GATE_BACKENDS",
     "ExperimentPaths",
@@ -7019,7 +6016,9 @@ __all__ = [
     "MODEL_FEATURE_COLUMNS",
     "PROJECT_ROOT",
     "REQUIRED_STAGES",
+    "ROUTER_V3_BUDGET_SWEEP_REVISION",
     "ROUTER_V3_CATBOOST_REVISION",
+    "ROUTER_V3_REVISION",
     "SafetyCapExceeded",
     "_validate_api_cost_resolution",
     "finalize_existing_run",

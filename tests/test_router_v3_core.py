@@ -17,7 +17,7 @@ from budgeted_group_repair_no_baran.prompt_policy import (
 )
 import pytest
 from budgeted_group_repair_no_baran.protocol import split_for_target
-from budgeted_group_repair_no_baran.router_v2 import (
+from budgeted_group_repair_no_baran.router_v3 import (
     CALIBRATION_SINGLETON_CELL_COUNT,
     MODEL_FEATURE_COLUMNS,
     TEST_TARGET_CELL_COUNT,
@@ -65,7 +65,7 @@ def _action(
     )
 
 
-def test_router_v2_frozen_dataset_universes_are_exact() -> None:
+def test_router_v3_frozen_dataset_universes_are_exact() -> None:
     assert len(target_order()) == len(TEST_TARGETS) == 9
     assert len(generation_order()) == 14
     target_cells = sum(
@@ -213,24 +213,28 @@ def test_family_holdout_has_zero_identity_and_label_leakage() -> None:
 
 
 def test_router_cli_has_staged_uncapped_commands() -> None:
-    plan = parse_args(["plan-router-run", "--run-id", "router-v2"])
-    assert plan.experiment_config.name == "experiment_router_v2.json"
+    plan = parse_args(["plan-router-run", "--run-id", "router-v3"])
+    assert plan.experiment_config.name == "experiment_router_v3.json"
+    assert plan.baran_source_run is None
+    assert plan.response_reuse_run is None
     calibration = parse_args(
         [
             "run-router-calibration",
             "--run-id",
-            "router-v2",
+            "router-v3",
             "--no-token-cap",
         ]
     )
     assert calibration.no_token_cap is True
-    train = parse_args(["train-router", "--run-id", "router-v2"])
+    train = parse_args(["train-router", "--run-id", "router-v3"])
     assert train.command == "train-router"
     selected = parse_args(
-        ["run-router-bgr", "--run-id", "router-v2", "--no-token-cap"]
+        ["run-router-bgr", "--run-id", "router-v3", "--no-token-cap"]
     )
     assert selected.no_token_cap is True
-    validate = parse_args(
-        ["validate-run", "--run-id", "router-v2", "--require-router"]
+    baselines = parse_args(
+        ["run-full-baselines", "--run-id", "baseline-v3", "--token-cap", "10"]
     )
-    assert validate.require_router is True
+    assert baselines.token_cap == 10
+    validate = parse_args(["validate-run", "--run-id", "router-v3"])
+    assert validate.allow_incomplete is False

@@ -8,7 +8,6 @@
   "baran_workers": 4,
   "baran_multiprocessing_start_method": "spawn",
   "gate_backends": ["catboost"],
-  "comparison_run": "runs/no_baran_router_v3_deepseek_v4_20260725_budget20_k1248_all",
   "harm_penalty_rho": 1.0,
   "uncertainty_penalty_gamma": 1.0,
   "primary_budget_share": 0.2,

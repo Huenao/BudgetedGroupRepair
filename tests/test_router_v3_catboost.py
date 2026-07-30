@@ -10,7 +10,7 @@ from budgeted_group_repair_no_baran.group_gate import (
     CatBoostFeatureEncoder,
     GroupUpliftGate,
 )
-from budgeted_group_repair_no_baran.router_v2 import (
+from budgeted_group_repair_no_baran.router_v3 import (
     CATBOOST_GATE_BACKENDS,
     FROZEN_ROUTER_V3_CATBOOST_IMPLEMENTATION_SHA256,
     ROUTER_V3_CATBOOST_REVISION,
@@ -18,8 +18,7 @@ from budgeted_group_repair_no_baran.router_v2 import (
     ExperimentRunner,
     _router_v3_implementation_binding_matches,
 )
-from budgeted_group_repair_no_baran import router_reporting, router_reporting_v3
-from budgeted_group_repair_no_baran.run_state import write_json
+from budgeted_group_repair_no_baran import router_reporting_v3
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -38,13 +37,19 @@ def _runner() -> ExperimentRunner:
 
 def test_catboost_revision_freezes_20pct_full_k_matrix() -> None:
     runner = _runner()
-    assert runner.is_router_v3
     assert runner.is_router_v3_catboost
     assert runner.freezes_reused_terminal_failures
     assert runner._active_gate_backends() == CATBOOST_GATE_BACKENDS
     assert tuple(runner._router_training_variants()) == ROUTER_V3_VARIANTS
     assert runner._router_budget_shares() == (0.2,)
     assert len(runner._scenario_specs()) == 5
+
+
+def test_catboost_comparison_run_is_optional() -> None:
+    runner = _runner()
+    runner.router_comparison_run = None
+    assert "comparison_run" not in runner.experiment_config
+    assert runner._catboost_comparison_records() == []
 
 
 def test_catboost_paths_isolate_five_models_and_selections(tmp_path: Path) -> None:
@@ -137,21 +142,7 @@ def test_catboost_gate_handles_constant_binary_heads() -> None:
     assert all(row.q_helpful == row.q_harmful == 0.0 for row in gate.predict(features))
 
 
-def test_catboost_report_dispatch_and_physical_calls(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    write_json(
-        tmp_path / "run_manifest.json",
-        {"experiment_config": {"router_revision": ROUTER_V3_CATBOOST_REVISION}},
-    )
-    expected = {"ok": True, "kind": "catboost-v3"}
-    monkeypatch.setattr(
-        router_reporting_v3,
-        "build_router_v3_report",
-        lambda run_dir, output_path=None: expected,
-    )
-    assert router_reporting.build_router_report(tmp_path) == expected
+def test_catboost_report_preserves_physical_calls() -> None:
     detailed = router_reporting_v3._prepare_detailed(
         [{"suite": "source", "dataset": "beers", "physical_calls_charged": 3}]
     )

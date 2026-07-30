@@ -41,7 +41,7 @@ selections/lightgbm/size_conditioned/variant_<k>/<budget>/<suite>__<dataset>.jso
 
 五个预算的 selected sets 不要求嵌套。每个选择器单独受对应数据集的 singleton-cost budget 约束，且 `selected_estimated_tokens <= budget_estimated_tokens` 是 hard gate。
 
-## 4. 父 Router-v3 复用
+## 4. Router-v3 artifact 复用
 
 `--router-artifact-reuse-run` 指向完整的 20% Router-v3。新 run 逐项校验并复制 k=2/k=4 LightGBM 的 18 个 prediction files 和 18 个 metadata files。复用 provenance 写入：
 
@@ -49,14 +49,14 @@ selections/lightgbm/size_conditioned/variant_<k>/<budget>/<suite>__<dataset>.jso
 provenance/router_artifact_reuse.json
 ```
 
-Baran、cell features、candidate groups、memberships、8,197 calibration queries 和 16,451 pair labels 仍通过严格 hash identity 复用。Response reuse 使用 latest-row 语义，并要求以下 identity 完全一致：
+Baran 可现场运行或通过 `--baran-source-run` 严格导入；candidate groups 与 memberships 在当前 run 中确定性生成。Calibration 可重新执行，也可以通过 request-identical response checkpoint 节省物理调用。Response reuse 使用 latest-row 语义，并要求以下 identity 完全一致：
 
 ```text
 query_id / prompt_hash / provider_request_hash /
 model / prompt_schema_version
 ```
 
-成功响应和父 run 已冻结的 terminal provider failures 均可复用。失败响应在新 run 中保持失败，BGR 回退 Baran，LLM-only 仍记为未修复且不回退 Baran。Cache hit 只减少 physical calls，不改变各 slice 的 logical calls/tokens。
+若指定 response reuse run，成功响应和其中已冻结的 terminal provider failures 均可复用。失败响应在新 run 中保持失败，BGR 回退 Baran，LLM-only 仍记为未修复且不回退 Baran。Cache hit 只减少 physical calls，不改变各 slice 的 logical calls/tokens。
 
 20% 的每个 selected-ID 列表必须与父 Router-v3 的 LightGBM k=2/k=4 完全一致。最终 validator 还逐 cell 比较 prediction、correctness、accepted-LLM、selected query 与 final source，从而同时保证 F1 和升级为 LLM 修复的 cell 数一致。
 

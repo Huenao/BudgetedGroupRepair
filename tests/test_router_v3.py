@@ -7,14 +7,15 @@ from types import SimpleNamespace
 import pandas as pd
 import pytest
 
-from budgeted_group_repair_no_baran.data import SafeCell
+from budgeted_group_repair_no_baran import router_v3 as router_v3_module
+from budgeted_group_repair_no_baran.data import SafeCell, write_jsonl
 from budgeted_group_repair_no_baran.group_context import canonical_messages
 from budgeted_group_repair_no_baran.group_generator import GroupQueryAction
 from budgeted_group_repair_no_baran.prompt_policy import (
     INFORMATION_POLICY,
     PROMPT_SCHEMA_VERSION,
 )
-from budgeted_group_repair_no_baran.router_v2 import (
+from budgeted_group_repair_no_baran.router_v3 import (
     ROUTER_V3_BUDGET_SWEEP_REVISION,
     ROUTER_V3_REVISION,
     ROUTER_V3_SWEEP_BUDGETS,
@@ -170,7 +171,6 @@ def test_llm_only_never_uses_baran_fallback() -> None:
 
 def test_router_v3_budget_sweep_has_exact_configured_matrix() -> None:
     runner = _sweep_runner()
-    assert runner.is_router_v3
     assert runner.is_router_v3_budget_sweep
     assert runner._active_gate_backends() == ("lightgbm",)
     assert tuple(runner._router_training_variants()) == ROUTER_V3_SWEEP_VARIANTS
@@ -240,3 +240,101 @@ def test_router_v3_budget_sweep_filters_each_k_before_fit_and_predict() -> None:
         )
         assert set(filtered["group_size"]) == set(sizes)
         assert 8 not in set(filtered["group_size"])
+
+
+def test_router_v3_create_allows_fresh_baran_and_llm_runs(tmp_path: Path) -> None:
+    runner = ExperimentRunner.create(
+        project_root=PROJECT_ROOT,
+        data_root=PROJECT_ROOT / "data",
+        config_path=PROJECT_ROOT / "configs" / "experiment_router_v3.json",
+        llm_config_path=PROJECT_ROOT / "configs" / "deepseek_v4.json",
+        vendor_root=PROJECT_ROOT / "vendor" / "raha_source",
+        runs_root=tmp_path,
+        run_id="fresh-v3",
+        provider_token_cap=1_000_000,
+    )
+    assert runner.baran_source_run is None
+    assert runner.response_reuse_run is None
+    assert runner.provider_token_cap == 1_000_000
+    assert not hasattr(runner, "_reuse_router_v3_parent_calibration")
+
+
+def test_provider_cap_requires_explicit_cap_or_uncapped_choice() -> None:
+    runner = _runner()
+    runner.provider_token_cap = None
+    runner.allow_uncapped_provider_usage = False
+    with pytest.raises(ValueError, match="--token-cap"):
+        runner._effective_provider_cap(require=True)
+    runner.provider_token_cap = 123
+    assert runner._effective_provider_cap(require=True) == 123
+    runner.allow_uncapped_provider_usage = True
+    assert runner._effective_provider_cap(require=True) is None
+
+
+def test_baran_stage_runs_fresh_when_no_source_is_bound(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cell = SafeCell("source", "toy", 0, 0, "name", "0", "dirty")
+    loaded = SimpleNamespace(
+        safe_cells=lambda: [cell],
+        oracle_cells=lambda include_annotations=False: [object()],
+    )
+    runner = object.__new__(ExperimentRunner)
+    runner.paths = SimpleNamespace(
+        baran_dir=tmp_path / "baran",
+        vendor_root=tmp_path / "vendor",
+    )
+    runner.experiment_config = {
+        "baran_labeling_budget": 20,
+        "baran_seed": 16,
+        "baran_workers": 1,
+        "baran_multiprocessing_start_method": "spawn",
+    }
+    runner.baran_source_run = None
+    runner._baran = {}
+    runner._dataset = lambda suite, dataset: loaded
+    runner.state = SimpleNamespace(update_stage=lambda *args, **kwargs: None)
+    calls: list[object] = []
+
+    def fake_run_baran(dataset, cells, *_args, **_kwargs):
+        calls.extend(cells)
+        return [
+            {
+                "cell_id": str(cell.cell_id),
+                "suite": "source",
+                "dataset": "toy",
+                "prediction": "fixed",
+                "parse_status": "ok_baran",
+            }
+        ]
+
+    monkeypatch.setattr(router_v3_module, "run_baran", fake_run_baran)
+    summary = runner.run_baran_stage((("source", "toy"),))
+    assert calls
+    assert summary["fresh"] is True
+    assert summary["imported"] is False
+
+
+def test_baran_stage_strictly_imports_a_bound_source(tmp_path: Path) -> None:
+    cell = SafeCell("source", "toy", 0, 0, "name", "0", "dirty")
+    loaded = SimpleNamespace(safe_cells=lambda: [cell])
+    source = tmp_path / "source-run"
+    record = {
+        "cell_id": str(cell.cell_id),
+        "suite": "source",
+        "dataset": "toy",
+        "prediction": "fixed",
+        "parse_status": "ok_baran",
+    }
+    write_jsonl(source / "baran" / "source__toy.jsonl", [record])
+    runner = object.__new__(ExperimentRunner)
+    runner.paths = SimpleNamespace(baran_dir=tmp_path / "run" / "baran")
+    runner.baran_source_run = source
+    runner._baran = {}
+    runner._dataset = lambda suite, dataset: loaded
+    runner.state = SimpleNamespace(update_stage=lambda *args, **kwargs: None)
+    summary = runner.run_baran_stage((("source", "toy"),))
+    assert summary["fresh"] is False
+    assert summary["imported"] is True
+    assert runner._load_baran("source", "toy") == [record]

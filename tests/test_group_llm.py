@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import json
 
-from budgeted_group_repair_no_baran.costing import build_cost_audit
-from budgeted_group_repair_no_baran.data import write_jsonl
 from budgeted_group_repair_no_baran.group_context import canonical_messages, compute_prompt_hash
 from budgeted_group_repair_no_baran.group_llm import (
     DeepSeekGroupClient,
@@ -98,27 +96,3 @@ def test_checkpoint_binds_provider_model_and_preflight_can_feed_singleton(tmp_pa
     )
     run_group_llm_batch(changed, (_job(),), tmp_path)
     assert calls[-1] == "different-model"
-
-
-def test_cost_audit_excludes_cache_hits_and_counts_unknown_reservation(tmp_path) -> None:
-    checkpoint = tmp_path / "llm" / "shared" / "group_query_checkpoint.jsonl"
-    base = {
-        "query_id": "q1",
-        "provider_request_hash": "h1",
-        "status": "success",
-        "usage": {"prompt_tokens": 10, "completion_tokens": 5},
-        "observed_total_tokens": 15,
-        "attempts": 2,
-        "unknown_usage_attempts": 1,
-        "latency_seconds": 1.25,
-        "cache_hit": False,
-        "checkpoint_hit": False,
-        "metadata": {"phase": "preliminary_singleton"},
-    }
-    write_jsonl(checkpoint, (base, base | {"cache_hit": True}))
-    write_jsonl(tmp_path / "llm" / "singleton_responses.jsonl", (base,))
-    result = build_cost_audit(tmp_path, estimated_tokens_by_query={"q1": 100})
-    assert result["totals"]["physical_query_invocations"] == 1
-    assert result["totals"]["provider_attempts"] == 2
-    assert result["totals"]["failed_attempts"] == 1
-    assert result["totals"]["conservative_total_tokens"] == 115

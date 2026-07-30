@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -13,8 +12,6 @@ from budgeted_group_repair_no_baran.group_gate import (
 )
 from budgeted_group_repair_no_baran.group_objective import GroupUpliftObjective
 from budgeted_group_repair_no_baran.group_optimizer import exhaustive_optimum, lazy_gain_cost_greedy
-from budgeted_group_repair_no_baran.pipeline import plan_bgr, run_routeability
-from budgeted_group_repair_no_baran.run_state import write_json
 
 
 def test_gate_labels_only_executable_proposals() -> None:
@@ -43,43 +40,17 @@ def test_optimizer_matches_exact_small_solution_and_respects_budget() -> None:
     assert greedy.total_cost <= 2.0
 
 
-def test_phase_25_and_phase_3_are_hard_gated(tmp_path) -> None:
-    metrics = tmp_path / "metrics"
-    write_json(
-        metrics / "decision_gates.json",
-        {
-            "complementarity_supported": False,
-            "grouping_supported": True,
-            "routeability_supported": False,
-            "phase3_allowed": False,
-        },
-    )
-    runner = SimpleNamespace(
-        paths=SimpleNamespace(metrics=metrics), assert_binding_current=lambda: None
-    )
-    with pytest.raises(RuntimeError, match="gated"):
-        run_routeability(runner)
-    with pytest.raises(RuntimeError, match="blocked"):
-        plan_bgr(runner)
-
-
 def test_cli_requires_paid_cap_and_env_parser_never_interpolates(tmp_path) -> None:
     with pytest.raises(SystemExit):
         parse_args(["check-model", "--run-id", "r1"])
-    args = parse_args(["run-experiment1", "--run-id", "r1", "--token-cap", "1000"])
-    assert args.token_cap == 1000
-    args = parse_args(["run-experiment1", "--run-id", "r1", "--no-token-cap"])
-    assert args.token_cap is None and args.no_token_cap is True
-    plan = parse_args(
-        [
-            "plan-run",
-            "--run-id",
-            "v1",
-            "--experiment-config",
-            "configs/experiment.json",
-        ]
+    args = parse_args(
+        ["run-full-baselines", "--run-id", "r1", "--token-cap", "1000"]
     )
-    assert plan.experiment_config == Path("configs/experiment.json")
+    assert args.token_cap == 1000
+    args = parse_args(
+        ["run-full-baselines", "--run-id", "r1", "--no-token-cap"]
+    )
+    assert args.token_cap is None and args.no_token_cap is True
     router = parse_args(
         [
             "plan-router-run",
@@ -90,6 +61,8 @@ def test_cli_requires_paid_cap_and_env_parser_never_interpolates(tmp_path) -> No
         ]
     )
     assert router.router_artifact_reuse_run == Path("runs/router-v3-parent")
+    assert router.baran_source_run is None
+    assert router.response_reuse_run is None
     env = tmp_path / "safe.env"
     env.write_text("DEEPSEEK_API_KEY='literal-$VALUE'\n", encoding="utf-8")
     target: dict[str, str] = {}

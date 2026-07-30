@@ -32,6 +32,16 @@ def _read_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def _calibration_provenance_path(root: Path) -> Path:
+    current = root / "provenance" / "calibration.json"
+    if current.is_file():
+        return current
+    frozen = root / "provenance" / "reuse_manifest.json"
+    if frozen.is_file():
+        return frozen
+    raise ValueError("Router-v3 report calibration provenance is missing")
+
+
 def _method_label(row: Mapping[str, object]) -> str:
     method = str(row.get("method", ""))
     if method == "baran":
@@ -373,7 +383,7 @@ def _build_budget_sweep_report(
         metrics / "budget_curves.csv",
         metrics / "record_audit.json",
         metrics / "formal_run_audit.json",
-        root / "provenance" / "reuse_manifest.json",
+        _calibration_provenance_path(root),
         root / "provenance" / "router_artifact_reuse.json",
         root / "provenance" / "response_reuse.json",
         root / "llm" / "router_v3_budget_sweep_dry_plan.json",
@@ -788,42 +798,53 @@ def _build_catboost_report(
     """Build the frozen 20% CatBoost dataset-first report."""
 
     metrics = root / "metrics"
-    input_paths = (
+    comparison_path = metrics / "per_dataset_router_comparison.csv"
+    comparison_provenance_path = root / "provenance" / "comparison_reuse.json"
+    comparison_enabled = (
+        comparison_path.is_file() and comparison_provenance_path.is_file()
+    )
+    common_paths = (
         metrics / "per_dataset_f1_matrix.csv",
         metrics / "per_dataset_method_comparison.csv",
-        metrics / "per_dataset_router_comparison.csv",
         metrics / "method_metrics.csv",
         metrics / "paired_statistics.csv",
         metrics / "api_cost_audit.csv",
         metrics / "selection_audit.csv",
         metrics / "record_audit.json",
         metrics / "formal_run_audit.json",
-        root / "provenance" / "reuse_manifest.json",
+        _calibration_provenance_path(root),
         root / "provenance" / "response_reuse.json",
-        root / "provenance" / "comparison_reuse.json",
         root / "llm" / "router_v3_catboost_dry_plan.json",
         root / "run_manifest.json",
     )
-    f1_rows = _read_csv(input_paths[0])
-    detailed_rows = _read_csv(input_paths[1])
-    comparison_rows = _read_csv(input_paths[2])
-    metric_rows = _read_csv(input_paths[3])
-    paired_rows = _read_csv(input_paths[4])
-    cost_rows = _read_csv(input_paths[5])
-    selection_rows = _read_csv(input_paths[6])
-    record_audit = _read_json(input_paths[7])
-    formal_audit = _read_json(input_paths[8])
-    reuse = _read_json(input_paths[9])
-    response_reuse = _read_json(input_paths[10])
-    comparison_reuse = _read_json(input_paths[11])
-    dry_plan = _read_json(input_paths[12])
-    manifest = _read_json(input_paths[13])
+    input_paths = (
+        *common_paths,
+        *((comparison_path, comparison_provenance_path) if comparison_enabled else ()),
+    )
+    f1_rows = _read_csv(common_paths[0])
+    detailed_rows = _read_csv(common_paths[1])
+    metric_rows = _read_csv(common_paths[2])
+    paired_rows = _read_csv(common_paths[3])
+    cost_rows = _read_csv(common_paths[4])
+    selection_rows = _read_csv(common_paths[5])
+    record_audit = _read_json(common_paths[6])
+    formal_audit = _read_json(common_paths[7])
+    reuse = _read_json(common_paths[8])
+    response_reuse = _read_json(common_paths[9])
+    dry_plan = _read_json(common_paths[10])
+    manifest = _read_json(common_paths[11])
+    comparison_rows = _read_csv(comparison_path) if comparison_enabled else []
+    comparison_reuse = (
+        _read_json(comparison_provenance_path)
+        if comparison_enabled
+        else {"enabled": False, "comparison_records": 0}
+    )
     if (
         len(f1_rows) != 9
         or len(detailed_rows) != 63
-        or len(comparison_rows) != 90
+        or len(comparison_rows) != (90 if comparison_enabled else 0)
         or len(metric_rows) != 77
-        or len(paired_rows) != 180
+        or len(paired_rows) != (180 if comparison_enabled else 90)
         or len(selection_rows) != 45
         or record_audit.get("records") != 155_386
         or formal_audit.get("ok") is not True
@@ -959,8 +980,12 @@ def _build_catboost_report(
             "## 逐数据集主表\n\n" + _markdown_table(matrix, matrix_columns),
             "## 逐数据集详细指标\n\n"
             + _markdown_table(detailed, detailed_columns),
-            "## 与 Router-v3 LightGBM / XGBoost 对齐比较\n\n"
-            + _markdown_table(comparison, comparison_columns),
+            (
+                "## 与 Router-v3 LightGBM / XGBoost 对齐比较\n\n"
+                + _markdown_table(comparison, comparison_columns)
+                if comparison_enabled
+                else "## 外部 Router 比较\n\n本次运行未绑定比较 run；CatBoost 指标独立有效。"
+            ),
             "## Dirty-row cluster paired bootstrap\n\n"
             "2,000 次重采样，seed=45；按 comparator × k 在九个数据集内做 Holm 校正。\n\n"
             + _markdown_table(paired, paired_columns),
@@ -972,12 +997,12 @@ def _build_catboost_report(
                 "## 完整性与复用\n\n"
                 f"- Cell ledger: {record_audit['records']:,} records，audit={record_audit['ok']}。\n"
                 f"- Selection: {len(selection_rows)} slices，model folds={validation['split_rows']}。\n"
-                f"- Calibration reuse: {reuse.get('calibration_queries')} queries / "
+                f"- Calibration ledger: {reuse.get('calibration_queries')} queries / "
                 f"{reuse.get('calibration_pair_labels')} pair labels。\n"
                 f"- Response reuse: success={response_reuse.get('imported_success_rows', 0)}，"
                 f"terminal failure={response_reuse.get('imported_terminal_failure_rows', 0)}。\n"
-                f"- External comparison rows: {comparison_reuse.get('comparison_records', 0)}；"
-                "未复制进 CatBoost cell ledger。"
+                f"- External comparison enabled: {comparison_enabled}；rows="
+                f"{comparison_reuse.get('comparison_records', 0)}；未复制进 CatBoost cell ledger。"
             ),
             f"生成时间：{generated_at}",
         )
@@ -1001,8 +1026,12 @@ def _build_catboost_report(
             _html_table(matrix, matrix_columns),
             "<h2>逐数据集详细指标</h2>",
             _html_table(detailed, detailed_columns),
-            "<h2>与 Router-v3 LightGBM / XGBoost 对齐比较</h2>",
-            _html_table(comparison, comparison_columns),
+            (
+                "<h2>与 Router-v3 LightGBM / XGBoost 对齐比较</h2>"
+                + _html_table(comparison, comparison_columns)
+                if comparison_enabled
+                else "<h2>外部 Router 比较</h2><p>本次运行未绑定比较 run；CatBoost 指标独立有效。</p>"
+            ),
             "<h2>Dirty-row cluster paired bootstrap</h2>",
             _html_table(paired, paired_columns),
             "<h2>Win / Tie / Loss</h2>",
@@ -1087,7 +1116,8 @@ h1{{font-size:30px;margin:0 0 8px}}h2{{margin-top:34px;border-bottom:2px solid v
         or not all("physical_calls" in row for row in persisted_detailed)
         or source_physical_calls != expected_physical_calls
         or reported_physical_calls != source_physical_calls
-        or len(persisted.get("tables", {}).get("router_comparison", [])) != 90
+        or len(persisted.get("tables", {}).get("router_comparison", []))
+        != (90 if comparison_enabled else 0)
         or not markdown_path.is_file()
         or not html_path.is_file()
         or "Physical calls" not in markdown_path.read_text(encoding="utf-8")
@@ -1117,7 +1147,7 @@ def build_router_v3_report(
 ) -> dict[str, Any]:
     """Validate a completed run and write the three Router-v3 report formats."""
 
-    from .router_v2 import (
+    from .router_v3 import (
         ROUTER_V3_BUDGET_SWEEP_REVISION,
         ROUTER_V3_CATBOOST_REVISION,
         ROUTER_V3_REVISION,
@@ -1142,7 +1172,7 @@ def build_router_v3_report(
         metrics / "selection_audit.csv",
         metrics / "record_audit.json",
         metrics / "formal_run_audit.json",
-        root / "provenance" / "reuse_manifest.json",
+        _calibration_provenance_path(root),
         root / "run_manifest.json",
     )
     f1_rows = _read_csv(input_paths[0])
@@ -1257,7 +1287,7 @@ def build_router_v3_report(
                 f"- Cell ledger: {record_audit['records']:,} records / "
                 f"{record_audit['slices']} dataset slices，audit={record_audit['ok']}。\n"
                 f"- Selection: {len(selection_rows)} slices，formal audit={formal_audit['ok']}。\n"
-                f"- Calibration reuse: {reuse.get('calibration_queries')} queries / "
+                f"- Calibration ledger: {reuse.get('calibration_queries')} queries / "
                 f"{reuse.get('calibration_pair_labels')} pair labels；逻辑成本保持不变。"
             ),
             f"生成时间：{generated_at}",

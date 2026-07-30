@@ -2,7 +2,7 @@
 
 ## 1. 实验目的
 
-Router-v2 在全部 `1/2/4/8` group-size calibration pairs 上训练一个混合 Router，再在选择阶段限制候选 group size。这会把“训练条件”和“可选 action 条件”混在一起：即使 `k=1` 只选择 singleton，其分数仍来自见过 non-singleton 标签的混合模型。
+如果在全部 `1/2/4/8` group-size calibration pairs 上训练一个混合 Router，再只在选择阶段限制候选 group size，就会把“训练条件”和“可选 action 条件”混在一起：即使 `k=1` 只选择 singleton，其分数仍来自见过 non-singleton 标签的混合模型。
 
 Router-v3 将 group size 视为实验超参数。每个 target family、backend 和 variant 都先过滤 calibration/test pairs，再独立拟合、预测和选择：
 
@@ -42,7 +42,7 @@ company / marketing / restaurant_20 / soccer
 
 ## 3. 复用与成本语义
 
-Router-v3 是独立的新 run，不修改 v1 或 Router-v2。它在本地重新生成并逐文件校验以下 identity：
+Router-v3 每个 run 都在本地生成或严格复用并逐文件校验以下 identity：
 
 - 输入 manifest；
 - Baran cell ledger；
@@ -51,14 +51,14 @@ Router-v3 是独立的新 run，不修改 v1 或 Router-v2。它在本地重新�
 - memberships；
 - calibration query plan。
 
-只有 hash 完全一致时，才复用 Router-v2 的 8,197 条 calibration executions 和 16,451 条 pair labels。No-Baran response 的复用还要求以下字段全部一致：
+Calibration 可以从零执行；若指定 response reuse run，则只有下列 request identity 完全一致时才复用已有 response：
 
 ```text
 query_id / prompt_hash / provider_request_hash /
 model / prompt_schema_version
 ```
 
-复用来源和 hash 写入 `provenance/reuse_manifest.json` 与 `provenance/response_reuse.json`。Cache hit 只减少 physical request；selection 预算和报告中的 logical calls/tokens 不变。LLM-only 的全量 singleton queries 与十个 BGR slices 的选择结果在 selection 冻结后组成一个 physical request union，并按严格 request identity 去重。
+Calibration 和响应 provenance 分别写入 `provenance/calibration.json` 与 `provenance/response_reuse.json`。Cache hit 只减少 physical request；selection 预算和报告中的 logical calls/tokens 不变。LLM-only 的全量 singleton queries 与十个 BGR slices 的选择结果在 selection 冻结后组成一个 physical request union，并按严格 request identity 去重。
 
 ## 4. Router 与 verifier 隔离
 
@@ -112,4 +112,4 @@ Router-v3 只有同时满足以下条件才可标记为 `complete`：
 - method metrics 可从 final cell ledger 独立重算；
 - pytest、compileall、数据校验、run validation 和 report artifact validation 全部通过。
 
-冻结的 `04_实验结果与分析.md` 和 Router-v2 report 不做修改。
+历史实验结果保留在 Git 历史中；本分支只维护 Router-v3 方法和报告入口。

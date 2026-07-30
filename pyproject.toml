@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "budgeted-group-repair-no-baran"
 version = "0.1.0"
-description = "Leakage-safe no-Baran-prompt Budgeted Group Repair experiments"
+description = "Leakage-safe Router-v3 and full no-Baran-prompt baseline experiments"
 readme = "README.md"
 requires-python = ">=3.10,<3.11"
 dependencies = [

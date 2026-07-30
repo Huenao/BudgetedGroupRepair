@@ -11,6 +11,8 @@
 
 本实验是受控 Router 替换：仅将 LightGBM/XGBoost 换成 CatBoost。训练标签、输入特征、LOFO 划分、选择器、Verifier、`rho=1`、`gamma=1`、seed 42 和逻辑预算均保持不变。CatBoost 使用原生 categorical features；数值缺失值使用训练集 median，类别缺失值使用固定 sentinel。
 
+当前 V3 基准实现不强制绑定外部 comparison run。未提供 `--router-comparison-run` 时，CatBoost 的训练、选择、完整指标与报告独立完成；提供时才增加 LightGBM/XGBoost 对齐比较。本页冻结 run 使用了 comparison run，因此包含后文 90 条额外比较。
+
 ## 2. Group-size 条件
 
 | Variant | 训练和候选 group sizes |

@@ -13,16 +13,7 @@ from typing import Any, Mapping, MutableMapping, Sequence
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SOURCE_RUN = (
-    PROJECT_ROOT.parent
-    / "BudgetedGroupRepairProject"
-    / "runs"
-    / "bgr_deepseek_v4_20260720_final_v4_cap80m"
-)
-DEFAULT_RESPONSE_REUSE_RUN = (
-    PROJECT_ROOT / "runs" / "no_baran_deepseek_v4_20260724_final"
-)
-DEFAULT_ROUTER_CONFIG = PROJECT_ROOT / "configs" / "experiment_router_v2.json"
+DEFAULT_ROUTER_CONFIG = PROJECT_ROOT / "configs" / "experiment_router_v3.json"
 DEFAULT_ROUTER_LLM_CONFIG = PROJECT_ROOT / "configs" / "deepseek_v4.json"
 
 _ENV_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -116,7 +107,6 @@ def _run_id(value: str) -> str:
 
 def _add_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> None:
     parser.add_argument("--run-id", type=_run_id, required=True)
-    parser.add_argument("--source-run", type=Path, default=DEFAULT_SOURCE_RUN)
     parser.add_argument("--resume", action="store_true")
     if paid:
         budget = parser.add_mutually_exclusive_group(required=True)
@@ -140,14 +130,24 @@ def _add_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> None:
 def _add_router_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> None:
     _add_run(parser, paid=paid)
     parser.add_argument(
+        "--baran-source-run",
+        type=Path,
+        help="optional completed run supplying a verified Baran ledger",
+    )
+    parser.add_argument(
         "--response-reuse-run",
         type=Path,
-        default=DEFAULT_RESPONSE_REUSE_RUN,
+        help="optional run supplying request-identical No-Baran responses",
     )
     parser.add_argument(
         "--router-artifact-reuse-run",
         type=Path,
         help="completed Router-v3 run supplying request-identical gate artifacts",
+    )
+    parser.add_argument(
+        "--router-comparison-run",
+        type=Path,
+        help="optional base V3 run used only for cross-backend reporting",
     )
     parser.add_argument(
         "--experiment-config",
@@ -164,7 +164,7 @@ def _add_router_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> N
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="budgeted-group-repair-no-baran",
-        description="Run the standalone no-Baran Prompt experiments and gated BGR pipeline.",
+        description="Run the Router-v3 and full No-Baran baseline workflows.",
     )
     commands = parser.add_subparsers(dest="command", required=True)
 
@@ -172,102 +172,51 @@ def build_parser() -> argparse.ArgumentParser:
     validate_data.add_argument("--data-root", type=Path, default=PROJECT_ROOT / "data")
     validate_data.add_argument("--manifest", type=Path)
 
-    full_complementarity = commands.add_parser(
+    complementarity = commands.add_parser(
         "analyze-full-complementarity",
-        help="materialize and analyze the frozen full-nine Baran/LLM baselines offline",
+        help="analyze complete Baran/LLM baseline slices without model calls",
     )
-    full_complementarity.add_argument(
-        "--source-run",
-        type=Path,
-        default=(
-            PROJECT_ROOT
-            / "runs"
-            / "no_baran_router_v3_deepseek_v4_20260725_budget20_k1248_all"
-        ),
-    )
-    full_complementarity.add_argument(
-        "--baseline-dir",
-        type=Path,
-        default=(
-            PROJECT_ROOT
-            / "runs"
-            / "baselines"
-            / "no_baran_singleton_deepseek_v4_full9"
-        ),
-    )
-    full_complementarity.add_argument(
-        "--output-dir",
-        type=Path,
-        default=(
-            PROJECT_ROOT
-            / "runs"
-            / "analyses"
-            / "baran_llm_complementarity_full9"
-        ),
-    )
-    full_complementarity.add_argument("--bootstrap-replicates", type=int, default=2_000)
-    full_complementarity.add_argument("--bootstrap-seed", type=int, default=45)
-    full_complementarity.add_argument("--confidence-level", type=float, default=0.95)
+    complementarity.add_argument("--source-run", type=Path, required=True)
+    complementarity.add_argument("--baseline-dir", type=Path)
+    complementarity.add_argument("--output-dir", type=Path)
+    complementarity.add_argument("--bootstrap-replicates", type=int, default=2_000)
+    complementarity.add_argument("--bootstrap-seed", type=int, default=45)
+    complementarity.add_argument("--confidence-level", type=float, default=0.95)
 
-    plan = commands.add_parser("plan-run")
-    _add_run(plan)
-    plan.add_argument(
-        "--experiment-config",
-        type=Path,
-        help="experiment config to freeze into a new run; resume uses the run-local copy",
-    )
-
-    router_plan = commands.add_parser("plan-router-run")
-    _add_router_run(router_plan)
-
-    router_calibration = commands.add_parser("run-router-calibration")
-    _add_router_run(router_calibration, paid=True)
-
-    router_train = commands.add_parser("train-router")
-    _add_router_run(router_train)
-
-    router_bgr = commands.add_parser("run-router-bgr")
-    _add_router_run(router_bgr, paid=True)
-
-    for name in ("check-model", "run-experiment1", "run-experiment2"):
+    for name, paid in (
+        ("plan-router-run", False),
+        ("run-router-calibration", True),
+        ("train-router", False),
+        ("run-router-bgr", True),
+        ("check-model", True),
+    ):
         command = commands.add_parser(name)
-        _add_run(command, paid=True)
+        _add_router_run(command, paid=paid)
 
-    routeability = commands.add_parser("run-routeability")
-    _add_run(routeability)
+    baselines = commands.add_parser(
+        "run-full-baselines",
+        help="run/resume all formal Baran-only and singleton LLM-only cells",
+    )
+    _add_router_run(baselines, paid=True)
+    baselines.add_argument("--baseline-dir", type=Path)
+    baselines.add_argument("--output-dir", type=Path)
+    baselines.add_argument("--bootstrap-replicates", type=int, default=2_000)
+    baselines.add_argument("--bootstrap-seed", type=int, default=45)
+    baselines.add_argument("--confidence-level", type=float, default=0.95)
 
-    bgr = commands.add_parser("run-bgr")
-    _add_run(bgr, paid=True)
-    bgr.add_argument("--router-v2", action="store_true")
-    bgr.add_argument(
-        "--response-reuse-run",
-        type=Path,
-        default=DEFAULT_RESPONSE_REUSE_RUN,
-    )
-    bgr.add_argument(
-        "--experiment-config",
-        type=Path,
-        default=DEFAULT_ROUTER_CONFIG,
-    )
-    bgr.add_argument(
-        "--llm-config",
-        type=Path,
-        default=DEFAULT_ROUTER_LLM_CONFIG,
-    )
+    finalize = commands.add_parser("finalize-run")
+    _add_run(finalize)
 
-    for name in ("finalize-run", "validate-run", "report"):
-        command = commands.add_parser(name)
-        _add_run(command)
-        if name == "validate-run":
-            command.add_argument("--require-experiments", action="store_true")
-            command.add_argument("--require-router", action="store_true")
-        if name == "finalize-run":
-            command.add_argument("--require-router", action="store_true")
-        if name == "report":
-            command.add_argument("--output", type=Path)
-            command.add_argument("--artifact-only", action="store_true")
-            command.add_argument("--require-router", action="store_true")
+    validate = commands.add_parser("validate-run")
+    _add_run(validate)
+    validate.add_argument("--allow-incomplete", action="store_true")
+
+    report = commands.add_parser("report")
+    _add_run(report)
+    report.add_argument("--output", type=Path)
     return parser
+
+
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -286,20 +235,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return args
 
 
-def _runner(args: argparse.Namespace) -> Any:
-    from .experiment import ExperimentRunner
-
-    return ExperimentRunner(
-        project_root=PROJECT_ROOT,
-        run_id=args.run_id,
-        source_run=Path(args.source_run),
-        resume=bool(args.resume),
-        experiment_config=getattr(args, "experiment_config", None),
-    )
 
 
 def _router_runner(args: argparse.Namespace) -> Any:
-    from .router_v2 import ExperimentRunner
+    from .router_v3 import ExperimentRunner
 
     return ExperimentRunner.create(
         project_root=PROJECT_ROOT,
@@ -310,14 +249,33 @@ def _router_runner(args: argparse.Namespace) -> Any:
         runs_root=PROJECT_ROOT / "runs",
         run_id=args.run_id,
         resume=bool(args.resume),
-        baran_source_run=Path(args.source_run),
-        response_reuse_run=Path(args.response_reuse_run),
+        baran_source_run=(
+            Path(args.baran_source_run)
+            if args.baran_source_run is not None
+            else None
+        ),
+        response_reuse_run=(
+            Path(args.response_reuse_run)
+            if args.response_reuse_run is not None
+            else None
+        ),
         router_artifact_reuse_run=(
             Path(args.router_artifact_reuse_run)
             if args.router_artifact_reuse_run is not None
             else None
         ),
+        router_comparison_run=(
+            Path(args.router_comparison_run)
+            if args.router_comparison_run is not None
+            else None
+        ),
+        provider_token_cap=getattr(args, "token_cap", None),
+        allow_uncapped_provider_usage=bool(
+            getattr(args, "no_token_cap", False)
+        ),
     )
+
+
 
 
 def _redact(value: object, parent_key: str = "") -> object:
@@ -353,10 +311,20 @@ def _execute(args: argparse.Namespace) -> object:
     if args.command == "analyze-full-complementarity":
         from .full_complementarity import build_full_complementarity
 
+        baseline_dir = (
+            Path(args.baseline_dir)
+            if args.baseline_dir is not None
+            else PROJECT_ROOT / "runs" / "baselines" / Path(args.source_run).name
+        )
+        output_dir = (
+            Path(args.output_dir)
+            if args.output_dir is not None
+            else PROJECT_ROOT / "runs" / "analyses" / Path(args.source_run).name
+        )
         return build_full_complementarity(
             args.source_run,
-            baseline_dir=args.baseline_dir,
-            output_dir=args.output_dir,
+            baseline_dir=baseline_dir,
+            output_dir=output_dir,
             bootstrap_replicates=args.bootstrap_replicates,
             bootstrap_seed=args.bootstrap_seed,
             confidence=args.confidence_level,
@@ -364,86 +332,71 @@ def _execute(args: argparse.Namespace) -> object:
 
     if getattr(args, "env_file", None) is not None:
         load_env_file(args.env_file)
-    if args.command in {
-        "plan-router-run",
-        "run-router-calibration",
-        "train-router",
-        "run-router-bgr",
-    } or (args.command == "run-bgr" and args.router_v2):
-        runner = _router_runner(args)
-        if args.command == "plan-router-run":
-            return runner.plan_run()
-        if args.command == "run-router-calibration":
-            if not runner.state.stage_completed("calibration_plan"):
-                runner.plan_run()
-            if not runner.state.stage_completed("model_preflight"):
-                runner.check_model()
-            return runner.run_calibration_stage()
-        if args.command == "train-router":
-            return runner.train_and_select_stage()
-        if args.command in {"run-router-bgr", "run-bgr"}:
-            selected = runner.run_selected_llm_stage()
-            final = runner.build_final_records_stage()
-            metrics = runner.build_metrics_stage()
-            audit = runner.build_audit_stage()
-            return {
-                "selected_llm": selected,
-                "final": final,
-                "metrics": metrics,
-                "audit": audit,
-            }
 
-    if args.command == "validate-run" and args.require_router:
-        from .router_v2 import validate_run
+    if args.command == "validate-run":
+        from .router_v3 import validate_run
 
         return validate_run(
             PROJECT_ROOT / "runs" / args.run_id,
-            require_complete=False,
+            require_complete=not args.allow_incomplete,
         )
-    if args.command == "finalize-run" and args.require_router:
-        from .router_v2 import finalize_existing_run
+    if args.command == "finalize-run":
+        from .router_v3 import finalize_existing_run
 
         return finalize_existing_run(PROJECT_ROOT / "runs" / args.run_id)
-    if args.command == "report" and args.require_router:
-        from .router_reporting import build_router_report
+    if args.command == "report":
+        from .router_reporting_v3 import build_router_v3_report
 
-        return build_router_report(
+        return build_router_v3_report(
             PROJECT_ROOT / "runs" / args.run_id,
             output_path=args.output,
         )
 
-    runner = _runner(args)
-    if args.command == "plan-run":
+    runner = _router_runner(args)
+    if args.command == "plan-router-run":
         return runner.plan_run()
     if args.command == "check-model":
-        return runner.check_model(args.token_cap)
-    if args.command == "run-experiment1":
-        return runner.run_experiment1(args.token_cap)
-    if args.command == "run-experiment2":
-        return runner.run_experiment2(args.token_cap)
-    if args.command == "run-routeability":
-        from .pipeline import run_routeability
-
-        return run_routeability(runner)
-    if args.command == "run-bgr":
-        from .pipeline import plan_bgr, run_bgr
-
-        if not runner._state().stage_completed("bgr_plan"):
-            plan_bgr(runner)
-        return run_bgr(runner, args.token_cap)
-    if args.command == "validate-run":
-        return runner.validate_run(require_experiments=args.require_experiments)
-    if args.command == "finalize-run":
-        return runner.finalize_run()
-    if args.command == "report":
-        from .reporting import build_report
-
-        return build_report(
-            runner.paths.run_dir,
-            output_path=args.output,
-            deliver=not args.artifact_only,
+        return runner.check_model()
+    if args.command == "run-router-calibration":
+        if not runner.state.stage_completed("calibration_plan"):
+            runner.plan_run()
+        if not runner.state.stage_completed("model_preflight"):
+            runner.check_model()
+        return runner.run_calibration_stage()
+    if args.command == "train-router":
+        return runner.train_and_select_stage()
+    if args.command == "run-router-bgr":
+        selected = runner.run_selected_llm_stage()
+        final = runner.build_final_records_stage()
+        metrics = runner.build_metrics_stage()
+        audit = runner.build_audit_stage()
+        return {
+            "selected_llm": selected,
+            "final": final,
+            "metrics": metrics,
+            "audit": audit,
+        }
+    if args.command == "run-full-baselines":
+        baseline_dir = (
+            Path(args.baseline_dir)
+            if args.baseline_dir is not None
+            else PROJECT_ROOT / "runs" / "baselines" / args.run_id
+        )
+        output_dir = (
+            Path(args.output_dir)
+            if args.output_dir is not None
+            else PROJECT_ROOT / "runs" / "analyses" / args.run_id
+        )
+        return runner.run_full_baselines(
+            baseline_dir=baseline_dir,
+            output_dir=output_dir,
+            bootstrap_replicates=args.bootstrap_replicates,
+            bootstrap_seed=args.bootstrap_seed,
+            confidence=args.confidence_level,
         )
     raise AssertionError(f"unhandled command: {args.command}")
+
+
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -611,7 +611,7 @@ def generate_group_queries(
     call_overhead_tokens: int = 0,
     similar_row_count: int = 3,
 ) -> tuple[GroupQueryAction, ...]:
-    """Return the immutable v1 singleton and overlapping group actions."""
+    """Return the immutable singleton and overlapping Router-v3 actions."""
 
     return GroupGenerator(
         dataset,
@@ -636,4 +636,3 @@ __all__ = [
     "generate_group_queries",
     "stable_average_linkage_order",
 ]
-
