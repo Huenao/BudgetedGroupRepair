@@ -123,6 +123,24 @@ PARENT_RUN=runs/no_baran_router_v2_deepseek_v4_20260725_full9
 
 最终 ledger 固定为 2 个 baseline 加 2 个 backend × 5 个 size variant，共 12 个完整方法切片、266,376 条 cell records 和 90 个 selection slices。报告主表为 9 个数据集的 F1 矩阵；详细长表同时保留修复数、P/R/F1、相对两个 baseline 的差值与逻辑/物理成本。
 
+## 完整 Baran / No-Baran Singleton 基线与互补性
+
+Router-v3 固定 run 已包含正式九数据集全部 22,198 cells 的 Baran-only 和纯 LLM-only 结果。纯 LLM-only 切片不会在失败、abstain 或 unchanged dirty 时回退 Baran。以下命令只读取冻结运行，不调用模型，也不需要 API key：
+
+```bash
+export PYTHONPATH=src
+../BudgetedGroupRepairProject/.venv/bin/python -m budgeted_group_repair_no_baran.cli \
+  analyze-full-complementarity \
+  --source-run runs/no_baran_router_v3_deepseek_v4_20260725_budget20_k1248_all
+```
+
+派生产物保存在：
+
+- `runs/baselines/no_baran_singleton_deepseek_v4_full9/`：带来源哈希的 manifest、两个完整 baseline JSONL 和离线 Router labels；
+- `runs/analyses/baran_llm_complementarity_full9/`：逐 cell 配对、分数据集/family/micro/macro 统计、bootstrap CI、McNemar/Holm 检验和独立 Markdown 报告。
+
+未来 singleton-only Router 应显式使用上述固定 Router-v3 run 作为 `--response-reuse-run`，并在新 protocol revision 中冻结 success 与 terminal failure。`singleton_router_labels.csv` 含 clean-label 派生字段，只能进入离线训练标签，不能作为在线特征。
+
 ## Router-v3：LightGBM k=2/4 多预算
 
 独立 run：`runs/no_baran_router_v3_deepseek_v4_20260726_budget_sweep_k24_lightgbm/`。配置为 `configs/experiment_router_v3_budget_sweep_k24_lightgbm.json`；预算点为 `1% / 5% / 10% / 20% / 50%`。每个 target × k 只复用或建立一套 LightGBM 预测，五个预算分别运行选择器。

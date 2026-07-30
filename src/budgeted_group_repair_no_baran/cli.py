@@ -172,6 +172,43 @@ def build_parser() -> argparse.ArgumentParser:
     validate_data.add_argument("--data-root", type=Path, default=PROJECT_ROOT / "data")
     validate_data.add_argument("--manifest", type=Path)
 
+    full_complementarity = commands.add_parser(
+        "analyze-full-complementarity",
+        help="materialize and analyze the frozen full-nine Baran/LLM baselines offline",
+    )
+    full_complementarity.add_argument(
+        "--source-run",
+        type=Path,
+        default=(
+            PROJECT_ROOT
+            / "runs"
+            / "no_baran_router_v3_deepseek_v4_20260725_budget20_k1248_all"
+        ),
+    )
+    full_complementarity.add_argument(
+        "--baseline-dir",
+        type=Path,
+        default=(
+            PROJECT_ROOT
+            / "runs"
+            / "baselines"
+            / "no_baran_singleton_deepseek_v4_full9"
+        ),
+    )
+    full_complementarity.add_argument(
+        "--output-dir",
+        type=Path,
+        default=(
+            PROJECT_ROOT
+            / "runs"
+            / "analyses"
+            / "baran_llm_complementarity_full9"
+        ),
+    )
+    full_complementarity.add_argument("--bootstrap-replicates", type=int, default=2_000)
+    full_complementarity.add_argument("--bootstrap-seed", type=int, default=45)
+    full_complementarity.add_argument("--confidence-level", type=float, default=0.95)
+
     plan = commands.add_parser("plan-run")
     _add_run(plan)
     plan.add_argument(
@@ -237,6 +274,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     args = build_parser().parse_args(argv)
     if getattr(args, "token_cap", None) is not None and int(args.token_cap) <= 0:
         raise SystemExit("--token-cap must be positive")
+    if (
+        getattr(args, "bootstrap_replicates", None) is not None
+        and int(args.bootstrap_replicates) <= 0
+    ):
+        raise SystemExit("--bootstrap-replicates must be positive")
+    if getattr(args, "confidence_level", None) is not None and not (
+        0.0 < float(args.confidence_level) < 1.0
+    ):
+        raise SystemExit("--confidence-level must be between zero and one")
     return args
 
 
@@ -303,6 +349,18 @@ def _execute(args: argparse.Namespace) -> object:
             else root / "manifest.json"
         )
         return validate_manifest(root, manifest)
+
+    if args.command == "analyze-full-complementarity":
+        from .full_complementarity import build_full_complementarity
+
+        return build_full_complementarity(
+            args.source_run,
+            baseline_dir=args.baseline_dir,
+            output_dir=args.output_dir,
+            bootstrap_replicates=args.bootstrap_replicates,
+            bootstrap_seed=args.bootstrap_seed,
+            confidence=args.confidence_level,
+        )
 
     if getattr(args, "env_file", None) is not None:
         load_env_file(args.env_file)
