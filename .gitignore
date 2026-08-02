@@ -1,3 +1,6 @@
+.deepseek_env
+models/**
+!models/.gitkeep
 # Python caches and build artifacts
 __pycache__/
 *.py[cod]
