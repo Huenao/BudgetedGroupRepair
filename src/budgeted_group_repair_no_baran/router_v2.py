@@ -90,14 +90,20 @@ from .verifier import GroupRepairVerifier, RankedRepairCandidate, VerifierConfig
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_GATE_BACKENDS = ("lightgbm", "xgboost")
 CATBOOST_GATE_BACKENDS = ("catboost",)
+TABICLV2_GATE_BACKENDS = ("tabiclv2",)
+TABPFN3_GATE_BACKENDS = ("tabpfn3",)
 ROUTER_V2_REVISION = "router_v2_mixed_training"
 ROUTER_V3_REVISION = "router_v3_exact_size_conditioned"
 ROUTER_V3_BUDGET_SWEEP_REVISION = (
     "router_v3_budget_sweep_exact_size_conditioned"
 )
 ROUTER_V3_CATBOOST_REVISION = "router_v3_catboost_exact_size_conditioned"
+ROUTER_V3_TABICLV2_REVISION = "router_v3_tabiclv2_k14_exact_size_conditioned"
+ROUTER_V3_TABPFN3_REVISION = "router_v3_tabpfn3_k14_exact_size_conditioned"
 ROUTER_V3_VARIANTS = ("1", "2", "4", "8", "all")
 ROUTER_V3_SWEEP_VARIANTS = ("2", "4")
+ROUTER_V3_TABICLV2_VARIANTS = ("1", "4")
+ROUTER_V3_TABPFN3_VARIANTS = ("1", "4")
 ROUTER_V3_SWEEP_BUDGETS = (0.01, 0.05, 0.1, 0.2, 0.5)
 # Frozen complete Router-v2 runs keep their original implementation binding.
 # Their validator still independently rebuilds coverage, metrics, costs, and
@@ -113,6 +119,9 @@ FROZEN_ROUTER_V3_BUDGET_SWEEP_IMPLEMENTATION_SHA256 = frozenset(
 )
 FROZEN_ROUTER_V3_CATBOOST_IMPLEMENTATION_SHA256 = frozenset(
     {"1ac1d8e816e693bd3459ba69e57f5b633275a8ac2f2d2235ec5ddce193f4e54f"}
+)
+FROZEN_ROUTER_V3_TABICLV2_IMPLEMENTATION_SHA256 = frozenset(
+    {"413deb5ff9a72fc082baf9ae22b793b68832bca7d5b77978d0547578943a5b2d"}
 )
 
 
@@ -130,6 +139,9 @@ def _router_v3_implementation_binding_matches(
         ),
         ROUTER_V3_CATBOOST_REVISION: (
             FROZEN_ROUTER_V3_CATBOOST_IMPLEMENTATION_SHA256
+        ),
+        ROUTER_V3_TABICLV2_REVISION: (
+            FROZEN_ROUTER_V3_TABICLV2_IMPLEMENTATION_SHA256
         ),
     }
     return bound_implementation in frozen_by_revision.get(revision, frozenset())
@@ -475,11 +487,15 @@ class ExperimentRunner:
         state: RunState,
         experiment_config: Mapping[str, object],
         llm_config: Mapping[str, object],
+        runtime_token_cap: int | None = None,
     ) -> None:
         self.paths = paths
         self.state = state
         self.experiment_config = dict(experiment_config)
         self.llm_config = dict(llm_config)
+        self.runtime_token_cap = (
+            None if runtime_token_cap is None else int(runtime_token_cap)
+        )
         self.router_revision = str(
             self.experiment_config.get("router_revision", ROUTER_V2_REVISION)
         )
@@ -509,6 +525,9 @@ class ExperimentRunner:
             ROUTER_V3_REVISION,
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V3_TABICLV2_REVISION,
+            ROUTER_V3_TABPFN3_REVISION,
+            ROUTER_V3_TABPFN3_REVISION,
         }:
             raise ValueError(f"unsupported router_revision: {self.router_revision!r}")
         backends = self._active_gate_backends()
@@ -528,6 +547,20 @@ class ExperimentRunner:
                 )
             if self.router_comparison_run is None:
                 raise ValueError("Router-v3 CatBoost requires a comparison run")
+        elif self.is_router_v3_tabiclv2:
+            if backends != TABICLV2_GATE_BACKENDS:
+                raise ValueError(
+                    "Router-v3 TabICLv2 gate_backends must be exactly tabiclv2"
+                )
+            if self.router_comparison_run is None:
+                raise ValueError("Router-v3 TabICLv2 requires a comparison run")
+        elif self.is_router_v3_tabpfn3:
+            if backends != TABPFN3_GATE_BACKENDS:
+                raise ValueError(
+                    "Router-v3 TabPFN-3 gate_backends must be exactly tabpfn3"
+                )
+            if self.router_comparison_run is None:
+                raise ValueError("Router-v3 TabPFN-3 requires a comparison run")
         elif len(backends) != 2 or set(backends) != set(EXPECTED_GATE_BACKENDS):
             raise ValueError("gate_backends must contain exactly lightgbm and xgboost")
         if str(self.llm_config.get("model")) != "deepseek-v4-flash":
@@ -549,7 +582,15 @@ class ExperimentRunner:
             expected_variants = (
                 ROUTER_V3_SWEEP_VARIANTS
                 if self.is_router_v3_budget_sweep
-                else ROUTER_V3_VARIANTS
+                else (
+                    ROUTER_V3_TABICLV2_VARIANTS
+                    if self.is_router_v3_tabiclv2
+                    else (
+                        ROUTER_V3_TABPFN3_VARIANTS
+                        if self.is_router_v3_tabpfn3
+                        else ROUTER_V3_VARIANTS
+                    )
+                )
             )
             if tuple(variants) != expected_variants:
                 raise ValueError(
@@ -562,6 +603,8 @@ class ExperimentRunner:
             ROUTER_V3_REVISION,
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V3_TABICLV2_REVISION,
+            ROUTER_V3_TABPFN3_REVISION,
         }
 
     @property
@@ -573,16 +616,45 @@ class ExperimentRunner:
         return self.router_revision == ROUTER_V3_CATBOOST_REVISION
 
     @property
+    def is_router_v3_tabiclv2(self) -> bool:
+        return self.router_revision == ROUTER_V3_TABICLV2_REVISION
+
+    @property
+    def is_router_v3_tabpfn3(self) -> bool:
+        return self.router_revision == ROUTER_V3_TABPFN3_REVISION
+
+    @property
+    def is_router_v3_foundation(self) -> bool:
+        return self.is_router_v3_tabiclv2 or self.is_router_v3_tabpfn3
+
+    @property
+    def is_router_v3_isolated_backbone(self) -> bool:
+        return self.is_router_v3_catboost or self.is_router_v3_foundation
+
+    @property
     def freezes_reused_terminal_failures(self) -> bool:
         return self.router_revision in {
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V3_TABICLV2_REVISION,
+            ROUTER_V3_TABPFN3_REVISION,
         }
 
     def _active_gate_backends(self) -> tuple[str, ...]:
         return tuple(
             str(value) for value in self.experiment_config.get("gate_backends", ())
         )
+
+    def _gate_backend_config(self, backend: str) -> dict[str, object]:
+        if backend not in {"tabiclv2", "tabpfn3"}:
+            return {}
+        raw = self.experiment_config.get("foundation_backends", {})
+        if not isinstance(raw, Mapping):
+            raise ValueError("foundation_backends must be an object")
+        value = raw.get(backend)
+        if not isinstance(value, Mapping):
+            raise ValueError(f"missing foundation_backends.{backend} configuration")
+        return {str(key): item for key, item in value.items()}
 
     def _router_budget_shares(self) -> tuple[float, ...]:
         if not self.is_router_v3:
@@ -619,7 +691,15 @@ class ExperimentRunner:
         names = (
             ROUTER_V3_SWEEP_VARIANTS
             if self.is_router_v3_budget_sweep
-            else ROUTER_V3_VARIANTS
+            else (
+                ROUTER_V3_TABICLV2_VARIANTS
+                if self.is_router_v3_tabiclv2
+                else (
+                    ROUTER_V3_TABPFN3_VARIANTS
+                    if self.is_router_v3_tabpfn3
+                    else ROUTER_V3_VARIANTS
+                )
+            )
         )
         variants: dict[str, tuple[int, ...]] = {}
         for name in names:
@@ -676,6 +756,7 @@ class ExperimentRunner:
         baran_source_run: str | Path | None = None,
         response_reuse_run: str | Path | None = None,
         router_artifact_reuse_run: str | Path | None = None,
+        runtime_token_cap: int | None = None,
     ) -> "ExperimentRunner":
         root = Path(project_root).resolve()
         data = Path(data_root).resolve()
@@ -798,10 +879,14 @@ class ExperimentRunner:
         if resume and (resolved_run / "run_manifest.json").is_file():
             existing = load_json(resolved_run / "run_manifest.json")
             provider_checkpoint = resolved_run / "llm" / "group_query_checkpoint.jsonl"
+            provider_rows = read_jsonl(provider_checkpoint)
+            only_imported_rows = all(
+                row.get("imported_response") is True for row in provider_rows
+            )
             if (
                 str(existing.get("implementation_sha256", ""))
                 != str(metadata["implementation_sha256"])
-                and not read_jsonl(provider_checkpoint)
+                and only_imported_rows
             ):
                 previous = str(existing.get("implementation_sha256", ""))
                 existing["implementation_sha256"] = metadata["implementation_sha256"]
@@ -810,10 +895,11 @@ class ExperimentRunner:
                 rebinds = list(history) if isinstance(history, list) else []
                 rebinds.append(
                     {
-                        "reason": "pre_provider_prompt_audit_false_positive_fix",
+                        "reason": "pre_provider_implementation_completion",
                         "previous_implementation_sha256": previous,
                         "implementation_sha256": metadata["implementation_sha256"],
-                        "provider_checkpoint_rows": 0,
+                        "provider_checkpoint_rows": len(provider_rows),
+                        "provider_checkpoint_rows_all_imported": True,
                     }
                 )
                 existing["pre_provider_rebinds"] = rebinds
@@ -839,7 +925,13 @@ class ExperimentRunner:
             runs,
             resolved_run,
         )
-        return cls(paths, state, experiment_config, llm_config)
+        return cls(
+            paths,
+            state,
+            experiment_config,
+            llm_config,
+            runtime_token_cap=runtime_token_cap,
+        )
 
     def _dataset(self, suite: str, dataset: str) -> LoadedDataset:
         key = (suite, dataset)
@@ -922,7 +1014,11 @@ class ExperimentRunner:
     ) -> None:
         """Stop before a batch whose retry worst case can cross the run cap."""
 
-        raw_cap = self.experiment_config.get("max_estimated_tokens_safety_cap")
+        raw_cap = (
+            self.runtime_token_cap
+            if self.runtime_token_cap is not None
+            else self.experiment_config.get("max_estimated_tokens_safety_cap")
+        )
         if raw_cap is None:
             return
         cap = int(raw_cap)
@@ -1195,11 +1291,24 @@ class ExperimentRunner:
 
         provenance_path = self.paths.run_dir / "provenance" / "response_reuse.json"
         checkpoint_path = self.paths.llm_dir / "group_query_checkpoint.jsonl"
+        candidate_snapshot_path = (
+            self.paths.run_dir / "provenance" / "frozen_candidate_snapshot.json"
+        )
+        candidate_snapshot_sha = (
+            sha256_file(candidate_snapshot_path)
+            if candidate_snapshot_path.is_file()
+            else ""
+        )
         if provenance_path.is_file():
-            return load_json(provenance_path)
-        if checkpoint_path.is_file() and read_jsonl(checkpoint_path):
+            existing = load_json(provenance_path)
+            if str(existing.get("candidate_snapshot_sha256", "")) == candidate_snapshot_sha:
+                return existing
+        checkpoint_rows = read_jsonl(checkpoint_path)
+        if checkpoint_rows and any(
+            row.get("imported_response") is not True for row in checkpoint_rows
+        ):
             raise RuntimeError(
-                "response reuse must be frozen before any v2 provider checkpoint exists"
+                "response reuse cannot be rebound after a provider checkpoint exists"
             )
         source_checkpoint = (
             self.response_reuse_run / "llm" / "shared" / "group_query_checkpoint.jsonl"
@@ -1276,9 +1385,91 @@ class ExperimentRunner:
                 "prompt_schema_version",
             ],
             "physical_calls_saved_only": True,
+            "candidate_snapshot_sha256": candidate_snapshot_sha,
         }
         write_json(provenance_path, summary)
         self.state.update_stage("response_reuse", "complete", **summary)
+        return summary
+
+    def _materialize_foundation_candidate_snapshot(self) -> dict[str, object]:
+        """Freeze source candidate/membership identities after a full local rebuild."""
+
+        if not self.is_router_v3_foundation:
+            return {"materialized": False}
+        provenance_path = (
+            self.paths.run_dir / "provenance" / "frozen_candidate_snapshot.json"
+        )
+        source_root = self.response_reuse_run
+        artifact_rows: list[dict[str, object]] = []
+        materialized_count = 0
+        seen_query_ids: set[str] = set()
+        query_count = 0
+        incidence_count = 0
+        for suite, dataset in generation_order():
+            key = _dataset_key(suite, dataset)
+            local_action = self.paths.groups_dir / "candidates" / f"{key}.jsonl"
+            local_membership = self.paths.groups_dir / "memberships" / f"{key}.csv"
+            for local, source in (
+                (local_action, source_root / "groups" / "candidates" / f"{key}.jsonl"),
+                (local_membership, source_root / "groups" / "memberships" / f"{key}.csv"),
+            ):
+                if not local.is_file() or not source.is_file():
+                    raise FileNotFoundError(
+                        f"candidate snapshot artifact is missing: {local} / {source}"
+                    )
+                rebuilt_sha = sha256_file(local)
+                source_sha = sha256_file(source)
+                materialized = rebuilt_sha != source_sha
+                if materialized:
+                    shutil.copyfile(source, local)
+                    materialized_count += 1
+                final_sha = sha256_file(local)
+                if final_sha != source_sha:
+                    raise ValueError("candidate snapshot materialization hash mismatch")
+                artifact_rows.append(
+                    {
+                        "artifact": str(local.relative_to(self.paths.run_dir)),
+                        "source_artifact": str(source),
+                        "locally_rebuilt_sha256": rebuilt_sha,
+                        "source_sha256": source_sha,
+                        "materialized_sha256": final_sha,
+                        "materialized_from_frozen_source": materialized,
+                    }
+                )
+            actions = self._load_actions(suite, dataset)
+            membership = _read_csv(local_membership)
+            if not set(MODEL_FEATURE_COLUMNS).issubset(membership.columns):
+                raise ValueError("frozen membership is missing model feature columns")
+            if len(membership) != sum(action.group_size for action in actions):
+                raise ValueError("frozen candidate membership incidence mismatch")
+            for action in actions:
+                if action.query_id in seen_query_ids:
+                    raise ValueError("frozen candidate snapshot has duplicate query IDs")
+                seen_query_ids.add(action.query_id)
+                if compute_prompt_hash(
+                    action.messages,
+                    action.completion_token_ceiling,
+                    prompt_schema_version=action.prompt_schema_version,
+                ) != action.prompt_hash:
+                    raise ValueError("frozen candidate snapshot prompt hash drift")
+            query_count += len(actions)
+            incidence_count += len(membership)
+        summary: dict[str, object] = {
+            "schema_version": "bgr-frozen-candidate-snapshot-v1",
+            "source_run": str(source_root),
+            "source_manifest_sha256": sha256_file(
+                source_root / "run_manifest.json"
+            ),
+            "datasets": len(generation_order()),
+            "queries": query_count,
+            "incidences": incidence_count,
+            "artifact_count": len(artifact_rows),
+            "materialized_artifact_count": materialized_count,
+            "artifacts": artifact_rows,
+            "local_rebuild_completed_before_materialization": True,
+            "old_gates_or_selections_used": False,
+        }
+        write_json(provenance_path, summary)
         return summary
 
     def _reuse_router_v3_parent_calibration(self) -> dict[str, object]:
@@ -1291,6 +1482,19 @@ class ExperimentRunner:
             return load_json(provenance_path)
 
         parent = self.response_reuse_run
+        parent_manifest_path = parent / "run_manifest.json"
+        parent_manifest = load_json(parent_manifest_path)
+        current_manifest = self.state.manifest
+        if (
+            parent_manifest.get("status") != "complete"
+            or str(parent_manifest.get("model", ""))
+            != str(current_manifest.get("model", ""))
+            or str(parent_manifest.get("prompt_schema_sha256", ""))
+            != str(current_manifest.get("prompt_schema_sha256", ""))
+            or str(parent_manifest.get("data_content_fingerprint", ""))
+            != str(current_manifest.get("data_content_fingerprint", ""))
+        ):
+            raise ValueError("Router-v3 parent run identity differs")
         required = (
             parent / "llm" / "calibration_queries.jsonl",
             parent / "llm" / "calibration_execution.jsonl",
@@ -1333,16 +1537,17 @@ class ExperimentRunner:
                 continue
             current_hash = sha256_file(current)
             source_hash = sha256_file(source)
+            relative = current.relative_to(self.paths.run_dir)
             artifact_rows.append(
                 {
-                    "artifact": str(current.relative_to(self.paths.run_dir)),
+                    "artifact": str(relative),
                     "current_sha256": current_hash,
                     "parent_sha256": source_hash,
                     "matches": current_hash == source_hash,
                 }
             )
             if current_hash != source_hash:
-                mismatches.append(str(current.relative_to(self.paths.run_dir)))
+                mismatches.append(str(relative))
         current_plan = self.paths.llm_dir / "calibration_queries.jsonl"
         parent_plan = parent / "llm" / "calibration_queries.jsonl"
         if sha256_file(current_plan) != sha256_file(parent_plan):
@@ -1352,19 +1557,60 @@ class ExperimentRunner:
                 "Router-v3 parent artifact identity mismatch: " + ", ".join(mismatches)
             )
 
+        baran_cell_ids = {
+            str(row.get("cell_id", ""))
+            for suite, dataset in generation_order()
+            for row in read_jsonl(
+                self.paths.baran_dir / f"{_dataset_key(suite, dataset)}.jsonl"
+            )
+        }
+        if len(generation_order()) != 14 or len(baran_cell_ids) != 23_957 or "" in baran_cell_ids:
+            raise ValueError("Router-v3 Baran source universe is not exactly 14 datasets / 23,957 cells")
+
         execution_rows = read_jsonl(parent / "llm" / "calibration_execution.jsonl")
         label_frame = _read_csv(parent / "llm" / "calibration_pair_labels.csv")
+        planned_rows = read_jsonl(current_plan)
         planned = {
-            (str(row["query_id"]), str(row["prompt_hash"]))
-            for row in read_jsonl(current_plan)
+            (str(row["query_id"]), str(row["prompt_hash"])) for row in planned_rows
         }
         executed = {
             (str(row.get("query_id", "")), str(row.get("prompt_hash", "")))
             for row in execution_rows
         }
-        if len(execution_rows) != 8_197 or executed != planned:
+        action_index = {
+            action.query_id: action
+            for suite, dataset in generation_order()
+            if suite == "tableeg"
+            for action in self._load_actions(suite, dataset)
+        }
+        client = DeepSeekGroupClient(
+            GroupClientConfig.from_mapping(self.llm_config),
+            api_key="not-used-for-request-hashing",
+        )
+        strict_execution_identity = all(
+            str(row.get("query_id", "")) in action_index
+            and action_index[str(row.get("query_id", ""))].prompt_schema_version
+            == PROMPT_SCHEMA_VERSION
+            and str(row.get("prompt_hash", ""))
+            == action_index[str(row.get("query_id", ""))].prompt_hash
+            and str(row.get("provider_request_hash", ""))
+            == client.provider_request_hash(
+                GroupLLMJob.from_action(action_index[str(row.get("query_id", ""))])
+            )
+            and str(row.get("model", "")) == "deepseek-v4-flash"
+            and row.get("model_matches_request") is True
+            for row in execution_rows
+        )
+        if (
+            len(planned) != 8_197
+            or len(execution_rows) != 8_197
+            or len(executed) != 8_197
+            or executed != planned
+            or not strict_execution_identity
+        ):
             raise ValueError("Router-v2 parent calibration execution is incomplete")
-        if len(label_frame) != 16_451:
+        pair_keys = label_frame[["cell_id", "query_id"]].astype(str)
+        if len(label_frame) != 16_451 or bool(pair_keys.duplicated().any()):
             raise ValueError("Router-v2 parent calibration labels are incomplete")
         shutil.copyfile(
             parent / "llm" / "calibration_execution.jsonl",
@@ -1390,8 +1636,25 @@ class ExperimentRunner:
             "parent_manifest_sha256": sha256_file(parent / "run_manifest.json"),
             "identity_artifacts": artifact_rows,
             "identity_artifact_count": len(artifact_rows),
+            "frozen_candidate_snapshot_sha256": sha256_file(
+                self.paths.run_dir
+                / "provenance"
+                / "frozen_candidate_snapshot.json"
+            ),
+            "old_gates_or_selections_used": False,
+            "source_dataset_count": len(generation_order()),
+            "source_baran_cells": len(baran_cell_ids),
             "calibration_queries": len(execution_rows),
+            "calibration_execution_unique_identities": len(executed),
             "calibration_pair_labels": len(label_frame),
+            "calibration_pair_label_unique_identities": len(pair_keys),
+            "request_identity_fields": [
+                "query_id",
+                "prompt_hash",
+                "provider_request_hash",
+                "model",
+                "prompt_schema_version",
+            ],
             "calibration_queries_sha256": sha256_file(parent_plan),
             "calibration_execution_sha256": sha256_file(
                 parent / "llm" / "calibration_execution.jsonl"
@@ -1531,6 +1794,7 @@ class ExperimentRunner:
         self.validate_inputs()
         self.run_baran_stage()
         self.generate_groups_stage()
+        candidate_snapshot = self._materialize_foundation_candidate_snapshot()
         reuse = self.import_reusable_no_baran_responses_stage()
         plan = self.plan_calibration_stage()
         parent_reuse = self._reuse_router_v3_parent_calibration()
@@ -1545,16 +1809,14 @@ class ExperimentRunner:
             },
             "calibration": plan,
             "response_reuse": reuse,
+            "candidate_snapshot": candidate_snapshot,
             "parent_router_reuse": parent_reuse,
             "api_called": False,
         }
 
-    def check_model(self) -> dict[str, object]:
-        """Run one paid size-eight schema/model compatibility request."""
-
-        receipt_path = self.paths.llm_dir / "model_preflight.json"
-        if self.state.stage_completed("model_preflight") and receipt_path.is_file():
-            return load_json(receipt_path)
+    def _model_preflight_spec(
+        self,
+    ) -> tuple[tuple[str, ...], tuple[Mapping[str, str], ...], GroupLLMJob, int]:
         expected_ids = tuple(f"preflight:cell:{index}" for index in range(8))
         query_id = "bgr_preflight_size8"
         messages = canonical_messages(
@@ -1590,6 +1852,79 @@ class ExperimentRunner:
                 "require_complete_response": True,
             },
         )
+        return expected_ids, messages, job, estimated_total_tokens
+
+    def reuse_model_preflight_stage(self) -> bool:
+        """Reuse a request-identical successful preflight receipt without a call."""
+
+        receipt_path = self.paths.llm_dir / "model_preflight.json"
+        if self.state.stage_completed("model_preflight") and receipt_path.is_file():
+            return True
+        source_path = self.response_reuse_run / "llm" / "model_preflight.json"
+        if not source_path.is_file():
+            return False
+        source = load_json(source_path)
+        expected_ids, _messages, job, estimated_total_tokens = self._model_preflight_spec()
+        request_hash = DeepSeekGroupClient(
+            GroupClientConfig.from_mapping(self.llm_config),
+            api_key="not-used-for-request-hashing",
+        ).provider_request_hash(job)
+        raw_items = source.get("items", [])
+        returned_ids = {
+            str(item.get("cell_id", ""))
+            for item in raw_items
+            if isinstance(item, Mapping)
+        } if isinstance(raw_items, list) else set()
+        exact = (
+            source.get("status") == "success"
+            and str(source.get("parse_status", "")) == "ok"
+            and str(source.get("requested_model", "")) == str(self.llm_config["model"])
+            and str(source.get("returned_model", "")) == str(self.llm_config["model"])
+            and str(source.get("query_id", "")) == job.query_id
+            and str(source.get("prompt_hash", "")) == job.prompt_hash
+            and str(source.get("provider_request_hash", "")) == request_hash
+            and int(source.get("estimated_total_tokens", -1)) == estimated_total_tokens
+            and returned_ids == set(expected_ids)
+            and len(raw_items) == len(expected_ids)
+        )
+        if not exact:
+            write_json(
+                self.paths.run_dir / "provenance" / "model_preflight_reuse.json",
+                {
+                    "reused": False,
+                    "source_run": str(self.response_reuse_run),
+                    "source_receipt_sha256": sha256_file(source_path),
+                    "reason": "request_or_response_identity_mismatch",
+                },
+            )
+            return False
+        shutil.copyfile(source_path, receipt_path)
+        provenance = {
+            "reused": True,
+            "source_run": str(self.response_reuse_run),
+            "source_receipt_sha256": sha256_file(source_path),
+            "local_receipt_sha256": sha256_file(receipt_path),
+            "query_id": job.query_id,
+            "prompt_hash": job.prompt_hash,
+            "provider_request_hash": request_hash,
+            "requested_model": str(self.llm_config["model"]),
+            "api_called": False,
+        }
+        write_json(
+            self.paths.run_dir / "provenance" / "model_preflight_reuse.json",
+            provenance,
+        )
+        self.state.update_stage("model_preflight", "complete", **provenance)
+        return True
+
+    def check_model(self) -> dict[str, object]:
+        """Run one paid size-eight schema/model compatibility request."""
+
+        receipt_path = self.paths.llm_dir / "model_preflight.json"
+        if self.state.stage_completed("model_preflight") and receipt_path.is_file():
+            return load_json(receipt_path)
+        expected_ids, messages, job, estimated_total_tokens = self._model_preflight_spec()
+        query_id = job.query_id
         existing = self._response_index(phase="model_preflight").get(
             (job.query_id, job.prompt_hash)
         )
@@ -2108,6 +2443,7 @@ class ExperimentRunner:
                         self.experiment_config.get("uncertainty_penalty_gamma", 1.0)
                     ),
                     random_state=int(self.experiment_config.get("seed", 42)),
+                    backend_config=self._gate_backend_config(backend),
                 ).fit(
                     train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records"),
                     [bool(int(value)) for value in train["baran_correct"]],
@@ -2249,6 +2585,7 @@ class ExperimentRunner:
                             )
                         ),
                         random_state=int(self.experiment_config.get("seed", 42)),
+                        backend_config=self._gate_backend_config(backend),
                     ).fit(
                         train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records"),
                         [bool(int(value)) for value in train["baran_correct"]],
@@ -2436,6 +2773,7 @@ class ExperimentRunner:
                         rho=float(self.experiment_config.get("harm_penalty_rho", 1.0)),
                         gamma=float(self.experiment_config.get("uncertainty_penalty_gamma", 1.0)),
                         random_state=int(self.experiment_config.get("seed", 42)),
+                        backend_config=self._gate_backend_config(backend),
                     )
                     gate.fit(
                         train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records"),
@@ -2959,15 +3297,26 @@ class ExperimentRunner:
                                 )
                             ),
                             random_state=int(self.experiment_config.get("seed", 42)),
+                            backend_config=self._gate_backend_config(backend),
                         ).fit(
-                            train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records"),
+                            (
+                                train.loc[:, list(MODEL_FEATURE_COLUMNS)]
+                                if backend in {"tabiclv2", "tabpfn3"}
+                                else train.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict(
+                                    "records"
+                                )
+                            ),
                             [bool(int(value)) for value in train["baran_correct"]],
                             [bool(int(value)) for value in train["llm_correct_in_query"]],
                             [bool(int(value)) for value in train["executable_propose"]],
                             [base_family(value) for value in train["dataset"].astype(str)],
                         )
                         predicted = gate.predict(
-                            test.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict("records")
+                            test.loc[:, list(MODEL_FEATURE_COLUMNS)]
+                            if backend in {"tabiclv2", "tabpfn3"}
+                            else test.loc[:, list(MODEL_FEATURE_COLUMNS)].to_dict(
+                                "records"
+                            )
                         )
                         predictions = test.loc[
                             :,
@@ -3233,6 +3582,11 @@ class ExperimentRunner:
             or 0
         )
         combined_estimate = online_estimate + preflight_estimate
+        retry_multiplier = int(self.llm_config.get("max_retries", 0)) + 1
+        provider_debit = self._provider_safety_debit()
+        retry_adjusted_token_cap = (
+            provider_debit + retry_multiplier * combined_estimate
+        )
         raw_cap = self.experiment_config.get("max_estimated_tokens_safety_cap")
         safety_cap = None if raw_cap is None else int(raw_cap)
         union_plan: dict[str, object] = {
@@ -3250,6 +3604,9 @@ class ExperimentRunner:
             "online_union_estimated_tokens": online_estimate,
             "model_preflight_estimated_tokens": preflight_estimate,
             "combined_physical_estimated_tokens": combined_estimate,
+            "provider_safety_debit_before": provider_debit,
+            "retry_multiplier": retry_multiplier,
+            "retry_adjusted_token_cap": retry_adjusted_token_cap,
             "safety_cap": safety_cap,
             "query_ids": sorted(union_ids),
             "bgr_query_ids": sorted(bgr_union_ids),
@@ -3274,6 +3631,30 @@ class ExperimentRunner:
         elif self.is_router_v3_catboost:
             write_json(
                 self.paths.llm_dir / "router_v3_catboost_dry_plan.json",
+                {
+                    **union_plan,
+                    "backends": list(backends),
+                    "variants": list(variants),
+                    "budget_shares": list(budgets),
+                    "selection_summary": selection_rows,
+                    "api_called": False,
+                },
+            )
+        elif self.is_router_v3_tabiclv2:
+            write_json(
+                self.paths.llm_dir / "router_v3_tabiclv2_dry_plan.json",
+                {
+                    **union_plan,
+                    "backends": list(backends),
+                    "variants": list(variants),
+                    "budget_shares": list(budgets),
+                    "selection_summary": selection_rows,
+                    "api_called": False,
+                },
+            )
+        elif self.is_router_v3_tabpfn3:
+            write_json(
+                self.paths.llm_dir / "router_v3_tabpfn3_dry_plan.json",
                 {
                     **union_plan,
                     "backends": list(backends),
@@ -3330,6 +3711,89 @@ class ExperimentRunner:
             **union_plan,
         }
 
+    def plan_selected_llm_stage(self) -> dict[str, object]:
+        """Freeze and verify the selected-union provider plan without API calls."""
+
+        if not self.state.stage_completed("gate_selection"):
+            raise RuntimeError("selected-union planning requires completed gate selection")
+        plan_path = self.paths.llm_dir / "selected_union_plan.json"
+        if not plan_path.is_file():
+            raise FileNotFoundError("selected union plan is missing")
+        plan = load_json(plan_path)
+        union_ids = {str(value) for value in plan.get("query_ids", [])}
+        actions = {
+            action.query_id: action
+            for suite, dataset in target_order()
+            for action in self._load_actions(suite, dataset)
+            if action.query_id in union_ids
+        }
+        if set(actions) != union_ids:
+            raise ValueError("selected union references missing query actions")
+        responses = self._response_index()
+        cached_success: set[str] = set()
+        cached_failure: set[str] = set()
+        for query_id, action in actions.items():
+            row = responses.get((query_id, action.prompt_hash))
+            if row is None or row.get("model_matches_request", True) is False:
+                continue
+            if row.get("status") == "success":
+                cached_success.add(query_id)
+            else:
+                cached_failure.add(query_id)
+        terminal = (
+            cached_success | cached_failure
+            if self.freezes_reused_terminal_failures
+            else cached_success
+        )
+        online_ids = sorted(union_ids - terminal)
+        online_estimate = sum(actions[value].estimated_total_tokens for value in online_ids)
+        preflight_path = self.paths.llm_dir / "model_preflight.json"
+        preflight_estimate = 0
+        if not preflight_path.is_file():
+            preflight_estimate = int(plan.get("model_preflight_estimated_tokens", 1_722))
+        retry_multiplier = int(self.llm_config.get("max_retries", 0)) + 1
+        provider_debit = self._provider_safety_debit()
+        retry_cap = provider_debit + retry_multiplier * (
+            online_estimate + preflight_estimate
+        )
+        declared_online = sorted(str(value) for value in plan.get("online_query_ids", []))
+        if declared_online != online_ids:
+            raise ValueError("selected-union cache state changed after gate selection")
+        declared_cap = int(plan.get("retry_adjusted_token_cap", -1))
+        if declared_cap != retry_cap:
+            raise ValueError(
+                "selected-union retry-adjusted token cap drift: "
+                f"declared={declared_cap}, recomputed={retry_cap}"
+            )
+        if self.runtime_token_cap is not None and self.runtime_token_cap != retry_cap:
+            raise ValueError(
+                "selected-union runtime cap must equal frozen dry-plan cap: "
+                f"expected={retry_cap}, supplied={self.runtime_token_cap}"
+            )
+        identities = [
+            {"query_id": query_id, "prompt_hash": actions[query_id].prompt_hash}
+            for query_id in sorted(union_ids)
+        ]
+        summary: dict[str, object] = {
+            "selected_union_plan_sha256": sha256_file(plan_path),
+            "selected_union_identity_sha256": canonical_json_sha256(identities),
+            "union_queries": len(union_ids),
+            "cached_success_queries": len(cached_success),
+            "cached_terminal_failure_queries": len(cached_failure),
+            "online_physical_queries": len(online_ids),
+            "online_union_estimated_tokens": online_estimate,
+            "model_preflight_estimated_tokens": preflight_estimate,
+            "provider_safety_debit_before": provider_debit,
+            "retry_multiplier": retry_multiplier,
+            "retry_adjusted_token_cap": retry_cap,
+            "api_called": False,
+        }
+        write_json(
+            self.paths.run_dir / "provenance" / "selected_execution_plan.json",
+            summary,
+        )
+        return summary
+
     def _response_index(
         self, *, phase: str | None = None
     ) -> dict[tuple[str, str], dict[str, object]]:
@@ -3368,6 +3832,26 @@ class ExperimentRunner:
     def run_selected_llm_stage(self) -> dict[str, object]:
         if self.is_router_v3 and not self.state.stage_completed("model_preflight"):
             raise RuntimeError("Router-v3 selected execution requires model preflight")
+        if self.is_router_v3_foundation:
+            authorization_path = (
+                self.paths.run_dir / "provenance" / "selected_execution_plan.json"
+            )
+            if not authorization_path.is_file():
+                raise RuntimeError(
+                    "foundation selected execution requires a frozen dry plan"
+                )
+            authorization = load_json(authorization_path)
+            plan_path = self.paths.llm_dir / "selected_union_plan.json"
+            if (
+                self.runtime_token_cap is None
+                or int(authorization.get("retry_adjusted_token_cap", -1))
+                != self.runtime_token_cap
+                or str(authorization.get("selected_union_plan_sha256", ""))
+                != sha256_file(plan_path)
+            ):
+                raise RuntimeError(
+                    "foundation selected execution token cap or plan identity drift"
+                )
         plan = load_json(self.paths.llm_dir / "selected_union_plan.json")
         union_ids = {str(value) for value in plan.get("query_ids", [])}
         selected_actions: list[GroupQueryAction] = []
@@ -3403,6 +3887,7 @@ class ExperimentRunner:
             "failed_queries": sum(row.get("status") != "success" for row in results),
             "checkpoint_hits": sum(bool(row.get("checkpoint_hit")) for row in results),
             "cache_hits": sum(bool(row.get("cache_hit")) for row in results),
+            "runtime_token_cap": self.runtime_token_cap,
         }
         fallback_enabled = (
             str(self.experiment_config.get("invalid_response_policy"))
@@ -4372,24 +4857,37 @@ class ExperimentRunner:
         self.state.update_stage("metrics", "complete", **summary)
         return summary
 
-    def _catboost_comparison_records(self) -> list[dict[str, object]]:
-        """Load only frozen 20% LightGBM/XGBoost slices for CatBoost comparison."""
+    def _comparison_backends(self) -> tuple[str, ...]:
+        if self.is_router_v3_tabpfn3:
+            return (*EXPECTED_GATE_BACKENDS, "tabiclv2")
+        if self.is_router_v3_isolated_backbone:
+            return EXPECTED_GATE_BACKENDS
+        return ()
 
-        if not self.is_router_v3_catboost:
+    def _isolated_backbone_comparison_records(self) -> list[dict[str, object]]:
+        """Load frozen same-budget/same-K slices for isolated-backbone comparison."""
+
+        comparison_backends = self._comparison_backends()
+        if not comparison_backends:
             return []
         if self.router_comparison_run is None:
-            raise ValueError("Router-v3 CatBoost comparison run is not bound")
+            raise ValueError("Router-v3 comparison run is not bound")
         source = self.router_comparison_run
         source_manifest_path = source / "run_manifest.json"
         source_records_path = source / "final" / "all_methods.jsonl"
         source_manifest = load_json(source_manifest_path)
         source_experiment = source_manifest.get("experiment_config", {})
         current_manifest = self.state.manifest
+        expected_source_revision = (
+            ROUTER_V3_TABICLV2_REVISION
+            if self.is_router_v3_tabpfn3
+            else ROUTER_V3_REVISION
+        )
         if (
             source_manifest.get("status") != "complete"
             or not isinstance(source_experiment, Mapping)
             or str(source_experiment.get("router_revision", ""))
-            != ROUTER_V3_REVISION
+            != expected_source_revision
             or str(source_manifest.get("model", ""))
             != str(current_manifest.get("model", ""))
             or str(source_manifest.get("prompt_schema_sha256", ""))
@@ -4397,38 +4895,99 @@ class ExperimentRunner:
             or str(source_manifest.get("data_content_fingerprint", ""))
             != str(current_manifest.get("data_content_fingerprint", ""))
         ):
-            raise ValueError("CatBoost comparison run identity differs")
+            raise ValueError("Router comparison run identity differs")
         if not source_records_path.is_file():
-            raise FileNotFoundError("CatBoost comparison run has no final records")
+            raise FileNotFoundError("Router comparison run has no final records")
+        comparison_variants = tuple(self._router_training_variants())
+        source_rows = read_jsonl(source_records_path)
+        direct_backends = (
+            ("tabiclv2",) if self.is_router_v3_tabpfn3 else EXPECTED_GATE_BACKENDS
+        )
         records = [
             row
-            for row in read_jsonl(source_records_path)
-            if str(row.get("method", ""))
-            in {"budgeted_group_lightgbm", "budgeted_group_xgboost"}
+            for row in source_rows
+            if str(row.get("backend", "")) in direct_backends
+            and str(row.get("method", ""))
+            == f"budgeted_group_{str(row.get('backend', ''))}"
             and str(row.get("scenario", "")) == "size_conditioned"
-            and str(row.get("group_size_variant", "")) in ROUTER_V3_VARIANTS
+            and str(row.get("group_size_variant", "")) in comparison_variants
             and math.isclose(
                 float(row.get("budget_share") or 0.0), 0.2, abs_tol=1e-12
             )
         ]
+        nested_tree_provenance: dict[str, object] | None = None
+        if self.is_router_v3_tabpfn3:
+            nested_path = source / "provenance" / "comparison_reuse.json"
+            if not nested_path.is_file():
+                raise FileNotFoundError(
+                    "TabICLv2 comparison source lacks frozen tree provenance"
+                )
+            nested = load_json(nested_path)
+            nested_records_path = Path(str(nested.get("source_records", ""))).resolve()
+            nested_manifest_path = Path(str(nested.get("source_run", ""))).resolve() / "run_manifest.json"
+            if (
+                not nested_records_path.is_file()
+                or not nested_manifest_path.is_file()
+                or sha256_file(nested_records_path)
+                != str(nested.get("source_records_sha256", ""))
+                or sha256_file(nested_manifest_path)
+                != str(nested.get("source_manifest_sha256", ""))
+            ):
+                raise ValueError("TabICLv2 frozen tree provenance failed")
+            nested_manifest = load_json(nested_manifest_path)
+            if (
+                nested_manifest.get("status") != "complete"
+                or str(nested_manifest.get("model", ""))
+                != str(current_manifest.get("model", ""))
+                or str(nested_manifest.get("prompt_schema_sha256", ""))
+                != str(current_manifest.get("prompt_schema_sha256", ""))
+                or str(nested_manifest.get("data_content_fingerprint", ""))
+                != str(current_manifest.get("data_content_fingerprint", ""))
+            ):
+                raise ValueError("nested tree comparison identity differs")
+            tree_rows = [
+                row
+                for row in read_jsonl(nested_records_path)
+                if str(row.get("backend", "")) in EXPECTED_GATE_BACKENDS
+                and str(row.get("method", ""))
+                == f"budgeted_group_{str(row.get('backend', ''))}"
+                and str(row.get("scenario", "")) == "size_conditioned"
+                and str(row.get("group_size_variant", "")) in comparison_variants
+                and math.isclose(
+                    float(row.get("budget_share") or 0.0), 0.2, abs_tol=1e-12
+                )
+            ]
+            records.extend(tree_rows)
+            nested_tree_provenance = {
+                "comparison_reuse": str(nested_path),
+                "comparison_reuse_sha256": sha256_file(nested_path),
+                "source_run": str(nested_manifest_path.parent),
+                "source_manifest_sha256": sha256_file(nested_manifest_path),
+                "source_records": str(nested_records_path),
+                "source_records_sha256": sha256_file(nested_records_path),
+                "comparison_backends": list(EXPECTED_GATE_BACKENDS),
+                "comparison_records": len(tree_rows),
+            }
         expected = (
             TEST_TARGET_CELL_COUNT
-            * len(EXPECTED_GATE_BACKENDS)
-            * len(ROUTER_V3_VARIANTS)
+            * len(comparison_backends)
+            * len(comparison_variants)
         )
         if len(records) != expected:
-            raise ValueError("CatBoost comparison record matrix is incomplete")
+            raise ValueError("Router comparison record matrix is incomplete")
         provenance = {
             "source_run": str(source),
             "source_manifest_sha256": sha256_file(source_manifest_path),
             "source_records": str(source_records_path),
             "source_records_sha256": sha256_file(source_records_path),
-            "comparison_backends": list(EXPECTED_GATE_BACKENDS),
-            "comparison_variants": list(ROUTER_V3_VARIANTS),
+            "comparison_backends": list(comparison_backends),
+            "comparison_variants": list(comparison_variants),
             "comparison_budget_share": 0.2,
             "comparison_records": len(records),
             "copied_into_cell_ledger": False,
         }
+        if nested_tree_provenance is not None:
+            provenance["nested_tree_comparison"] = nested_tree_provenance
         write_json(
             self.paths.run_dir / "provenance" / "comparison_reuse.json",
             provenance,
@@ -4441,15 +5000,15 @@ class ExperimentRunner:
     ) -> list[dict[str, object]]:
         """Compute paired row-cluster intervals for all Router-v3 BGR slices."""
 
-        comparison_records = self._catboost_comparison_records()
+        comparison_records = self._isolated_backbone_comparison_records()
         comparison_series = (
             [
                 (f"budgeted_group_{backend}", backend, variant, budget)
-                for backend in EXPECTED_GATE_BACKENDS
+                for backend in self._comparison_backends()
                 for variant in self._router_training_variants()
                 for budget in self._router_budget_shares()
             ]
-            if self.is_router_v3_catboost
+            if self.is_router_v3_isolated_backbone
             else []
         )
         series_order = [
@@ -4593,7 +5152,7 @@ class ExperimentRunner:
                             ("baran", ("baran", "none", "all", None)),
                             ("llm_only", ("llm_only", "none", "1", None)),
                         ]
-                        if self.is_router_v3_catboost:
+                        if self.is_router_v3_isolated_backbone:
                             comparators.extend(
                                 (
                                     f"budgeted_group_{comparison_backend}",
@@ -4604,7 +5163,7 @@ class ExperimentRunner:
                                         budget,
                                     ),
                                 )
-                                for comparison_backend in EXPECTED_GATE_BACKENDS
+                                for comparison_backend in self._comparison_backends()
                             )
                         for baseline_name, baseline_key in comparators:
                             baseline_index = series_index[baseline_key]
@@ -5005,7 +5564,7 @@ class ExperimentRunner:
                             matrix[f"bgr_{backend}_k{variant}_f1"] = float(
                                 value["f1"]
                             )
-                            if self.is_router_v3_catboost:
+                            if self.is_router_v3_isolated_backbone:
                                 matrix[f"bgr_{backend}_k{variant}_llm_cells"] = (
                                     upgraded_counts[
                                         (
@@ -5025,8 +5584,10 @@ class ExperimentRunner:
         )
 
         router_comparison_rows: list[dict[str, object]] = []
-        if self.is_router_v3_catboost:
-            comparison_records = self._catboost_comparison_records()
+        if self.is_router_v3_isolated_backbone:
+            current_backend = self._active_gate_backends()[0]
+            current_method = f"budgeted_group_{current_backend}"
+            comparison_records = self._isolated_backbone_comparison_records()
             comparison_summaries = [
                 row
                 for row in summarize_records(comparison_records, strict=True)
@@ -5039,7 +5600,7 @@ class ExperimentRunner:
                     str(row["group_size_variant"]),
                 ): row
                 for row in dataset_summaries
-                if str(row.get("method", "")) == "budgeted_group_catboost"
+                if str(row.get("method", "")) == current_method
             }
             comparison_index = {
                 (
@@ -5063,7 +5624,7 @@ class ExperimentRunner:
             for suite, dataset in target_order():
                 for variant in variants:
                     current = current_index[(suite, dataset, variant)]
-                    for comparison_backend in EXPECTED_GATE_BACKENDS:
+                    for comparison_backend in self._comparison_backends():
                         comparison = comparison_index[
                             (suite, dataset, comparison_backend, variant)
                         ]
@@ -5072,23 +5633,24 @@ class ExperimentRunner:
                                 "suite": suite,
                                 "dataset": dataset,
                                 "group_size_variant": variant,
+                                "current_backend": current_backend,
                                 "comparison_backend": comparison_backend,
-                                "catboost_f1": float(current["f1"]),
+                                "current_f1": float(current["f1"]),
                                 "comparison_f1": float(comparison["f1"]),
                                 "delta_f1": float(current["f1"])
                                 - float(comparison["f1"]),
-                                "catboost_correct_repairs": int(
+                                "current_correct_repairs": int(
                                     current["correct_repairs"]
                                 ),
                                 "comparison_correct_repairs": int(
                                     comparison["correct_repairs"]
                                 ),
-                                "catboost_llm_upgraded_cells": upgraded_counts[
+                                "current_llm_upgraded_cells": upgraded_counts[
                                     (
                                         suite,
                                         dataset,
-                                        "budgeted_group_catboost",
-                                        "catboost",
+                                        current_method,
+                                        current_backend,
                                         variant,
                                         0.2,
                                     )
@@ -5101,6 +5663,26 @@ class ExperimentRunner:
                                         variant,
                                     )
                                 ],
+                                **(
+                                    {
+                                        "catboost_f1": float(current["f1"]),
+                                        "catboost_correct_repairs": int(
+                                            current["correct_repairs"]
+                                        ),
+                                        "catboost_llm_upgraded_cells": upgraded_counts[
+                                            (
+                                                suite,
+                                                dataset,
+                                                current_method,
+                                                current_backend,
+                                                variant,
+                                                0.2,
+                                            )
+                                        ],
+                                    }
+                                    if self.is_router_v3_catboost
+                                    else {}
+                                ),
                             }
                         )
             _write_csv(
@@ -5496,6 +6078,8 @@ def _validate_router_v3_run(
         ROUTER_V3_REVISION,
         ROUTER_V3_BUDGET_SWEEP_REVISION,
         ROUTER_V3_CATBOOST_REVISION,
+        ROUTER_V3_TABICLV2_REVISION,
+        ROUTER_V3_TABPFN3_REVISION,
     }:
         raise ValueError("bound experiment is not Router-v3")
     current_implementation = _hash_tree(
@@ -5508,22 +6092,43 @@ def _validate_router_v3_run(
         raise ValueError("run fingerprint drift: implementation_sha256")
     sweep = revision == ROUTER_V3_BUDGET_SWEEP_REVISION
     catboost_run = revision == ROUTER_V3_CATBOOST_REVISION
+    tabiclv2_run = revision == ROUTER_V3_TABICLV2_REVISION
+    tabpfn3_run = revision == ROUTER_V3_TABPFN3_REVISION
+    foundation_run = tabiclv2_run or tabpfn3_run
+    isolated_backbone_run = catboost_run or foundation_run
+    comparison_backends = (
+        (*EXPECTED_GATE_BACKENDS, "tabiclv2")
+        if tabpfn3_run
+        else EXPECTED_GATE_BACKENDS
+    )
     expected_backends = (
         CATBOOST_GATE_BACKENDS
         if catboost_run
-        else (("lightgbm",) if sweep else EXPECTED_GATE_BACKENDS)
+        else (
+            TABICLV2_GATE_BACKENDS
+            if tabiclv2_run
+            else (
+                TABPFN3_GATE_BACKENDS
+                if tabpfn3_run
+                else (("lightgbm",) if sweep else EXPECTED_GATE_BACKENDS)
+            )
+        )
     )
     expected_budgets = ROUTER_V3_SWEEP_BUDGETS if sweep else (0.2,)
     expected_variants = (
         {"2": (1, 2), "4": (1, 4)}
         if sweep
-        else {
-            "1": (1,),
-            "2": (1, 2),
-            "4": (1, 4),
-            "8": (1, 8),
-            "all": (1, 2, 4, 8),
-        }
+        else (
+            {"1": (1,), "4": (1, 4)}
+            if foundation_run
+            else {
+                "1": (1,),
+                "2": (1, 2),
+                "4": (1, 4),
+                "8": (1, 8),
+                "all": (1, 2, 4, 8),
+            }
+        )
     )
     observed_variants = config.get("router_training_variants")
     if not isinstance(observed_variants, Mapping) or {
@@ -5568,7 +6173,7 @@ def _validate_router_v3_run(
             != str(manifest.get("router_artifact_reuse_manifest_sha256", ""))
         ):
             raise ValueError("run fingerprint source drift: router_artifact_reuse_run")
-    if catboost_run:
+    if isolated_backbone_run:
         source = Path(str(manifest.get("router_comparison_run", ""))).resolve()
         source_manifest = source / "run_manifest.json"
         if (
@@ -5611,8 +6216,50 @@ def _validate_router_v3_run(
         }
     ):
         raise ValueError("Router-v3 strict response-reuse provenance failed")
-    if catboost_run and response_reuse.get("terminal_failures_frozen") is not True:
-        raise ValueError("Router-v3 CatBoost terminal failure reuse is not frozen")
+    if isolated_backbone_run and response_reuse.get("terminal_failures_frozen") is not True:
+        raise ValueError("Router-v3 isolated-backbone terminal failure reuse is not frozen")
+    if foundation_run:
+        candidate_snapshot_path = (
+            root / "provenance" / "frozen_candidate_snapshot.json"
+        )
+        candidate_snapshot = load_json(candidate_snapshot_path)
+        snapshot_rows = candidate_snapshot.get("artifacts", [])
+        comparison_source = Path(
+            str(candidate_snapshot.get("source_run", ""))
+        ).resolve()
+        if (
+            comparison_source
+            != Path(str(manifest.get("response_reuse_run", ""))).resolve()
+            or int(candidate_snapshot.get("datasets", -1)) != 14
+            or int(candidate_snapshot.get("artifact_count", -1)) != 28
+            or candidate_snapshot.get("local_rebuild_completed_before_materialization")
+            is not True
+            or candidate_snapshot.get("old_gates_or_selections_used") is not False
+            or not isinstance(snapshot_rows, list)
+            or len(snapshot_rows) != 28
+            or str(response_reuse.get("candidate_snapshot_sha256", ""))
+            != sha256_file(candidate_snapshot_path)
+        ):
+            raise ValueError("Router-v3 foundation frozen candidate snapshot drift")
+        for artifact in snapshot_rows:
+            if not isinstance(artifact, Mapping):
+                raise ValueError("Router-v3 foundation candidate artifact row is invalid")
+            local = root / _strict_snapshot_path(artifact.get("artifact", ""))
+            source = Path(str(artifact.get("source_artifact", ""))).resolve()
+            source_sha = str(artifact.get("source_sha256", ""))
+            if (
+                local.parts[-3:-1]
+                not in {
+                    ("groups", "candidates"),
+                    ("groups", "memberships"),
+                }
+                or not local.is_file()
+                or not source.is_file()
+                or sha256_file(local) != source_sha
+                or sha256_file(source) != source_sha
+                or str(artifact.get("materialized_sha256", "")) != source_sha
+            ):
+                raise ValueError("Router-v3 foundation candidate snapshot artifact drift")
     reuse = load_json(root / "provenance" / "reuse_manifest.json")
     parent = Path(str(reuse.get("parent_run", ""))).resolve()
     if (
@@ -5626,6 +6273,24 @@ def _validate_router_v3_run(
         or reuse.get("target_labels_or_responses_used_before_selection") is not False
     ):
         raise ValueError("Router-v3 calibration reuse provenance failed")
+    if foundation_run and (
+        int(reuse.get("source_dataset_count", -1)) != 14
+        or int(reuse.get("source_baran_cells", -1)) != 23_957
+        or int(reuse.get("calibration_execution_unique_identities", -1)) != 8_197
+        or int(reuse.get("calibration_pair_label_unique_identities", -1)) != 16_451
+        or set(reuse.get("request_identity_fields", []))
+        != {
+            "query_id",
+            "prompt_hash",
+            "provider_request_hash",
+            "model",
+            "prompt_schema_version",
+        }
+        or str(reuse.get("frozen_candidate_snapshot_sha256", ""))
+        != sha256_file(root / "provenance" / "frozen_candidate_snapshot.json")
+        or reuse.get("old_gates_or_selections_used") is not False
+    ):
+        raise ValueError("Router-v3 foundation strict calibration provenance failed")
     for relative, field in (
         ("llm/calibration_queries.jsonl", "calibration_queries_sha256"),
         ("llm/calibration_execution.jsonl", "calibration_execution_sha256"),
@@ -5779,7 +6444,7 @@ def _validate_router_v3_run(
     f1_matrix = _read_csv(root / "metrics" / "per_dataset_f1_matrix.csv")
     paired = _read_csv(root / "metrics" / "paired_statistics.csv")
     expected_detailed = expected_dataset_slices
-    comparator_count = 4 if catboost_run else 2
+    comparator_count = (2 + len(comparison_backends)) if isolated_backbone_run else 2
     expected_paired = (
         len(TEST_TARGETS)
         * len(expected_backends)
@@ -5799,7 +6464,7 @@ def _validate_router_v3_run(
         "baran_only_f1",
         "llm_only_f1",
     }
-    if sweep or catboost_run:
+    if sweep or isolated_backbone_run:
         required_matrix_columns.add("llm_only_valid_llm_cells")
         required_matrix_columns.update(
             (
@@ -6052,6 +6717,266 @@ def _validate_router_v3_run(
                 or any(parameters.get(key) != value for key, value in expected_parameters.items())
             ):
                 raise ValueError("Router-v3 CatBoost model metadata drift")
+        if tabiclv2_run:
+            model_metadata = metadata.get("model", {})
+            full_metadata = (
+                model_metadata.get("full", {})
+                if isinstance(model_metadata, Mapping)
+                else {}
+            )
+            encoder_metadata = (
+                full_metadata.get("encoder", {})
+                if isinstance(full_metadata, Mapping)
+                else {}
+            )
+            helpful_metadata = (
+                full_metadata.get("helpful_head", {})
+                if isinstance(full_metadata, Mapping)
+                else {}
+            )
+            parameters = (
+                helpful_metadata.get("parameters", {})
+                if isinstance(helpful_metadata, Mapping)
+                else {}
+            )
+            foundation = config.get("foundation_backends", {})
+            tabicl_config = (
+                foundation.get("tabiclv2", {})
+                if isinstance(foundation, Mapping)
+                else {}
+            )
+            expected_sha = (
+                str(tabicl_config.get("checkpoint_sha256", ""))
+                if isinstance(tabicl_config, Mapping)
+                else ""
+            )
+            training_metadata = (
+                model_metadata.get("training", {})
+                if isinstance(model_metadata, Mapping)
+                else {}
+            )
+            lofo_metadata = (
+                model_metadata.get("lofo", [])
+                if isinstance(model_metadata, Mapping)
+                else []
+            )
+            training_families = (
+                training_metadata.get("families", [])
+                if isinstance(training_metadata, Mapping)
+                else []
+            )
+            encoder_columns = (
+                encoder_metadata.get("columns", [])
+                if isinstance(encoder_metadata, Mapping)
+                else []
+            )
+            runtime_environment = (
+                helpful_metadata.get("runtime_environment", {})
+                if isinstance(helpful_metadata, Mapping)
+                else {}
+            )
+            if (
+                not isinstance(model_metadata, Mapping)
+                or str(model_metadata.get("backend", "")) != "tabiclv2"
+                or str(model_metadata.get("backend_version", "")) != "2.1.1"
+                or not isinstance(encoder_metadata, Mapping)
+                or encoder_metadata.get("kind") != "foundation_native_categorical"
+                or encoder_metadata.get("numeric_missing_strategy") != "train_median"
+                or not encoder_metadata.get("missing_category")
+                or not encoder_metadata.get("unknown_category")
+                or not encoder_metadata.get("categorical_feature_indices")
+                or [str(value.get("name", "")) for value in encoder_columns]
+                != list(MODEL_FEATURE_COLUMNS)
+                or str(helpful_metadata.get("package", "")) != "tabicl"
+                or str(helpful_metadata.get("checkpoint_filename", ""))
+                != "tabicl-classifier-v2-20260212.ckpt"
+                or not expected_sha
+                or str(helpful_metadata.get("checkpoint_sha256", "")) != expected_sha
+                or not isinstance(parameters, Mapping)
+                or int(parameters.get("n_estimators", -1)) != 8
+                or int(parameters.get("batch_size", -1)) != 8
+                or parameters.get("kv_cache") is not False
+                or parameters.get("allow_auto_download") is not False
+                or int(parameters.get("random_state", -1)) != 42
+                or str(parameters.get("device", "")) != "cuda"
+                or parameters.get("use_amp") != "auto"
+                or parameters.get("use_fa3") != "auto"
+                or int(training_metadata.get("lofo_replicas", -1))
+                != len(training_families)
+                or len(lofo_metadata) != len(training_families)
+                or len(training_families) < 2
+                or runtime_environment.get("cuda_available") is not True
+                or not str(runtime_environment.get("gpu_name", ""))
+                or float(helpful_metadata.get("fit_seconds", -1)) < 0
+                or float(helpful_metadata.get("predict_seconds", -1)) < 0
+                or int(helpful_metadata.get("peak_ram_bytes", -1)) <= 0
+                or int(helpful_metadata.get("peak_vram_bytes", -1)) <= 0
+            ):
+                raise ValueError("Router-v3 TabICLv2 model metadata drift")
+            for fold_metadata in [full_metadata, *lofo_metadata]:
+                if not isinstance(fold_metadata, Mapping):
+                    raise ValueError("Router-v3 TabICLv2 LOFO metadata is invalid")
+                for head_name in ("helpful_head", "harmful_head"):
+                    head = fold_metadata.get(head_name, {})
+                    if not isinstance(head, Mapping):
+                        raise ValueError("Router-v3 TabICLv2 head metadata is invalid")
+                    if head.get("kind") == "constant":
+                        continue
+                    environment = head.get("runtime_environment", {})
+                    if (
+                        str(head.get("package", "")) != "tabicl"
+                        or str(head.get("package_version", "")) != "2.1.1"
+                        or str(head.get("checkpoint_sha256", "")) != expected_sha
+                        or float(head.get("fit_seconds", -1)) < 0
+                        or float(head.get("predict_seconds", -1)) < 0
+                        or int(head.get("peak_ram_bytes", -1)) <= 0
+                        or int(head.get("peak_vram_bytes", -1)) <= 0
+                        or not isinstance(environment, Mapping)
+                        or environment.get("cuda_available") is not True
+                        or not str(environment.get("effective_dtype", ""))
+                    ):
+                        raise ValueError("Router-v3 TabICLv2 head runtime provenance drift")
+            for probability_field in ("q_helpful", "q_harmful"):
+                values = pd.to_numeric(predictions[probability_field], errors="raise")
+                if bool((~np.isfinite(values) | (values < 0) | (values > 1)).any()):
+                    raise ValueError("Router-v3 TabICLv2 probabilities are invalid")
+        if tabpfn3_run:
+            model_metadata = metadata.get("model", {})
+            full_metadata = (
+                model_metadata.get("full", {})
+                if isinstance(model_metadata, Mapping)
+                else {}
+            )
+            encoder_metadata = (
+                full_metadata.get("encoder", {})
+                if isinstance(full_metadata, Mapping)
+                else {}
+            )
+            helpful_metadata = (
+                full_metadata.get("helpful_head", {})
+                if isinstance(full_metadata, Mapping)
+                else {}
+            )
+            parameters = (
+                helpful_metadata.get("parameters", {})
+                if isinstance(helpful_metadata, Mapping)
+                else {}
+            )
+            foundation = config.get("foundation_backends", {})
+            tabpfn_config = (
+                foundation.get("tabpfn3", {})
+                if isinstance(foundation, Mapping)
+                else {}
+            )
+            expected_sha = (
+                str(tabpfn_config.get("checkpoint_sha256", ""))
+                if isinstance(tabpfn_config, Mapping)
+                else ""
+            )
+            training_metadata = (
+                model_metadata.get("training", {})
+                if isinstance(model_metadata, Mapping)
+                else {}
+            )
+            lofo_metadata = (
+                model_metadata.get("lofo", [])
+                if isinstance(model_metadata, Mapping)
+                else []
+            )
+            training_families = (
+                training_metadata.get("families", [])
+                if isinstance(training_metadata, Mapping)
+                else []
+            )
+            encoder_columns = (
+                encoder_metadata.get("columns", [])
+                if isinstance(encoder_metadata, Mapping)
+                else []
+            )
+            runtime_environment = (
+                helpful_metadata.get("runtime_environment", {})
+                if isinstance(helpful_metadata, Mapping)
+                else {}
+            )
+            if (
+                not isinstance(model_metadata, Mapping)
+                or str(model_metadata.get("backend", "")) != "tabpfn3"
+                or str(model_metadata.get("backend_version", "")) != "8.1.0"
+                or not isinstance(encoder_metadata, Mapping)
+                or encoder_metadata.get("kind") != "foundation_native_categorical"
+                or encoder_metadata.get("numeric_missing_strategy") != "train_median"
+                or not encoder_metadata.get("missing_category")
+                or not encoder_metadata.get("unknown_category")
+                or not encoder_metadata.get("categorical_feature_indices")
+                or [str(value.get("name", "")) for value in encoder_columns]
+                != list(MODEL_FEATURE_COLUMNS)
+                or str(helpful_metadata.get("package", "")) != "tabpfn"
+                or str(helpful_metadata.get("checkpoint_filename", ""))
+                != "tabpfn-v3-classifier-v3_20260506_ood.ckpt"
+                or not expected_sha
+                or str(helpful_metadata.get("checkpoint_sha256", "")) != expected_sha
+                or not isinstance(parameters, Mapping)
+                or int(parameters.get("n_estimators", -1)) != 8
+                or parameters.get("auto_scale_n_estimators") is not False
+                or float(parameters.get("softmax_temperature", -1)) != 0.9
+                or parameters.get("balance_probabilities") is not False
+                or parameters.get("average_before_softmax") is not False
+                or parameters.get("allow_auto_download") is not False
+                or int(parameters.get("random_state", -1)) != 42
+                or str(parameters.get("device", "")) != "cuda"
+                or parameters.get("inference_precision") != "auto"
+                or parameters.get("fit_mode") != "fit_preprocessors"
+                or parameters.get("memory_saving_mode") != "auto"
+                or int(parameters.get("n_preprocessing_jobs", -1)) != 1
+                or int(training_metadata.get("lofo_replicas", -1))
+                != len(training_families)
+                or len(lofo_metadata) != len(training_families)
+                or len(training_families) < 2
+                or runtime_environment.get("cuda_available") is not True
+                or not isinstance(
+                    runtime_environment.get("effective_use_autocast"), bool
+                )
+                or int(runtime_environment.get("effective_n_estimators", -1)) != 8
+                or not str(runtime_environment.get("gpu_name", ""))
+                or float(helpful_metadata.get("fit_seconds", -1)) < 0
+                or float(helpful_metadata.get("predict_seconds", -1)) < 0
+                or int(helpful_metadata.get("peak_ram_bytes", -1)) <= 0
+                or int(helpful_metadata.get("peak_vram_bytes", -1)) <= 0
+            ):
+                raise ValueError("Router-v3 TabPFN-3 model metadata drift")
+            for fold_metadata in [full_metadata, *lofo_metadata]:
+                if not isinstance(fold_metadata, Mapping):
+                    raise ValueError("Router-v3 TabPFN-3 LOFO metadata is invalid")
+                for head_name in ("helpful_head", "harmful_head"):
+                    head = fold_metadata.get(head_name, {})
+                    if not isinstance(head, Mapping):
+                        raise ValueError("Router-v3 TabPFN-3 head metadata is invalid")
+                    if head.get("kind") == "constant":
+                        continue
+                    environment = head.get("runtime_environment", {})
+                    if (
+                        str(head.get("package", "")) != "tabpfn"
+                        or str(head.get("package_version", "")) != "8.1.0"
+                        or str(head.get("checkpoint_sha256", "")) != expected_sha
+                        or float(head.get("fit_seconds", -1)) < 0
+                        or float(head.get("predict_seconds", -1)) < 0
+                        or int(head.get("peak_ram_bytes", -1)) <= 0
+                        or int(head.get("peak_vram_bytes", -1)) <= 0
+                        or not isinstance(environment, Mapping)
+                        or environment.get("cuda_available") is not True
+                        or not isinstance(
+                            environment.get("effective_use_autocast"), bool
+                        )
+                        or int(environment.get("effective_n_estimators", -1)) != 8
+                        or not str(environment.get("effective_dtype", ""))
+                    ):
+                        raise ValueError(
+                            "Router-v3 TabPFN-3 head runtime provenance drift"
+                        )
+            for probability_field in ("q_helpful", "q_harmful"):
+                values = pd.to_numeric(predictions[probability_field], errors="raise")
+                if bool((~np.isfinite(values) | (values < 0) | (values > 1)).any()):
+                    raise ValueError("Router-v3 TabPFN-3 probabilities are invalid")
 
     routeability = _read_csv(root / "metrics" / "routeability_by_dataset.csv")
     if len(routeability) != len(expected_split_keys):
@@ -6152,7 +7077,13 @@ def _validate_router_v3_run(
                 "Router-v3 20% F1 or LLM-upgraded cells differ from parent"
             )
 
-    if catboost_run:
+    if isolated_backbone_run:
+        current_backend = (
+            "catboost"
+            if catboost_run
+            else ("tabiclv2" if tabiclv2_run else "tabpfn3")
+        )
+        current_method = f"budgeted_group_{current_backend}"
         comparison_reuse = load_json(
             root / "provenance" / "comparison_reuse.json"
         )
@@ -6169,27 +7100,76 @@ def _validate_router_v3_run(
             or sha256_file(comparison_records_path)
             != str(comparison_reuse.get("source_records_sha256", ""))
             or int(comparison_reuse.get("comparison_records", -1))
-            != TEST_TARGET_CELL_COUNT * len(EXPECTED_GATE_BACKENDS) * len(ROUTER_V3_VARIANTS)
+            != TEST_TARGET_CELL_COUNT * len(comparison_backends) * len(expected_variants)
+            or tuple(comparison_reuse.get("comparison_backends", []))
+            != comparison_backends
         ):
-            raise ValueError("Router-v3 CatBoost comparison provenance failed")
-        if set(paired["baseline"].astype(str)) != {
+            raise ValueError("Router-v3 isolated-backbone comparison provenance failed")
+        expected_paired_baselines = {
             "baran",
             "llm_only",
-            "budgeted_group_lightgbm",
-            "budgeted_group_xgboost",
-        }:
-            raise ValueError("Router-v3 CatBoost paired comparator matrix differs")
+            *(f"budgeted_group_{backend}" for backend in comparison_backends),
+        }
+        if set(paired["baseline"].astype(str)) != expected_paired_baselines:
+            raise ValueError("Router-v3 isolated-backbone paired comparator matrix differs")
+        direct_backends = ("tabiclv2",) if tabpfn3_run else EXPECTED_GATE_BACKENDS
         source_records = [
             row
             for row in read_jsonl(comparison_records_path)
-            if str(row.get("method", ""))
-            in {"budgeted_group_lightgbm", "budgeted_group_xgboost"}
+            if str(row.get("backend", "")) in direct_backends
+            and str(row.get("method", ""))
+            == f"budgeted_group_{str(row.get('backend', ''))}"
             and str(row.get("scenario", "")) == "size_conditioned"
             and str(row.get("group_size_variant", "")) in expected_variants
             and math.isclose(
                 float(row.get("budget_share") or 0.0), 0.2, abs_tol=1e-12
             )
         ]
+        if tabpfn3_run:
+            nested = comparison_reuse.get("nested_tree_comparison", {})
+            if not isinstance(nested, Mapping):
+                raise ValueError("TabPFN-3 nested tree provenance is missing")
+            nested_records_path = Path(str(nested.get("source_records", ""))).resolve()
+            nested_manifest_path = Path(str(nested.get("source_run", ""))).resolve() / "run_manifest.json"
+            nested_reuse_path = Path(
+                str(nested.get("comparison_reuse", ""))
+            ).resolve()
+            if (
+                not nested_records_path.is_file()
+                or sha256_file(nested_records_path)
+                != str(nested.get("source_records_sha256", ""))
+                or not nested_manifest_path.is_file()
+                or sha256_file(nested_manifest_path)
+                != str(nested.get("source_manifest_sha256", ""))
+                or not nested_reuse_path.is_file()
+                or sha256_file(nested_reuse_path)
+                != str(nested.get("comparison_reuse_sha256", ""))
+                or int(nested.get("comparison_records", -1))
+                != TEST_TARGET_CELL_COUNT
+                * len(EXPECTED_GATE_BACKENDS)
+                * len(expected_variants)
+            ):
+                raise ValueError("TabPFN-3 nested tree provenance failed")
+            source_records.extend(
+                row
+                for row in read_jsonl(nested_records_path)
+                if str(row.get("backend", "")) in EXPECTED_GATE_BACKENDS
+                and str(row.get("method", ""))
+                == f"budgeted_group_{str(row.get('backend', ''))}"
+                and str(row.get("scenario", "")) == "size_conditioned"
+                and str(row.get("group_size_variant", "")) in expected_variants
+                and math.isclose(
+                    float(row.get("budget_share") or 0.0),
+                    0.2,
+                    abs_tol=1e-12,
+                )
+            )
+        if len(source_records) != (
+            TEST_TARGET_CELL_COUNT
+            * len(comparison_backends)
+            * len(expected_variants)
+        ):
+            raise ValueError("Router-v3 comparison record matrix is incomplete")
         comparison_table = _read_csv(
             root / "metrics" / "per_dataset_router_comparison.csv"
         )
@@ -6197,7 +7177,7 @@ def _validate_router_v3_run(
             (suite, dataset, variant, backend)
             for suite, dataset in target_order()
             for variant in expected_variants
-            for backend in EXPECTED_GATE_BACKENDS
+            for backend in comparison_backends
         }
         actual_comparison_keys = {
             (
@@ -6212,7 +7192,7 @@ def _validate_router_v3_run(
             len(comparison_table) != len(expected_comparison_keys)
             or actual_comparison_keys != expected_comparison_keys
         ):
-            raise ValueError("Router-v3 CatBoost comparison table matrix differs")
+            raise ValueError("Router-v3 isolated-backbone comparison table matrix differs")
         current_dataset_metrics = {
             (
                 str(row["suite"]),
@@ -6221,7 +7201,7 @@ def _validate_router_v3_run(
             ): row
             for row in independent_metrics
             if str(row.get("scope", "")) == "dataset"
-            and str(row.get("method", "")) == "budgeted_group_catboost"
+            and str(row.get("method", "")) == current_method
         }
         source_dataset_metrics = {
             (
@@ -6245,8 +7225,13 @@ def _validate_router_v3_run(
                     str(row.group_size_variant),
                 )
             ]
+            observed_current_f1 = (
+                float(row.catboost_f1)
+                if catboost_run
+                else float(row.current_f1)
+            )
             if not (
-                math.isclose(float(row.catboost_f1), float(current["f1"]), abs_tol=1e-12)
+                math.isclose(observed_current_f1, float(current["f1"]), abs_tol=1e-12)
                 and math.isclose(float(row.comparison_f1), float(source["f1"]), abs_tol=1e-12)
                 and math.isclose(
                     float(row.delta_f1),
@@ -6254,8 +7239,8 @@ def _validate_router_v3_run(
                     abs_tol=1e-12,
                 )
             ):
-                raise ValueError("Router-v3 CatBoost comparison metric drift")
-        if (root / "catboost_info").exists():
+                raise ValueError("Router-v3 isolated-backbone comparison metric drift")
+        if catboost_run and (root / "catboost_info").exists():
             raise ValueError("Router-v3 CatBoost wrote an undeclared training directory")
 
     plan = load_json(root / "llm" / "selected_union_plan.json")
@@ -6283,6 +7268,38 @@ def _validate_router_v3_run(
     charged = logical.loc[physical == 1, "query_id"].astype(str)
     if charged.duplicated().any() or set(charged) != online_ids:
         raise ValueError("Router-v3 physical query charging is not unique")
+    if foundation_run:
+        foundation_backend = "tabiclv2" if tabiclv2_run else "tabpfn3"
+        dry_plan_path = root / "llm" / f"router_v3_{foundation_backend}_dry_plan.json"
+        authorization_path = root / "provenance" / "selected_execution_plan.json"
+        dry_plan = load_json(dry_plan_path)
+        authorization = load_json(authorization_path)
+        retry_cap = int(authorization.get("retry_adjusted_token_cap", -1))
+        recomputed_cap = int(authorization.get("provider_safety_debit_before", -1)) + int(
+            authorization.get("retry_multiplier", -1)
+        ) * (
+            int(authorization.get("online_union_estimated_tokens", -1))
+            + int(authorization.get("model_preflight_estimated_tokens", -1))
+        )
+        if (
+            dry_plan.get("api_called") is not False
+            or authorization.get("api_called") is not False
+            or str(authorization.get("selected_union_plan_sha256", ""))
+            != sha256_file(root / "llm" / "selected_union_plan.json")
+            or int(dry_plan.get("retry_adjusted_token_cap", -1)) != retry_cap
+            or retry_cap != recomputed_cap
+            or int(authorization.get("online_physical_queries", -1)) != len(online_ids)
+        ):
+            raise ValueError("Router-v3 foundation dry-plan authorization drift")
+        preflight_reuse = load_json(
+            root / "provenance" / "model_preflight_reuse.json"
+        )
+        if preflight_reuse.get("reused") is True and (
+            preflight_reuse.get("api_called") is not False
+            or sha256_file(root / "llm" / "model_preflight.json")
+            != str(preflight_reuse.get("local_receipt_sha256", ""))
+        ):
+            raise ValueError("Router-v3 foundation preflight reuse provenance drift")
 
     record_audit = load_json(root / "metrics" / "record_audit.json")
     formal_audit = load_json(root / "metrics" / "formal_run_audit.json")
@@ -6317,6 +7334,10 @@ def _validate_router_v3_run(
     recomputed_cost = {
         str(row["phase"]): row for row in audit_runner._api_cost_rows()
     }
+    if foundation_run and audit_runner._provider_safety_debit() > int(
+        authorization["retry_adjusted_token_cap"]
+    ):
+        raise ValueError("Router-v3 foundation provider debit exceeded frozen cap")
     reported_cost = {
         str(row["phase"]): row for row in api_cost.to_dict("records")
     }
@@ -6377,6 +7398,8 @@ def validate_run(run_dir: str | Path, *, require_complete: bool = True) -> dict[
             ROUTER_V3_REVISION,
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V3_TABICLV2_REVISION,
+            ROUTER_V3_TABPFN3_REVISION,
         }
     ):
         return _validate_router_v3_run(
@@ -6952,6 +7975,7 @@ def finalize_existing_run(run_dir: str | Path) -> dict[str, object]:
             ROUTER_V3_REVISION,
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V3_TABICLV2_REVISION,
         }
     )
     v3_backends = (
@@ -7020,6 +8044,12 @@ __all__ = [
     "PROJECT_ROOT",
     "REQUIRED_STAGES",
     "ROUTER_V3_CATBOOST_REVISION",
+    "ROUTER_V3_TABICLV2_REVISION",
+    "ROUTER_V3_TABICLV2_VARIANTS",
+    "ROUTER_V3_TABPFN3_REVISION",
+    "ROUTER_V3_TABPFN3_VARIANTS",
+    "TABICLV2_GATE_BACKENDS",
+    "TABPFN3_GATE_BACKENDS",
     "SafetyCapExceeded",
     "_validate_api_cost_resolution",
     "finalize_existing_run",

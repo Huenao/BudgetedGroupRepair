@@ -226,6 +226,9 @@ def build_parser() -> argparse.ArgumentParser:
     router_train = commands.add_parser("train-router")
     _add_router_run(router_train)
 
+    router_bgr_plan = commands.add_parser("plan-router-bgr")
+    _add_router_run(router_bgr_plan)
+
     router_bgr = commands.add_parser("run-router-bgr")
     _add_router_run(router_bgr, paid=True)
 
@@ -317,6 +320,7 @@ def _router_runner(args: argparse.Namespace) -> Any:
             if args.router_artifact_reuse_run is not None
             else None
         ),
+        runtime_token_cap=getattr(args, "token_cap", None),
     )
 
 
@@ -368,6 +372,7 @@ def _execute(args: argparse.Namespace) -> object:
         "plan-router-run",
         "run-router-calibration",
         "train-router",
+        "plan-router-bgr",
         "run-router-bgr",
     } or (args.command == "run-bgr" and args.router_v2):
         runner = _router_runner(args)
@@ -381,7 +386,13 @@ def _execute(args: argparse.Namespace) -> object:
             return runner.run_calibration_stage()
         if args.command == "train-router":
             return runner.train_and_select_stage()
+        if args.command == "plan-router-bgr":
+            return runner.plan_selected_llm_stage()
         if args.command in {"run-router-bgr", "run-bgr"}:
+            runner.plan_selected_llm_stage()
+            if not runner.state.stage_completed("model_preflight"):
+                if not runner.reuse_model_preflight_stage():
+                    runner.check_model()
             selected = runner.run_selected_llm_stage()
             final = runner.build_final_records_stage()
             metrics = runner.build_metrics_stage()

@@ -417,6 +417,8 @@ def build_router_report(
                 "router_v3_exact_size_conditioned",
                 "router_v3_budget_sweep_exact_size_conditioned",
                 "router_v3_catboost_exact_size_conditioned",
+                "router_v3_tabiclv2_k14_exact_size_conditioned",
+                "router_v3_tabpfn3_k14_exact_size_conditioned",
             }
         ):
             from .router_reporting_v3 import build_router_v3_report

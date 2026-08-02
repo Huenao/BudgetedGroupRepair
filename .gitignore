@@ -16,12 +16,18 @@ dist/
 venv/
 .env
 .env.*
+.deepseek_env
 !.env.example
 
 # Experiment outputs
 runs/**
 !runs/.gitkeep
 report.html
+
+# Local tabular foundation-model weights
+models/**
+*.ckpt
+*.safetensors
 
 # OS and editor files
 .DS_Store

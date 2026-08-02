@@ -1111,6 +1111,365 @@ h1{{font-size:30px;margin:0 0 8px}}h2{{margin-top:34px;border-bottom:2px solid v
     }
 
 
+def _build_foundation_k14_report(
+    root: Path,
+    validation: Mapping[str, object],
+    output_path: str | Path | None,
+    *,
+    backend: str,
+    display_name: str,
+    comparison_names: str,
+    expected_comparison_rows: int,
+    expected_paired_rows: int,
+) -> dict[str, Any]:
+    """Build a frozen 20% foundation-backbone k=1/4 dataset-first report."""
+
+    metrics = root / "metrics"
+    input_paths = (
+        metrics / "per_dataset_f1_matrix.csv",
+        metrics / "per_dataset_method_comparison.csv",
+        metrics / "per_dataset_router_comparison.csv",
+        metrics / "method_metrics.csv",
+        metrics / "paired_statistics.csv",
+        metrics / "api_cost_audit.csv",
+        metrics / "selection_audit.csv",
+        metrics / "record_audit.json",
+        metrics / "formal_run_audit.json",
+        root / "provenance" / "reuse_manifest.json",
+        root / "provenance" / "response_reuse.json",
+        root / "provenance" / "comparison_reuse.json",
+        root / "provenance" / "selected_execution_plan.json",
+        root / "llm" / f"router_v3_{backend}_dry_plan.json",
+        root / "run_manifest.json",
+    )
+    f1_rows = _read_csv(input_paths[0])
+    detailed_rows = _read_csv(input_paths[1])
+    comparison_rows = _read_csv(input_paths[2])
+    metric_rows = _read_csv(input_paths[3])
+    paired_rows = _read_csv(input_paths[4])
+    cost_rows = _read_csv(input_paths[5])
+    selection_rows = _read_csv(input_paths[6])
+    record_audit = _read_json(input_paths[7])
+    formal_audit = _read_json(input_paths[8])
+    reuse = _read_json(input_paths[9])
+    response_reuse = _read_json(input_paths[10])
+    comparison_reuse = _read_json(input_paths[11])
+    execution_plan = _read_json(input_paths[12])
+    dry_plan = _read_json(input_paths[13])
+    manifest = _read_json(input_paths[14])
+    variants = ("1", "4")
+    if (
+        len(f1_rows) != 9
+        or len(detailed_rows) != 36
+        or len(comparison_rows) != expected_comparison_rows
+        or len(metric_rows) != 44
+        or len(paired_rows) != expected_paired_rows
+        or len(selection_rows) != 18
+        or int(record_audit.get("records", -1)) != 88_792
+        or formal_audit.get("ok") is not True
+    ):
+        raise ValueError(
+            f"Router-v3 {display_name} report inputs failed acceptance counts"
+        )
+
+    matrix: list[dict[str, object]] = []
+    for row in f1_rows:
+        item: dict[str, object] = {
+            "dataset": _dataset_name(row),
+            "baran": _number(row["baran_only_f1"]),
+            "llm": _number(row["llm_only_f1"]),
+            "llm_cells": _integer(row["llm_only_valid_llm_cells"]),
+        }
+        for variant in variants:
+            item[f"{backend}_{variant}_f1"] = _number(
+                row[f"bgr_{backend}_k{variant}_f1"]
+            )
+            item[f"{backend}_{variant}_cells"] = _integer(
+                row[f"bgr_{backend}_k{variant}_llm_cells"]
+            )
+        matrix.append(item)
+
+    detailed = _prepare_detailed(detailed_rows)
+    aggregate = _prepare_aggregate(metric_rows)
+    paired = _paired_summary(paired_rows)
+    costs = _cost_summary(cost_rows)
+    wtl = _win_tie_loss(
+        detailed_rows, backends=(backend,), variants=variants
+    )
+    comparison = [
+        {
+            "dataset": _dataset_name(row),
+            "k": str(row["group_size_variant"]),
+            "comparison": str(row["comparison_backend"]),
+            f"{backend}_f1": _number(row["current_f1"]),
+            "comparison_f1": _number(row["comparison_f1"]),
+            "delta_f1": _number(row["delta_f1"]),
+            f"{backend}_cells": _integer(row["current_llm_upgraded_cells"]),
+            "comparison_cells": _integer(row["comparison_llm_upgraded_cells"]),
+        }
+        for row in comparison_rows
+    ]
+    matrix_columns = [
+        ("dataset", "Dataset"),
+        ("baran", "Baran F1"),
+        ("llm", "LLM-only F1"),
+        ("llm_cells", "LLM-only valid cells"),
+        *[
+            column
+            for variant in variants
+            for column in (
+                (f"{backend}_{variant}_f1", f"{display_name} k={variant} F1"),
+                (
+                    f"{backend}_{variant}_cells",
+                    f"{display_name} k={variant} LLM cells",
+                ),
+            )
+        ],
+    ]
+    detailed_columns = (
+        ("dataset", "Dataset"),
+        ("method", "Method"),
+        ("correct", "Correct"),
+        ("predicted", "Predicted"),
+        ("precision", "Precision"),
+        ("recall", "Recall/CA"),
+        ("f1", "F1"),
+        ("delta_baran", "Delta F1 vs Baran"),
+        ("delta_llm", "Delta F1 vs LLM"),
+        ("llm_cells", "LLM upgraded cells"),
+        ("logical_calls", "Logical calls"),
+        ("estimated_tokens", "Estimated tokens"),
+        ("physical_calls", "Physical calls"),
+        ("observed_tokens", "Observed tokens"),
+    )
+    comparison_columns = (
+        ("dataset", "Dataset"),
+        ("k", "k"),
+        ("comparison", "Comparator"),
+        (f"{backend}_f1", f"{display_name} F1"),
+        ("comparison_f1", "Comparator F1"),
+        ("delta_f1", "Delta F1"),
+        (f"{backend}_cells", f"{display_name} LLM cells"),
+        ("comparison_cells", "Comparator LLM cells"),
+    )
+    paired_columns = (
+        ("dataset", "Dataset"),
+        ("method", "Method"),
+        ("baseline", "Comparator"),
+        ("delta_f1", "Delta F1"),
+        ("ci", "95% row-cluster CI"),
+        ("holm_p", "Holm p"),
+    )
+    wtl_columns = (
+        ("method", "Method"),
+        ("baseline", "Baseline"),
+        ("win", "Win"),
+        ("tie", "Tie"),
+        ("loss", "Loss"),
+    )
+    aggregate_columns = (
+        ("scope", "Scope"),
+        ("method", "Method"),
+        ("correct", "Correct"),
+        ("predicted", "Predicted"),
+        ("precision", "Precision"),
+        ("recall", "Recall/CA"),
+        ("f1", "F1"),
+    )
+    cost_columns = (
+        ("phase", "Phase"),
+        ("records", "Logical records"),
+        ("physical_requests", "Physical requests"),
+        ("cache_hits", "Cache hits"),
+        ("provider_tokens", "Provider tokens"),
+        ("failed", "Failed"),
+    )
+    title = f"Router-v3: {display_name} 20% budget, k=1/4"
+    generated_at = str(
+        manifest.get("completed_at")
+        or manifest.get("updated_at")
+        or datetime.now(timezone.utc).isoformat()
+    )
+    markdown = "\n\n".join(
+        (
+            f"# {title}",
+            f"Run: `{root.name}`. 9 datasets, 22,198 error cells, 88,792 final cell records.",
+            "## Per-dataset F1 and LLM upgrades\n\n"
+            + _markdown_table(matrix, matrix_columns),
+            "## Per-dataset detailed metrics\n\n"
+            + _markdown_table(detailed, detailed_columns),
+            f"## Frozen {comparison_names} comparison\n\n"
+            + _markdown_table(comparison, comparison_columns),
+            "## Dirty-row clustered paired bootstrap\n\n"
+            + _markdown_table(paired, paired_columns),
+            "## Win / Tie / Loss\n\n" + _markdown_table(wtl, wtl_columns),
+            "## Micro and dataset-macro supplement\n\n"
+            + _markdown_table(aggregate, aggregate_columns),
+            "## Cost audit\n\n" + _markdown_table(costs, cost_columns),
+            (
+                "## Integrity\n\n"
+                f"- Cell ledger: {record_audit['records']:,}; audit={record_audit['ok']}.\n"
+                f"- Selection slices: {len(selection_rows)}; model folds={validation['split_rows']}.\n"
+                f"- Calibration reuse: {reuse.get('calibration_queries')} queries / "
+                f"{reuse.get('calibration_pair_labels')} pair labels.\n"
+                f"- Frozen execution cap: {execution_plan.get('retry_adjusted_token_cap')}; "
+                f"planned online calls={dry_plan.get('online_physical_queries')}.\n"
+                f"- External comparison rows: {comparison_reuse.get('comparison_records', 0)}."
+            ),
+            f"Generated: {generated_at}",
+        )
+    ) + "\n"
+
+    report_dir = root / "report"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    markdown_path = report_dir / "report.md"
+    html_path = (
+        Path(output_path).expanduser().resolve()
+        if output_path is not None
+        else report_dir / "report.html"
+    )
+    artifact_path = report_dir / "artifact.json"
+    markdown_path.write_text(markdown, encoding="utf-8")
+    html_sections = "".join(
+        (
+            f"<h1>{html.escape(title)}</h1>",
+            f"<p>Run: <code>{html.escape(root.name)}</code> · 9 datasets · 22,198 cells</p>",
+            "<h2>Per-dataset F1 and LLM upgrades</h2>",
+            _html_table(matrix, matrix_columns),
+            "<h2>Per-dataset detailed metrics</h2>",
+            _html_table(detailed, detailed_columns),
+            f"<h2>Frozen {html.escape(comparison_names)} comparison</h2>",
+            _html_table(comparison, comparison_columns),
+            "<h2>Dirty-row clustered paired bootstrap</h2>",
+            _html_table(paired, paired_columns),
+            "<h2>Win / Tie / Loss</h2>",
+            _html_table(wtl, wtl_columns),
+            "<h2>Micro and dataset-macro supplement</h2>",
+            _html_table(aggregate, aggregate_columns),
+            "<h2>Cost audit</h2>",
+            _html_table(costs, cost_columns),
+        )
+    )
+    html_document = f"""<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{html.escape(title)}</title><style>body{{font:14px/1.5 sans-serif;max-width:1600px;margin:24px auto;padding:24px;color:#172033}}.table-wrap{{overflow:auto}}table{{border-collapse:collapse;width:100%}}th,td{{border:1px solid #dce1ea;padding:6px 8px;white-space:nowrap}}th{{background:#eef2f8}}</style></head><body>{html_sections}</body></html>"""
+    html_path.parent.mkdir(parents=True, exist_ok=True)
+    html_path.write_text(html_document, encoding="utf-8")
+
+    artifact = {
+        "schema_version": f"bgr-router-v3-{backend}-report-v1",
+        "surface": "report",
+        "title": title,
+        "run_id": root.name,
+        "generated_at": generated_at,
+        "validation": validation,
+        "dimensions": {
+            "datasets": 9,
+            "error_cells": 22_198,
+            "method_slices": 4,
+            "cell_records": 88_792,
+            "selection_slices": 18,
+            "budget_share": 0.2,
+            "variants": list(variants),
+            "backends": [backend],
+        },
+        "tables": {
+            "per_dataset_f1": matrix,
+            "per_dataset_detailed": detailed,
+            "router_comparison": comparison,
+            "paired_statistics": paired,
+            "win_tie_loss": wtl,
+            "aggregate_supplement": aggregate,
+            "cost_supplement": costs,
+        },
+        "audits": {
+            "record": record_audit,
+            "formal": formal_audit,
+            "reuse": reuse,
+            "response_reuse": response_reuse,
+            "comparison_reuse": comparison_reuse,
+            "dry_plan": dry_plan,
+            "selected_execution_plan": execution_plan,
+        },
+        "sources": _source_rows(root, input_paths),
+    }
+    artifact_path.write_text(
+        json.dumps(artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    persisted = _read_json(artifact_path)
+    source_physical_calls = sum(
+        int(float(row.get("physical_calls_charged", 0) or 0))
+        for row in detailed_rows
+    )
+    reported_physical_calls = sum(
+        int(str(row.get("physical_calls", "0")).replace(",", ""))
+        for row in detailed
+    )
+    if (
+        persisted.get("schema_version") != f"bgr-router-v3-{backend}-report-v1"
+        or len(persisted.get("tables", {}).get("per_dataset_f1", [])) != 9
+        or len(persisted.get("tables", {}).get("per_dataset_detailed", [])) != 36
+        or len(persisted.get("tables", {}).get("router_comparison", []))
+        != expected_comparison_rows
+        or source_physical_calls != int(dry_plan.get("online_physical_queries", -1))
+        or reported_physical_calls != source_physical_calls
+        or not markdown_path.is_file()
+        or not html_path.is_file()
+    ):
+        raise ValueError(
+            f"Router-v3 {display_name} report artifact validation failed"
+        )
+    return {
+        "ok": True,
+        "run_dir": root,
+        "artifact": artifact_path,
+        "markdown": markdown_path,
+        "html": html_path,
+        "run_validation": validation,
+        "verification": {
+            "dataset_rows": len(matrix),
+            "detailed_rows": len(detailed),
+            "comparison_rows": len(comparison),
+            "paired_rows": len(paired),
+            "selection_rows": len(selection_rows),
+        },
+    }
+
+
+def _build_tabiclv2_report(
+    root: Path,
+    validation: Mapping[str, object],
+    output_path: str | Path | None,
+) -> dict[str, Any]:
+    return _build_foundation_k14_report(
+        root,
+        validation,
+        output_path,
+        backend="tabiclv2",
+        display_name="TabICLv2",
+        comparison_names="LightGBM/XGBoost",
+        expected_comparison_rows=36,
+        expected_paired_rows=72,
+    )
+
+
+def _build_tabpfn3_report(
+    root: Path,
+    validation: Mapping[str, object],
+    output_path: str | Path | None,
+) -> dict[str, Any]:
+    return _build_foundation_k14_report(
+        root,
+        validation,
+        output_path,
+        backend="tabpfn3",
+        display_name="TabPFN-3",
+        comparison_names="LightGBM/XGBoost/TabICLv2",
+        expected_comparison_rows=54,
+        expected_paired_rows=90,
+    )
+
+
 def build_router_v3_report(
     run_dir: str | Path,
     output_path: str | Path | None = None,
@@ -1121,6 +1480,8 @@ def build_router_v3_report(
         ROUTER_V3_BUDGET_SWEEP_REVISION,
         ROUTER_V3_CATBOOST_REVISION,
         ROUTER_V3_REVISION,
+        ROUTER_V3_TABICLV2_REVISION,
+        ROUTER_V3_TABPFN3_REVISION,
         validate_run,
     )
 
@@ -1130,6 +1491,10 @@ def build_router_v3_report(
         return _build_budget_sweep_report(root, validation, output_path)
     if validation.get("router_revision") == ROUTER_V3_CATBOOST_REVISION:
         return _build_catboost_report(root, validation, output_path)
+    if validation.get("router_revision") == ROUTER_V3_TABICLV2_REVISION:
+        return _build_tabiclv2_report(root, validation, output_path)
+    if validation.get("router_revision") == ROUTER_V3_TABPFN3_REVISION:
+        return _build_tabpfn3_report(root, validation, output_path)
     if validation.get("router_revision") != ROUTER_V3_REVISION:
         raise ValueError("Router-v3 report received a non-v3 run")
     metrics = root / "metrics"
