@@ -120,6 +120,11 @@ def _add_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> None:
             action="store_true",
             help="explicitly authorize uncapped provider usage for this run",
         )
+        budget.add_argument(
+            "--cache-only",
+            action="store_true",
+            help="forbid provider calls and require complete request-identical cache coverage",
+        )
         parser.add_argument(
             "--env-file",
             type=Path,
@@ -138,6 +143,11 @@ def _add_router_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> N
         "--response-reuse-run",
         type=Path,
         help="optional run supplying request-identical No-Baran responses",
+    )
+    parser.add_argument(
+        "--calibration-source-run",
+        type=Path,
+        help="completed run supplying frozen calibration queries, executions, and labels",
     )
     parser.add_argument(
         "--router-artifact-reuse-run",
@@ -221,6 +231,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     args = build_parser().parse_args(argv)
+    if bool(getattr(args, "cache_only", False)) and args.command != "run-router-bgr":
+        raise SystemExit("--cache-only is supported only by run-router-bgr")
     if getattr(args, "token_cap", None) is not None and int(args.token_cap) <= 0:
         raise SystemExit("--token-cap must be positive")
     if (
@@ -238,9 +250,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def _router_runner(args: argparse.Namespace) -> Any:
-    from .router_v3 import ExperimentRunner
+    from .router_v3 import (
+        ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
+        ExperimentRunner,
+    )
 
-    return ExperimentRunner.create(
+    requested_config = Path(args.experiment_config)
+    bound_config = PROJECT_ROOT / "runs" / args.run_id / "bound_experiment_config.json"
+    runner_config = bound_config if bool(args.resume) and bound_config.is_file() else requested_config
+    config_value = json.loads(runner_config.read_text(encoding="utf-8"))
+    runner_class: type[ExperimentRunner] = ExperimentRunner
+    if str(config_value.get("router_revision", "")) == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION:
+        from .router_v4 import RouterV4ExperimentRunner
+
+        runner_class = RouterV4ExperimentRunner
+
+    runner = runner_class.create(
         project_root=PROJECT_ROOT,
         data_root=PROJECT_ROOT / "data",
         config_path=Path(args.experiment_config),
@@ -259,6 +284,11 @@ def _router_runner(args: argparse.Namespace) -> Any:
             if args.response_reuse_run is not None
             else None
         ),
+        calibration_source_run=(
+            Path(args.calibration_source_run)
+            if args.calibration_source_run is not None
+            else None
+        ),
         router_artifact_reuse_run=(
             Path(args.router_artifact_reuse_run)
             if args.router_artifact_reuse_run is not None
@@ -274,6 +304,8 @@ def _router_runner(args: argparse.Namespace) -> Any:
             getattr(args, "no_token_cap", False)
         ),
     )
+    runner.cache_only = bool(getattr(args, "cache_only", False))
+    return runner
 
 
 
@@ -330,7 +362,9 @@ def _execute(args: argparse.Namespace) -> object:
             confidence=args.confidence_level,
         )
 
-    if getattr(args, "env_file", None) is not None:
+    if getattr(args, "env_file", None) is not None and not bool(
+        getattr(args, "cache_only", False)
+    ):
         load_env_file(args.env_file)
 
     if args.command == "validate-run":

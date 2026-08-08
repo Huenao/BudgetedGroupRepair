@@ -95,6 +95,9 @@ ROUTER_V3_BUDGET_SWEEP_REVISION = (
     "router_v3_budget_sweep_exact_size_conditioned"
 )
 ROUTER_V3_CATBOOST_REVISION = "router_v3_catboost_exact_size_conditioned"
+ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION = (
+    "router_v4_lightgbm_isotonic_exact_size_conditioned"
+)
 ROUTER_V3_VARIANTS = ("1", "2", "4", "8", "all")
 ROUTER_V3_SWEEP_VARIANTS = ("2", "4")
 ROUTER_V3_SWEEP_BUDGETS = (0.01, 0.05, 0.1, 0.2, 0.5)
@@ -496,6 +499,12 @@ class ExperimentRunner:
         self.response_reuse_run = (
             Path(response_source).resolve() if response_source else None
         )
+        calibration_source = str(
+            manifest.get("calibration_source_run") or ""
+        ).strip()
+        self.calibration_source_run = (
+            Path(calibration_source).resolve() if calibration_source else None
+        )
         artifact_source = str(manifest.get("router_artifact_reuse_run", ""))
         self.router_artifact_reuse_run = (
             Path(artifact_source).resolve() if artifact_source else None
@@ -520,10 +529,20 @@ class ExperimentRunner:
             ROUTER_V3_REVISION,
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
         }:
             raise ValueError(f"unsupported router_revision: {self.router_revision!r}")
         backends = self._active_gate_backends()
-        if self.is_router_v3_budget_sweep:
+        if self.is_router_v4_lightgbm_isotonic:
+            if backends != ("lightgbm",):
+                raise ValueError(
+                    "Router-v4 isotonic gate_backends must be exactly lightgbm"
+                )
+            if self.calibration_source_run is None:
+                raise ValueError(
+                    "Router-v4 isotonic requires --calibration-source-run"
+                )
+        elif self.is_router_v3_budget_sweep:
             if backends != ("lightgbm",):
                 raise ValueError(
                     "Router-v3 budget sweep gate_backends must be exactly lightgbm"
@@ -555,7 +574,9 @@ class ExperimentRunner:
             )
         variants = self._router_training_variants()
         expected_variants = (
-            ROUTER_V3_SWEEP_VARIANTS
+            ("1", "4")
+            if self.is_router_v4_lightgbm_isotonic
+            else ROUTER_V3_SWEEP_VARIANTS
             if self.is_router_v3_budget_sweep
             else ROUTER_V3_VARIANTS
         )
@@ -573,11 +594,19 @@ class ExperimentRunner:
         return self.router_revision == ROUTER_V3_CATBOOST_REVISION
 
     @property
+    def is_router_v4_lightgbm_isotonic(self) -> bool:
+        return self.router_revision == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION
+
+    @property
     def freezes_reused_terminal_failures(self) -> bool:
         return self.router_revision in {
             ROUTER_V3_BUDGET_SWEEP_REVISION,
             ROUTER_V3_CATBOOST_REVISION,
+            ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
         }
+
+    def _bgr_method_name(self, backend: str) -> str:
+        return f"budgeted_group_{backend}"
 
     def _active_gate_backends(self) -> tuple[str, ...]:
         return tuple(
@@ -670,6 +699,7 @@ class ExperimentRunner:
         resume: bool = False,
         baran_source_run: str | Path | None = None,
         response_reuse_run: str | Path | None = None,
+        calibration_source_run: str | Path | None = None,
         router_artifact_reuse_run: str | Path | None = None,
         router_comparison_run: str | Path | None = None,
         provider_token_cap: int | None = None,
@@ -711,6 +741,9 @@ class ExperimentRunner:
 
         baran_source = optional_source(baran_source_run, "baran_source_run")
         response_source = optional_source(response_reuse_run, "response_reuse_run")
+        calibration_source = optional_source(
+            calibration_source_run, "calibration_source_run"
+        )
         artifact_source = (
             optional_source(
                 router_artifact_reuse_run,
@@ -724,6 +757,7 @@ class ExperimentRunner:
         for label, source in (
             ("Baran", baran_source),
             ("response reuse", response_source),
+            ("calibration", calibration_source),
         ):
             if source is not None and not (source / "run_manifest.json").is_file():
                 raise FileNotFoundError(
@@ -786,6 +820,15 @@ class ExperimentRunner:
                 else None
             ),
         }
+        if calibration_source is not None:
+            source_binding.update(
+                {
+                    "calibration_source_run": str(calibration_source),
+                    "calibration_source_manifest_sha256": sha256_file(
+                        calibration_source / "run_manifest.json"
+                    ),
+                }
+            )
         if artifact_source is not None:
             source_binding.update(
                 {
@@ -826,10 +869,28 @@ class ExperimentRunner:
         if resume and (resolved_run / "run_manifest.json").is_file():
             existing = load_json(resolved_run / "run_manifest.json")
             provider_checkpoint = resolved_run / "llm" / "group_query_checkpoint.jsonl"
+            checkpoint_rows = read_jsonl(provider_checkpoint)
+            stages = existing.get("stages", {})
+            gate_selection_complete = bool(
+                isinstance(stages, Mapping)
+                and isinstance(stages.get("gate_selection"), Mapping)
+                and stages["gate_selection"].get("status") == "complete"  # type: ignore[index]
+            )
+            imported_only_v4 = bool(
+                str(experiment_config.get("router_revision", ""))
+                == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION
+                and checkpoint_rows
+                and all(
+                    bool(row.get("cache_hit"))
+                    and bool(row.get("imported_response"))
+                    for row in checkpoint_rows
+                )
+                and not gate_selection_complete
+            )
             if (
                 str(existing.get("implementation_sha256", ""))
                 != str(metadata["implementation_sha256"])
-                and not read_jsonl(provider_checkpoint)
+                and (not checkpoint_rows or imported_only_v4)
             ):
                 previous = str(existing.get("implementation_sha256", ""))
                 existing["implementation_sha256"] = metadata["implementation_sha256"]
@@ -838,10 +899,15 @@ class ExperimentRunner:
                 rebinds = list(history) if isinstance(history, list) else []
                 rebinds.append(
                     {
-                        "reason": "pre_provider_prompt_audit_false_positive_fix",
+                        "reason": (
+                            "router_v4_pre_selection_imported_cache_only_rebind"
+                            if imported_only_v4
+                            else "pre_provider_prompt_audit_false_positive_fix"
+                        ),
                         "previous_implementation_sha256": previous,
                         "implementation_sha256": metadata["implementation_sha256"],
-                        "provider_checkpoint_rows": 0,
+                        "provider_checkpoint_rows": len(checkpoint_rows),
+                        "fresh_provider_checkpoint_rows": 0,
                     }
                 )
                 existing["pre_provider_rebinds"] = rebinds
@@ -3492,7 +3558,7 @@ class ExperimentRunner:
                                 "cell_id": cell_id,
                                 "suite": suite,
                                 "dataset": dataset,
-                                "method": f"budgeted_group_{backend}",
+                                "method": self._bgr_method_name(backend),
                                 "scenario": scenario,
                                 "backend": backend,
                                 "budget_share": budget_share,
@@ -3867,7 +3933,7 @@ class ExperimentRunner:
         comparison_records = self._catboost_comparison_records()
         comparison_series = (
             [
-                (f"budgeted_group_{backend}", backend, variant, budget)
+                (self._bgr_method_name(backend), backend, variant, budget)
                 for backend in EXPECTED_GATE_BACKENDS
                 for variant in self._router_training_variants()
                 for budget in self._router_budget_shares()
@@ -3879,7 +3945,7 @@ class ExperimentRunner:
             ("baran", "none", "all", None),
             ("llm_only", "none", "1", None),
             *[
-                (f"budgeted_group_{backend}", backend, variant, budget)
+                (self._bgr_method_name(backend), backend, variant, budget)
                 for backend in self._active_gate_backends()
                 for variant in self._router_training_variants()
                 for budget in self._router_budget_shares()
@@ -4006,7 +4072,7 @@ class ExperimentRunner:
                 for variant in self._router_training_variants():
                     for budget in self._router_budget_shares():
                         method_key = (
-                            f"budgeted_group_{backend}",
+                            self._bgr_method_name(backend),
                             backend,
                             variant,
                             budget,
@@ -4149,7 +4215,7 @@ class ExperimentRunner:
         backends = self._active_gate_backends()
         variants = self._router_training_variants()
         budgets = self._router_budget_shares()
-        bgr_methods = [f"budgeted_group_{value}" for value in backends]
+        bgr_methods = [self._bgr_method_name(value) for value in backends]
         comparisons_llm = compare_methods(
             records,
             baseline="llm_only",
@@ -4403,7 +4469,7 @@ class ExperimentRunner:
                     for budget in budgets:
                         value = values[
                             (
-                                f"budgeted_group_{backend}",
+                                self._bgr_method_name(backend),
                                 backend,
                                 variant,
                                 budget,
@@ -4418,7 +4484,7 @@ class ExperimentRunner:
                                 (
                                     suite,
                                     dataset,
-                                    f"budgeted_group_{backend}",
+                                    self._bgr_method_name(backend),
                                     backend,
                                     variant,
                                     budget,
@@ -4434,7 +4500,7 @@ class ExperimentRunner:
                                         (
                                             suite,
                                             dataset,
-                                            f"budgeted_group_{backend}",
+                                            self._bgr_method_name(backend),
                                             backend,
                                             variant,
                                             budget,
@@ -5896,6 +5962,19 @@ def validate_run(
 
     root = Path(run_dir).resolve()
     manifest = load_json(root / "run_manifest.json")
+    bound_config_path = root / "bound_experiment_config.json"
+    if bound_config_path.is_file():
+        bound_revision = str(
+            load_json(bound_config_path).get("router_revision", "")
+        )
+        if bound_revision == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION:
+            from .router_v4 import validate_router_v4_run
+
+            return validate_router_v4_run(
+                root,
+                manifest,
+                require_complete=require_complete,
+            )
     completed_matrix = manifest.get("completed_matrix", {})
     if (
         isinstance(completed_matrix, Mapping)
@@ -6019,6 +6098,7 @@ __all__ = [
     "ROUTER_V3_BUDGET_SWEEP_REVISION",
     "ROUTER_V3_CATBOOST_REVISION",
     "ROUTER_V3_REVISION",
+    "ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION",
     "SafetyCapExceeded",
     "_validate_api_cost_resolution",
     "finalize_existing_run",

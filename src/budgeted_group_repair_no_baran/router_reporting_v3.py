@@ -1151,11 +1151,16 @@ def build_router_v3_report(
         ROUTER_V3_BUDGET_SWEEP_REVISION,
         ROUTER_V3_CATBOOST_REVISION,
         ROUTER_V3_REVISION,
+        ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
         validate_run,
     )
 
     root = Path(run_dir).expanduser().resolve()
     validation = validate_run(root, require_complete=True)
+    if validation.get("router_revision") == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION:
+        from .router_reporting_v4 import build_router_v4_report
+
+        return build_router_v4_report(root, validation, output_path)
     if validation.get("router_revision") == ROUTER_V3_BUDGET_SWEEP_REVISION:
         return _build_budget_sweep_report(root, validation, output_path)
     if validation.get("router_revision") == ROUTER_V3_CATBOOST_REVISION:

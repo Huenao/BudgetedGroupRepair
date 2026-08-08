@@ -34,6 +34,8 @@ BINDING_KEYS = (
     "baran_source_manifest_sha256",
     "response_reuse_run",
     "response_reuse_manifest_sha256",
+    "calibration_source_run",
+    "calibration_source_manifest_sha256",
     "router_artifact_reuse_run",
     "router_artifact_reuse_manifest_sha256",
     "router_comparison_run",
