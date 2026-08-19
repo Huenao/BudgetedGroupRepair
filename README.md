@@ -2,11 +2,13 @@
 
 这是 Budgeted Group Repair 的 V3-only 基准项目。它在 Prompt 中严格排除 Baran candidate、support 和 diagnostics，同时允许在 Prompt 外使用 Baran 特征、Router uplift 估计、group 选择、验证与 fallback。
 
-当前保留三套正式 V3 revision：
+当前保留五套正式 V3 revision：
 
 - `router_v3_exact_size_conditioned`：LightGBM/XGBoost，20% 预算，`k=1/2/4/8/all`。
 - `router_v3_budget_sweep_exact_size_conditioned`：LightGBM，`k=2/4`，预算为 `1%/5%/10%/20%/50%`。
 - `router_v3_catboost_exact_size_conditioned`：CatBoost，20% 预算，`k=1/2/4/8/all`；外部 LightGBM/XGBoost comparison run 可选。
+- `router_v3_tabiclv2_k14_exact_size_conditioned`：TabICLv2，20% 预算，`k=1/4`；与冻结的 LightGBM/XGBoost run 对齐比较。
+- `router_v3_tabpfn3_k14_exact_size_conditioned`：TabPFN-3，20% 预算，`k=1/4`；与冻结的 LightGBM/XGBoost/TabICLv2 链对齐比较。
 
 正式测试集固定为 9 个数据集、22,198 个错误单元格；训练与 calibration 使用严格 base-family holdout，target 数据的 clean labels 和响应不会在选择前进入 Router。
 
@@ -62,6 +64,16 @@ python -m budgeted_group_repair_no_baran.cli plan-router-run \
 
 多预算配置还要求通过 `--router-artifact-reuse-run` 指定基础 V3 run。CatBoost 可通过 `--router-comparison-run` 生成与 LightGBM/XGBoost 的额外对齐比较；不提供时 CatBoost 自身训练、测试和报告仍然完整。
 
+TabICLv2/TabPFN-3 使用独立环境和本地 checkpoint；基础环境不会导入这两个可选包。Foundation revision 在任何 provider 调用前必须先执行零调用 dry plan，并将其给出的精确 retry-adjusted cap 用于正式命令：
+
+```bash
+python -m budgeted_group_repair_no_baran.cli plan-router-bgr \
+  --run-id "$RUN_ID" --resume \
+  --experiment-config configs/experiment_router_v3_tabiclv2_k14.json
+```
+
+两个 foundation revision 均要求 `--router-comparison-run`；完整环境、checkpoint 和分阶段实验说明见 `09_Router-v3-TabICLv2与TabPFN-3实验实施指南.md`。
+
 ## 独立运行两条全量 baseline
 
 `run-full-baselines` 不训练 Router，也不执行 group 选择。它只运行或复用正式 9 数据集的：
@@ -99,8 +111,12 @@ python -m budgeted_group_repair_no_baran.cli analyze-full-complementarity \
 - `configs/experiment_router_v3.json`：基础 LightGBM/XGBoost 20% 配置。
 - `configs/experiment_router_v3_budget_sweep_k24_lightgbm.json`：LightGBM k2/k4 多预算配置。
 - `configs/experiment_router_v3_catboost.json`：CatBoost 20% 全 k 配置。
+- `configs/experiment_router_v3_tabiclv2_k14.json`：TabICLv2 20% k1/k4 配置。
+- `configs/experiment_router_v3_tabpfn3_k14.json`：TabPFN-3 20% k1/k4 配置。
 - `configs/deepseek_v4.json`：模型、重试、并发和 Prompt schema 配置。
 - `configs/public_fds.json`：公开 FD 规则。
+
+Foundation 模型分别冻结在 `requirements-tabiclv2-lock.txt` 与 `requirements-tabpfn3-lock.txt`；checkpoint 和 `runs/` 始终保持 Git ignored。
 
 ## 验证
 

@@ -10,6 +10,7 @@ from budgeted_group_repair_no_baran.router_v3 import (
     ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
 )
 from budgeted_group_repair_no_baran.router_v4 import (
+    FROZEN_ROUTER_V4_IMPLEMENTATION_SHA256,
     HISTORICAL_COMPARATOR_HASHES,
     RouterV4ExperimentRunner,
     _probability_diagnostics,
@@ -76,3 +77,6 @@ def test_historical_comparator_hash_contract_is_complete() -> None:
         "final/all_methods.jsonl",
     }
     assert all(len(value) == 64 for value in HISTORICAL_COMPARATOR_HASHES.values())
+    assert FROZEN_ROUTER_V4_IMPLEMENTATION_SHA256 == {
+        "7159d9d20fb2197670ee53f1a59b604c8919135d6dc8eea3b49011c7d866f67f"
+    }

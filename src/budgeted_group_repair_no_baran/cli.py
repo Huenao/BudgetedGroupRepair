@@ -197,6 +197,7 @@ def build_parser() -> argparse.ArgumentParser:
         ("plan-router-run", False),
         ("run-router-calibration", True),
         ("train-router", False),
+        ("plan-router-bgr", False),
         ("run-router-bgr", True),
         ("check-model", True),
     ):
@@ -366,7 +367,6 @@ def _execute(args: argparse.Namespace) -> object:
         getattr(args, "cache_only", False)
     ):
         load_env_file(args.env_file)
-
     if args.command == "validate-run":
         from .router_v3 import validate_run
 
@@ -399,7 +399,14 @@ def _execute(args: argparse.Namespace) -> object:
         return runner.run_calibration_stage()
     if args.command == "train-router":
         return runner.train_and_select_stage()
+    if args.command == "plan-router-bgr":
+        return runner.plan_selected_llm_stage()
     if args.command == "run-router-bgr":
+        if runner.is_router_v3_foundation:
+            runner.plan_selected_llm_stage()
+            if not runner.state.stage_completed("model_preflight"):
+                if not runner.reuse_model_preflight_stage():
+                    runner.check_model()
         selected = runner.run_selected_llm_stage()
         final = runner.build_final_records_stage()
         metrics = runner.build_metrics_stage()

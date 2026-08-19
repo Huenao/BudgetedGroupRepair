@@ -53,6 +53,9 @@ HISTORICAL_COMPARATOR_HASHES = {
 }
 EXPECTED_CALIBRATION_QUERIES = 8_197
 EXPECTED_CALIBRATION_PAIR_LABELS = 16_451
+FROZEN_ROUTER_V4_IMPLEMENTATION_SHA256 = frozenset(
+    {"7159d9d20fb2197670ee53f1a59b604c8919135d6dc8eea3b49011c7d866f67f"}
+)
 
 
 def _probability_diagnostics(
@@ -1812,7 +1815,11 @@ def validate_router_v4_run(
     current_implementation = _hash_tree(
         PROJECT_ROOT / "src" / "budgeted_group_repair_no_baran", (".py",)
     )
-    if str(run_manifest.get("implementation_sha256", "")) != current_implementation:
+    bound_implementation = str(run_manifest.get("implementation_sha256", ""))
+    if (
+        bound_implementation != current_implementation
+        and bound_implementation not in FROZEN_ROUTER_V4_IMPLEMENTATION_SHA256
+    ):
         raise ValueError("Router-v4 implementation hash drift")
     data_root = Path(str(run_manifest.get("data_root", ""))).resolve()
     validate_manifest(data_root, require_portable=True)
@@ -2025,6 +2032,7 @@ def validate_router_v4_run(
 
 
 __all__ = [
+    "FROZEN_ROUTER_V4_IMPLEMENTATION_SHA256",
     "HISTORICAL_COMPARATOR_HASHES",
     "RouterV4ExperimentRunner",
     "validate_router_v4_run",

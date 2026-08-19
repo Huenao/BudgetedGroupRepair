@@ -4,7 +4,7 @@
 
 - Run：`runs/no_baran_router_v3_deepseek_v4_20260726_budget20_k1248_all_catboost/`
 - Router revision：`router_v3_catboost_exact_size_conditioned`
-- 数据：9 个正式测试数据集，22,198 个 error cells。
+- 数据：9 个正式测试数据集，22,1　98 个 error cells。
 - 方法：Baran-only、LLM-only、CatBoost `k=1/2/4/8/all`，共 7 个完整切片。
 - BGR 逻辑预算：每个数据集全量 singleton estimated-token 成本的 20%。
 - 状态：`complete`；155,386 条 cell records 完整且无重复。
