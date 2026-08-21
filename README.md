@@ -72,7 +72,7 @@ python -m budgeted_group_repair_no_baran.cli plan-router-bgr \
   --experiment-config configs/experiment_router_v3_tabiclv2_k14.json
 ```
 
-两个 foundation revision 均要求 `--router-comparison-run`；完整环境、checkpoint 和分阶段实验说明见 `09_Router-v3-TabICLv2与TabPFN-3实验实施指南.md`。
+两个 foundation revision 均要求 `--router-comparison-run`；后续实验范围和优先级统一见 [`../BudgetedGroupRepair/03_实现与实验说明.md`](../BudgetedGroupRepair/03_实现与实验说明.md)，原实施指南已归档至 [`../BudgetedGroupRepair_NoBaranPrompt_MarkdownBackup_20260820/09_Router-v3-TabICLv2与TabPFN-3实验实施指南.md`](../BudgetedGroupRepair_NoBaranPrompt_MarkdownBackup_20260820/09_Router-v3-TabICLv2与TabPFN-3实验实施指南.md)。
 
 ## 独立运行两条全量 baseline
 
