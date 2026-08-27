@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from budgeted_group_repair_no_baran.group_context import canonical_messages, compute_prompt_hash
 from budgeted_group_repair_no_baran.group_llm import (
     DeepSeekGroupClient,
     GroupClientConfig,
     GroupLLMJob,
+    ProviderModelIdentityError,
     parse_group_response,
     run_group_llm_batch,
 )
@@ -89,6 +92,9 @@ def test_checkpoint_binds_provider_model_and_preflight_can_feed_singleton(tmp_pa
     run_group_llm_batch(client, (preflight_job,), tmp_path)
     singleton = run_group_llm_batch(client, (_job(),), tmp_path)
     assert singleton[0]["checkpoint_hit"] is True
+    assert singleton[0]["provider_model_field_present"] is True
+    assert singleton[0]["model_returned_present"] is True
+    assert singleton[0]["model_returned"] == "deepseek-v4-flash"
     assert calls == ["deepseek-v4-flash"]
 
     changed = DeepSeekGroupClient(
@@ -96,3 +102,48 @@ def test_checkpoint_binds_provider_model_and_preflight_can_feed_singleton(tmp_pa
     )
     run_group_llm_batch(changed, (_job(),), tmp_path)
     assert calls[-1] == "different-model"
+
+
+def test_missing_provider_model_is_not_replaced_with_requested_model(tmp_path) -> None:
+    def opener(request, timeout):
+        content = json.dumps({"query_id": "q1", "repairs": [_item("c1"), _item("c2")]})
+        return _Response(
+            {
+                "id": "missing-model",
+                "choices": [{"message": {"content": content}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            }
+        )
+
+    client = DeepSeekGroupClient(GroupClientConfig(max_retries=0), api_key="test", opener=opener)
+    with pytest.raises(ProviderModelIdentityError) as raised:
+        run_group_llm_batch(client, (_job(),), tmp_path)
+    assert raised.value.model_field_present is False
+    assert raised.value.model_returned == ""
+    checkpoint = json.loads((tmp_path / "group_query_checkpoint.jsonl").read_text().splitlines()[-1])
+    assert checkpoint["model_requested"] == "deepseek-v4-flash"
+    assert checkpoint["model_returned"] == ""
+    assert checkpoint["provider_model_field_present"] is False
+    assert checkpoint["model_matches_request"] is False
+
+
+def test_provider_model_mismatch_is_a_hard_failure(tmp_path) -> None:
+    def opener(request, timeout):
+        content = json.dumps({"query_id": "q1", "repairs": [_item("c1"), _item("c2")]})
+        return _Response(
+            {
+                "id": "wrong-model",
+                "model": "deepseek-substitute",
+                "choices": [{"message": {"content": content}}],
+            }
+        )
+
+    client = DeepSeekGroupClient(GroupClientConfig(max_retries=5), api_key="test", opener=opener)
+    with pytest.raises(ProviderModelIdentityError) as raised:
+        run_group_llm_batch(client, (_job(),), tmp_path)
+    assert raised.value.model_field_present is True
+    assert raised.value.model_returned == "deepseek-substitute"
+    checkpoint = json.loads((tmp_path / "group_query_checkpoint.jsonl").read_text().splitlines()[-1])
+    assert checkpoint["attempts"] == 1
+    assert checkpoint["model_returned"] == "deepseek-substitute"
+    assert checkpoint["model_returned_present"] is True

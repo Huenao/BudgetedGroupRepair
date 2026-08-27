@@ -160,6 +160,45 @@ def compute_query_id(
     return f"bgrq_{digest}"
 
 
+def compute_ordered_query_id(
+    suite: str,
+    dataset: str,
+    ordered_cell_ids: Sequence[str | SafeCell],
+    *,
+    group_view: str = "matched_multi_target",
+    prompt_schema_version: str = PROMPT_SCHEMA_VERSION,
+    information_policy: str = INFORMATION_POLICY,
+) -> str:
+    """Compute an order-sensitive identity for a neutral evidence prompt.
+
+    This identity intentionally excludes experimental provenance such as arm
+    and source view.  Those fields belong in checkpoint metadata rather than
+    in the primary structured/random prompt, so byte-identical physical
+    requests can be deduplicated safely.
+    """
+
+    if str(group_view) != "matched_multi_target":
+        raise ValueError("ordered evidence prompts require group_view='matched_multi_target'")
+    ordered = tuple(
+        str(value.cell_id) if isinstance(value, SafeCell) else str(value)
+        for value in ordered_cell_ids
+    )
+    if not ordered or len(set(ordered)) != len(ordered):
+        raise ValueError("ordered_cell_ids must be non-empty and unique")
+    payload = {
+        "suite": str(suite),
+        "dataset": str(dataset),
+        "group_view": str(group_view),
+        "ordered_cell_ids": ordered,
+        "prompt_schema_version": str(prompt_schema_version),
+        "prompt_information_policy": str(information_policy),
+    }
+    digest = hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return f"bgrq_{digest}"
+
+
 def compute_prompt_hash(
     messages: Sequence[Mapping[str, str]],
     max_tokens: int,
@@ -383,6 +422,15 @@ class GroupContextBuilder:
         group_cells: Sequence[SafeCell],
     ) -> dict[str, Any]:
         ordered = tuple(sorted(group_cells, key=lambda cell: cell.cell_id))
+        return self._payload_from_ordered(query_id, group_view, ordered)
+
+    def _payload_from_ordered(
+        self,
+        query_id: str,
+        group_view: str,
+        ordered: Sequence[SafeCell],
+    ) -> dict[str, Any]:
+        ordered = tuple(ordered)
         if not ordered:
             raise ValueError("group_cells must not be empty")
         if any(cell.cell_id not in self.cell_by_id for cell in ordered):
@@ -413,6 +461,41 @@ class GroupContextBuilder:
         assert_payload_safe(payload)
         return payload
 
+    def _resolve_ordered_cells(
+        self,
+        ordered_cell_ids: Sequence[str | SafeCell],
+    ) -> tuple[SafeCell, ...]:
+        identifiers = tuple(
+            str(value.cell_id) if isinstance(value, SafeCell) else str(value)
+            for value in ordered_cell_ids
+        )
+        if not identifiers:
+            raise ValueError("ordered_cell_ids must not be empty")
+        if len(set(identifiers)) != len(identifiers):
+            raise ValueError("ordered_cell_ids must be unique")
+        unknown = tuple(identifier for identifier in identifiers if identifier not in self.cell_by_id)
+        if unknown:
+            raise ValueError(
+                "every ordered cell must come from this builder: " + ",".join(unknown)
+            )
+        # Always resolve through the builder so a caller cannot smuggle a
+        # same-ID SafeCell carrying different values into prompt material.
+        return tuple(self.cell_by_id[identifier] for identifier in identifiers)
+
+    def ordered_payload(
+        self,
+        query_id: str,
+        ordered_cell_ids: Sequence[str | SafeCell],
+        *,
+        group_view: str = "matched_multi_target",
+    ) -> dict[str, Any]:
+        """Build a neutral evidence payload without reordering its targets."""
+
+        if str(group_view) != "matched_multi_target":
+            raise ValueError("ordered evidence prompts require group_view='matched_multi_target'")
+        ordered = self._resolve_ordered_cells(ordered_cell_ids)
+        return self._payload_from_ordered(query_id, group_view, ordered)
+
     def messages(
         self,
         query_id: str,
@@ -421,6 +504,34 @@ class GroupContextBuilder:
     ) -> CanonicalMessages:
         user_payload = json.dumps(
             self.payload(query_id, group_view, group_cells),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        messages = canonical_messages(
+            (
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_payload},
+            )
+        )
+        assert_messages_safe(messages)
+        return messages
+
+    def ordered_messages(
+        self,
+        query_id: str,
+        ordered_cell_ids: Sequence[str | SafeCell],
+        *,
+        group_view: str = "matched_multi_target",
+    ) -> CanonicalMessages:
+        """Build neutral messages whose target arrays preserve frozen order."""
+
+        user_payload = json.dumps(
+            self.ordered_payload(
+                query_id,
+                ordered_cell_ids,
+                group_view=group_view,
+            ),
             ensure_ascii=False,
             sort_keys=True,
             separators=(",", ":"),
@@ -460,6 +571,43 @@ class GroupContextBuilder:
             estimated_total_tokens=prompt_tokens + ceiling + overhead,
         )
 
+    def build_ordered_material(
+        self,
+        query_id: str,
+        ordered_cell_ids: Sequence[str | SafeCell],
+        *,
+        group_view: str = "matched_multi_target",
+        prompt_schema_version: str = PROMPT_SCHEMA_VERSION,
+        call_overhead_tokens: int = 0,
+    ) -> PromptMaterial:
+        """Build evidence-only material while preserving frozen member order.
+
+        The production ``build_material`` API remains sorting and therefore
+        unchanged.  This method is reserved for matched evidence experiments.
+        """
+
+        ordered = self._resolve_ordered_cells(ordered_cell_ids)
+        messages = self.ordered_messages(
+            query_id,
+            ordered,
+            group_view=group_view,
+        )
+        ceiling = completion_token_ceiling(len(ordered))
+        prompt_tokens = estimate_prompt_tokens(messages)
+        overhead = max(0, int(call_overhead_tokens))
+        return PromptMaterial(
+            messages=messages,
+            prompt_hash=compute_prompt_hash(
+                messages,
+                ceiling,
+                prompt_schema_version=prompt_schema_version,
+                information_policy=INFORMATION_POLICY,
+            ),
+            estimated_prompt_tokens=prompt_tokens,
+            completion_token_ceiling=ceiling,
+            estimated_total_tokens=prompt_tokens + ceiling + overhead,
+        )
+
 
 __all__ = [
     "CanonicalMessages",
@@ -472,6 +620,7 @@ __all__ = [
     "completion_token_ceiling",
     "compute_prompt_hash",
     "compute_query_id",
+    "compute_ordered_query_id",
     "estimate_prompt_tokens",
     "messages_as_dicts",
 ]

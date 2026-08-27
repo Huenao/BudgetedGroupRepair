@@ -42,6 +42,29 @@ class PermanentGroupLLMError(GroupLLMError):
     pass
 
 
+class ProviderModelIdentityError(PermanentGroupLLMError):
+    """The provider omitted or changed the requested model identity."""
+
+    def __init__(
+        self,
+        *,
+        model_requested: str,
+        model_returned: str,
+        model_field_present: bool,
+    ) -> None:
+        self.model_requested = str(model_requested)
+        self.model_returned = str(model_returned)
+        self.model_field_present = bool(model_field_present)
+        if not self.model_field_present or not self.model_returned:
+            message = "model endpoint response omitted a usable model identity"
+        else:
+            message = (
+                "model endpoint identity mismatch: requested "
+                f"{self.model_requested!r}, returned {self.model_returned!r}"
+            )
+        super().__init__(message)
+
+
 @dataclass(frozen=True)
 class ParsedRepairItem:
     cell_id: str
@@ -365,6 +388,18 @@ class GroupLLMResult:
     usage_observed_attempts: int = 0
     unknown_usage_attempts: int = 0
     observed_total_tokens: int = 0
+    model_requested: str = ""
+    provider_model_field_present: bool = False
+
+    @property
+    def model_returned(self) -> str:
+        """Actual provider model ID; empty means that none was returned."""
+
+        return self.model
+
+    @property
+    def model_returned_present(self) -> bool:
+        return bool(self.provider_model_field_present and self.model_returned)
 
 
 class DeepSeekGroupClient:
@@ -464,6 +499,24 @@ class DeepSeekGroupClient:
             return json.dumps(dict(content), ensure_ascii=False)
         raise RetryableGroupLLMError("chat completion content is not JSON text")
 
+    def _provider_model(self, raw: Mapping[str, Any]) -> tuple[str, bool]:
+        field_present = "model" in raw
+        value = raw.get("model")
+        returned = value if isinstance(value, str) else ""
+        if not field_present or not returned:
+            raise ProviderModelIdentityError(
+                model_requested=self.config.model,
+                model_returned=returned,
+                model_field_present=field_present,
+            )
+        if returned != self.config.model:
+            raise ProviderModelIdentityError(
+                model_requested=self.config.model,
+                model_returned=returned,
+                model_field_present=True,
+            )
+        return returned, True
+
     @staticmethod
     def _merge_usage(target: JSONDict, source: Mapping[str, Any]) -> None:
         for key, value in source.items():
@@ -488,6 +541,8 @@ class DeepSeekGroupClient:
         last_parsed: GroupParseResult | None = None
         last_content = ""
         last_raw: Mapping[str, Any] = {}
+        last_model_returned = ""
+        last_model_field_present = False
         last_error: RetryableGroupLLMError | None = None
         usage_observed_attempts = 0
         unknown_usage_attempts = 0
@@ -498,6 +553,9 @@ class DeepSeekGroupClient:
             try:
                 raw = self._request_once(self._payload(job))
                 last_raw = raw
+                model_returned, model_field_present = self._provider_model(raw)
+                last_model_returned = model_returned
+                last_model_field_present = model_field_present
                 usage = raw.get("usage") or {}
                 if isinstance(usage, Mapping):
                     self._merge_usage(usage_total, usage)
@@ -547,7 +605,7 @@ class DeepSeekGroupClient:
                     return GroupLLMResult(
                         content=content,
                         parsed=parsed,
-                        model=str(raw.get("model") or self.config.model),
+                        model=model_returned,
                         usage=MappingProxyType(dict(usage_total)),
                         latency_seconds=time.monotonic() - started,
                         prompt_hash=job.prompt_hash,
@@ -557,6 +615,8 @@ class DeepSeekGroupClient:
                         usage_observed_attempts=usage_observed_attempts,
                         unknown_usage_attempts=unknown_usage_attempts,
                         observed_total_tokens=observed_total_tokens,
+                        model_requested=self.config.model,
+                        provider_model_field_present=model_field_present,
                     )
                 last_error = RetryableGroupLLMError(
                     "invalid structured group response: " + parsed.parse_status
@@ -571,7 +631,7 @@ class DeepSeekGroupClient:
             return GroupLLMResult(
                 content=last_content,
                 parsed=last_parsed,
-                model=str(last_raw.get("model") or self.config.model),
+                model=last_model_returned,
                 usage=MappingProxyType(dict(usage_total)),
                 latency_seconds=time.monotonic() - started,
                 prompt_hash=job.prompt_hash,
@@ -581,6 +641,8 @@ class DeepSeekGroupClient:
                 usage_observed_attempts=usage_observed_attempts,
                 unknown_usage_attempts=unknown_usage_attempts,
                 observed_total_tokens=observed_total_tokens,
+                model_requested=self.config.model,
+                provider_model_field_present=last_model_field_present,
             )
         if usage_total or usage_observed_attempts:
             return GroupLLMResult(
@@ -588,7 +650,7 @@ class DeepSeekGroupClient:
                 parsed=parse_group_response(
                     last_content, job.query_id, job.expected_cell_ids
                 ),
-                model=str(last_raw.get("model") or self.config.model),
+                model=last_model_returned,
                 usage=MappingProxyType(dict(usage_total)),
                 latency_seconds=time.monotonic() - started,
                 prompt_hash=job.prompt_hash,
@@ -598,6 +660,8 @@ class DeepSeekGroupClient:
                 usage_observed_attempts=usage_observed_attempts,
                 unknown_usage_attempts=unknown_usage_attempts,
                 observed_total_tokens=observed_total_tokens,
+                model_requested=self.config.model,
+                provider_model_field_present=last_model_field_present,
             )
         assert last_error is not None
         raise RetryableGroupLLMError(
@@ -674,7 +738,14 @@ def _append_jsonl(path: Path, row: Mapping[str, Any], lock: threading.Lock) -> N
 def _record_from_result(job: GroupLLMJob, result: GroupLLMResult, *, cache_hit: bool) -> JSONDict:
     parsed = result.parsed
     require_complete = bool(job.metadata.get("require_complete_response"))
-    model_matches = result.model == str(job.metadata.get("model_requested", result.model))
+    model_requested = str(
+        job.metadata.get("model_requested") or result.model_requested
+    )
+    model_matches = bool(
+        result.model_returned_present
+        and model_requested
+        and result.model_returned == model_requested
+    )
     successful = model_matches and (
         parsed.is_complete
         if require_complete
@@ -693,9 +764,11 @@ def _record_from_result(job: GroupLLMJob, result: GroupLLMResult, *, cache_hit: 
         "duplicate_cell_ids": list(parsed.duplicate_cell_ids),
         "invalid_items": [dict(item) for item in parsed.invalid_items],
         "response_text": result.content,
-        "model": result.model,
-        "model_requested": str(job.metadata.get("model_requested", result.model)),
-        "model_returned": result.model,
+        "model": result.model_returned,
+        "model_requested": model_requested,
+        "model_returned": result.model_returned,
+        "provider_model_field_present": result.provider_model_field_present,
+        "model_returned_present": result.model_returned_present,
         "model_matches_request": model_matches,
         "usage": dict(result.usage),
         "latency_seconds": result.latency_seconds,
@@ -717,7 +790,11 @@ def _cache_row(result: GroupLLMResult, job: GroupLLMJob) -> JSONDict:
         "prompt_hash": result.prompt_hash,
         "provider_request_hash": result.provider_request_hash,
         "content": result.content,
-        "model": result.model,
+        "model": result.model_returned,
+        "model_requested": result.model_requested,
+        "model_returned": result.model_returned,
+        "provider_model_field_present": result.provider_model_field_present,
+        "model_returned_present": result.model_returned_present,
         "usage": dict(result.usage),
         "latency_seconds": result.latency_seconds,
         "attempts": result.attempts,
@@ -740,10 +817,18 @@ def _result_from_cache(row: Mapping[str, Any], job: GroupLLMJob) -> GroupLLMResu
     )
     if not valid:
         return None
+    model_returned = str(row.get("model_returned", row.get("model", "")))
+    presence_marker = row.get("provider_model_field_present")
+    # Legacy same-run cache rows predate the explicit marker.  Their non-empty
+    # model value remains readable, while every newly written row records the
+    # provider field separately and never substitutes the requested model.
+    model_field_present = (
+        bool(model_returned) if presence_marker is None else bool(presence_marker)
+    )
     return GroupLLMResult(
         content=content,
         parsed=parsed,
-        model=str(row.get("model", "")),
+        model=model_returned,
         usage=MappingProxyType(dict(row.get("usage") or {})),
         latency_seconds=float(row.get("latency_seconds", 0.0) or 0.0),
         prompt_hash=job.prompt_hash,
@@ -753,6 +838,8 @@ def _result_from_cache(row: Mapping[str, Any], job: GroupLLMJob) -> GroupLLMResu
         usage_observed_attempts=int(row.get("usage_observed_attempts", 0) or 0),
         unknown_usage_attempts=int(row.get("unknown_usage_attempts", 0) or 0),
         observed_total_tokens=int(row.get("observed_total_tokens", 0) or 0),
+        model_requested=str(row.get("model_requested", "")),
+        provider_model_field_present=model_field_present,
     )
 
 
@@ -864,8 +951,21 @@ def run_group_llm_batch(
                 result = future.result()
             except Exception as error:
                 retryable = isinstance(error, RetryableGroupLLMError)
+                identity_error = (
+                    error if isinstance(error, ProviderModelIdentityError) else None
+                )
                 for indexed in grouped:
                     job = indexed.job
+                    model_requested = str(
+                        job.metadata.get("model_requested") or client.config.model
+                    )
+                    model_returned = (
+                        identity_error.model_returned if identity_error is not None else ""
+                    )
+                    model_field_present = bool(
+                        identity_error is not None
+                        and identity_error.model_field_present
+                    )
                     record = {
                         "query_id": job.query_id,
                         "prompt_hash": job.prompt_hash,
@@ -879,7 +979,14 @@ def run_group_llm_batch(
                         "duplicate_cell_ids": [],
                         "invalid_items": [],
                         "response_text": "",
-                        "model": client.config.model,
+                        "model": model_returned,
+                        "model_requested": model_requested,
+                        "model_returned": model_returned,
+                        "provider_model_field_present": model_field_present,
+                        "model_returned_present": bool(
+                            model_field_present and model_returned
+                        ),
+                        "model_matches_request": False,
                         "usage": {},
                         "latency_seconds": 0.0,
                         "attempts": client.config.max_retries + 1 if retryable else 1,
@@ -898,6 +1005,15 @@ def run_group_llm_batch(
                     }
                     _append_jsonl(checkpoint_path, record, lock)
                     output[indexed.index] = record
+                if identity_error is not None:
+                    # Identity drift invalidates the experiment rather than a
+                    # single query.  Cancel work that has not begun and let the
+                    # permanent error abort the caller after in-flight workers
+                    # have left the executor safely.
+                    for other_future in future_to_key:
+                        if other_future is not future:
+                            other_future.cancel()
+                    raise identity_error
                 continue
 
             emitted: list[JSONDict] = []
@@ -936,6 +1052,7 @@ __all__ = [
     "LLMResult",
     "ParsedRepairItem",
     "PermanentGroupLLMError",
+    "ProviderModelIdentityError",
     "RetryableGroupLLMError",
     "parse_group_response",
     "parse_repair_response",

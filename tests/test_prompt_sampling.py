@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import fields
 from pathlib import Path
 
@@ -9,6 +10,7 @@ import pytest
 from budgeted_group_repair_no_baran.data import SafeCell, SafeDataset
 from budgeted_group_repair_no_baran.group_context import (
     GroupContextBuilder,
+    compute_ordered_query_id,
     compute_query_id,
 )
 from budgeted_group_repair_no_baran.prompt_policy import (
@@ -80,6 +82,42 @@ def test_information_policy_and_arm_bind_query_identity() -> None:
         information_policy=INFORMATION_POLICY + "-revision",
     )
     assert len({base, random, revised}) == 3
+
+
+def test_ordered_evidence_material_preserves_order_and_uses_neutral_view() -> None:
+    dataset, cells = _dataset()
+    builder = GroupContextBuilder(dataset, cells, similar_row_count=0)
+    frozen = (cells[2], str(cells[0].cell_id), cells[1])
+    ordered_ids = tuple(str(value.cell_id) if isinstance(value, SafeCell) else value for value in frozen)
+    query_id = compute_ordered_query_id("source", "toy", ordered_ids)
+    material = builder.build_ordered_material(query_id, frozen)
+    payload = json.loads(material.messages[1]["content"])
+
+    assert payload["group"]["view"] == "matched_multi_target"
+    assert payload["group"]["cell_ids"] == list(ordered_ids)
+    assert [target["cell_id"] for target in payload["targets"]] == list(ordered_ids)
+    assert "pattern" not in material.messages[1]["content"]
+    assert "semantic" not in material.messages[1]["content"]
+
+    # The legacy production path retains its canonical cell-id ordering.
+    legacy = builder.payload("legacy", "pattern", tuple(reversed(cells[:3])))
+    assert legacy["group"]["cell_ids"] == sorted(str(cell.cell_id) for cell in cells[:3])
+
+
+def test_ordered_query_and_prompt_identities_bind_member_position() -> None:
+    dataset, cells = _dataset()
+    builder = GroupContextBuilder(dataset, cells, similar_row_count=0)
+    forward_ids = tuple(str(cell.cell_id) for cell in cells[:3])
+    reverse_ids = tuple(reversed(forward_ids))
+    forward_query = compute_ordered_query_id("source", "toy", forward_ids)
+    reverse_query = compute_ordered_query_id("source", "toy", reverse_ids)
+    forward = builder.build_ordered_material(forward_query, forward_ids)
+    reverse = builder.build_ordered_material(reverse_query, reverse_ids)
+
+    assert forward_query != reverse_query
+    assert forward.prompt_hash != reverse.prompt_hash
+    with pytest.raises(ValueError, match="matched_multi_target"):
+        builder.build_ordered_material(forward_query, forward_ids, group_view="pattern")
 
 
 def test_forbidden_nested_field_and_natural_language_are_rejected() -> None:

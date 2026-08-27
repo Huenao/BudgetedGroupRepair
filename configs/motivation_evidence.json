@@ -1,0 +1,68 @@
+{
+  "schema_version": "motivation-evidence-v1",
+  "formal_run_id": "motivation_evidence_deepseek_v4_flash_20260822_full",
+  "mode": "full",
+  "formal_datasets": [
+    {"suite": "source", "dataset": "hospital", "base_family": "hospital", "oracle_errors": 509},
+    {"suite": "source", "dataset": "flights", "base_family": "flights", "oracle_errors": 4920},
+    {"suite": "source", "dataset": "beers", "base_family": "beers", "oracle_errors": 4362},
+    {"suite": "source", "dataset": "rayyan", "base_family": "rayyan", "oracle_errors": 948},
+    {"suite": "source", "dataset": "movies_1", "base_family": "movies", "oracle_errors": 7675},
+    {"suite": "tableeg", "dataset": "company", "base_family": "company", "oracle_errors": 572},
+    {"suite": "tableeg", "dataset": "marketing", "base_family": "marketing", "oracle_errors": 723},
+    {"suite": "tableeg", "dataset": "restaurant_20", "base_family": "restaurant", "oracle_errors": 606},
+    {"suite": "tableeg", "dataset": "soccer", "base_family": "soccer", "oracle_errors": 1883}
+  ],
+  "primary_views": ["pattern", "semantic"],
+  "group_sizes": [2, 4, 8],
+  "minimum_groups_per_column": 3,
+  "neutral_group_view": "matched_multi_target",
+  "baran": {
+    "seed": 16,
+    "labeling_budget": 20,
+    "workers": 4,
+    "multiprocessing_start_method": "spawn",
+    "extract_diagnostics": true
+  },
+  "random_partition_seed": 43,
+  "execution_schedule_seed": 44,
+  "bootstrap_seed": 45,
+  "bootstrap_replicates": 2000,
+  "confidence_level": 0.95,
+  "expected": {
+    "singleton_cells": 22198,
+    "singleton_logical_calls": 22198,
+    "structured_calls_by_size": {"2": 22160, "4": 11036, "8": 5438},
+    "structured_cell_incidences_by_size": {"2": 44320, "4": 44144, "8": 43504},
+    "structured_logical_calls": 38634,
+    "random_logical_calls": 38634,
+    "logical_calls_before_exact_dedup": 99466
+  },
+  "prompt": {
+    "schema_version": "bgr-no-baran-v1",
+    "similar_row_count": 5,
+    "column_top_values": 6,
+    "call_overhead_tokens": 0
+  },
+  "execution": {
+    "concurrency": 4,
+    "attempts_per_physical_request": 6
+  },
+  "freshness": {
+    "historical_baran_reused": false,
+    "historical_llm_response_reused": false,
+    "same_run_singleton_control_reused": true,
+    "router_trained": false,
+    "router_selection_used": false,
+    "verifier_used": false,
+    "baran_fallback_used_for_llm_arms": false
+  },
+  "label_blind_plan_audit": {
+    "baran_simulated_label_budget_used": true,
+    "target_evaluation_correctness_used_for_plan": false,
+    "baran_output_correctness_used_for_plan": false,
+    "llm_responses_used_for_plan": false,
+    "baran_outputs_exposed_to_prompt": false
+  },
+  "hash_exclusions": ["models/", "runs/", "*.ckpt", "*.safetensors"]
+}

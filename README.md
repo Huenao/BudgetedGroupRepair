@@ -106,6 +106,32 @@ python -m budgeted_group_repair_no_baran.cli analyze-full-complementarity \
   --source-run runs/<completed_v3_run>
 ```
 
+## Introduction 动机证据实验
+
+该实验使用独立 runner，不实例化 Router、optimizer、verifier 或 Baran fallback。正式 run ID 固定为 `motivation_evidence_deepseek_v4_flash_20260822_full`：
+
+```bash
+MOTIVATION_RUN=motivation_evidence_deepseek_v4_flash_20260822_full
+
+python -m budgeted_group_repair_no_baran.cli plan-motivation-evidence \
+  --run-id "$MOTIVATION_RUN"
+
+python -m budgeted_group_repair_no_baran.cli run-motivation-queries \
+  --run-id "$MOTIVATION_RUN" --resume --no-token-cap \
+  --env-file .deepseek_env
+
+python -m budgeted_group_repair_no_baran.cli finalize-motivation-evidence \
+  --run-id "$MOTIVATION_RUN" --resume
+
+python -m budgeted_group_repair_no_baran.cli report-motivation-evidence \
+  --run-id "$MOTIVATION_RUN" --resume
+
+python -m budgeted_group_repair_no_baran.cli validate-motivation-evidence \
+  --run-id "$MOTIVATION_RUN" --resume
+```
+
+Plan 阶段现场执行 fresh Baran，但不调用 provider；它冻结 22,198 个 singleton 与 `g>=3` 的 structured/random 分组、交错 schedule 和精确 physical request union。付费阶段会先在 `/tmp` 中执行 excluded-dataset 的 singleton 与 ordered `k=2` pilot，确认返回模型身份、解析和 resume，然后删除 pilot 响应。正式 raw response、checkpoint、usage、paired ledgers、统计表、PDF/SVG 和 Markdown 报告全部保存在唯一的 `runs/<run_id>/` 中。
+
 ## 配置
 
 - `configs/experiment_router_v3.json`：基础 LightGBM/XGBoost 20% 配置。
@@ -114,6 +140,7 @@ python -m budgeted_group_repair_no_baran.cli analyze-full-complementarity \
 - `configs/experiment_router_v3_tabiclv2_k14.json`：TabICLv2 20% k1/k4 配置。
 - `configs/experiment_router_v3_tabpfn3_k14.json`：TabPFN-3 20% k1/k4 配置。
 - `configs/deepseek_v4.json`：模型、重试、并发和 Prompt schema 配置。
+- `configs/motivation_evidence.json`：Introduction 动机证据实验的冻结数据集、分组、随机种子、计数与审计配置。
 - `configs/public_fds.json`：公开 FD 规则。
 
 Foundation 模型分别冻结在 `requirements-tabiclv2-lock.txt` 与 `requirements-tabpfn3-lock.txt`；checkpoint 和 `runs/` 始终保持 Git ignored。

@@ -45,6 +45,74 @@ def cluster_bootstrap(
     return percentile_interval(estimates, confidence)
 
 
+def multiway_cluster_bootstrap(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    cluster_keys: Sequence[str],
+    value_key: str,
+    replicates: int,
+    seed: int,
+    confidence: float = 0.95,
+) -> tuple[float, float]:
+    """Crossed multiplier-bootstrap interval for an arbitrary number of clusters.
+
+    Each replicate draws an independent ``Exp(1)`` multiplier for every level
+    of every cluster dimension.  A row's weight is the product of the
+    multipliers belonging to its cluster levels, and the replicate estimate is
+    the resulting weighted mean of ``value_key``.  This is the direct
+    multiway extension of :func:`two_way_cluster_bootstrap`.
+
+    An empty row population (or no finite replicate estimates) returns
+    ``(nan, nan)``, matching the existing bootstrap helpers.  Cluster keys are
+    required and must be distinct because an empty or repeated dimension does
+    not describe a valid crossed-cluster design.
+    """
+
+    keys = tuple(cluster_keys)
+    if not keys:
+        raise ValueError("cluster_keys must contain at least one key")
+    if len(set(keys)) != len(keys):
+        raise ValueError("cluster_keys must be distinct")
+    if not rows:
+        return (math.nan, math.nan)
+
+    # Encode each crossed dimension once.  The replicate loop then performs
+    # array indexing instead of repeated mapping and string lookups, which is
+    # material for the full evidence experiment's cell-level ledgers.
+    levels_by_dimension: list[tuple[str, ...]] = []
+    codes_by_dimension: list[np.ndarray] = []
+    for key in keys:
+        levels = tuple(sorted({str(row[key]) for row in rows}))
+        level_index = {level: index for index, level in enumerate(levels)}
+        codes = np.fromiter(
+            (level_index[str(row[key])] for row in rows),
+            dtype=np.intp,
+            count=len(rows),
+        )
+        levels_by_dimension.append(levels)
+        codes_by_dimension.append(codes)
+
+    values = np.fromiter(
+        (float(row[value_key]) for row in rows),
+        dtype=float,
+        count=len(rows),
+    )
+    rng = np.random.default_rng(int(seed))
+    estimates: list[float] = []
+    for _ in range(int(replicates)):
+        row_weights = np.ones(len(rows), dtype=float)
+        for levels, codes in zip(levels_by_dimension, codes_by_dimension):
+            level_weights = rng.exponential(1.0, len(levels))
+            row_weights *= level_weights[codes]
+        total_weight = float(np.sum(row_weights))
+        estimates.append(
+            float(np.dot(row_weights, values) / total_weight)
+            if total_weight
+            else math.nan
+        )
+    return percentile_interval(estimates, confidence)
+
+
 def two_way_cluster_bootstrap(
     rows: Sequence[Mapping[str, Any]],
     *,
@@ -100,6 +168,7 @@ __all__ = [
     "cluster_bootstrap",
     "exact_mcnemar",
     "holm_adjust",
+    "multiway_cluster_bootstrap",
     "percentile_interval",
     "two_way_cluster_bootstrap",
 ]

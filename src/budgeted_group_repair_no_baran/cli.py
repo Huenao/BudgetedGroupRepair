@@ -15,6 +15,8 @@ from typing import Any, Mapping, MutableMapping, Sequence
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ROUTER_CONFIG = PROJECT_ROOT / "configs" / "experiment_router_v3.json"
 DEFAULT_ROUTER_LLM_CONFIG = PROJECT_ROOT / "configs" / "deepseek_v4.json"
+DEFAULT_MOTIVATION_CONFIG = PROJECT_ROOT / "configs" / "motivation_evidence.json"
+DEFAULT_MOTIVATION_LLM_CONFIG = PROJECT_ROOT / "configs" / "deepseek_v4.json"
 
 _ENV_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _RUN_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
@@ -171,6 +173,40 @@ def _add_router_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> N
     )
 
 
+def _add_motivation_run(parser: argparse.ArgumentParser, *, paid: bool = False) -> None:
+    """Evidence commands intentionally expose no historical reuse inputs."""
+
+    parser.add_argument("--run-id", type=_run_id, required=True)
+    parser.add_argument("--resume", action="store_true")
+    if paid:
+        budget = parser.add_mutually_exclusive_group(required=True)
+        budget.add_argument(
+            "--token-cap",
+            type=int,
+            help="hard conservative cap over observed plus reserved provider tokens",
+        )
+        budget.add_argument(
+            "--no-token-cap",
+            action="store_true",
+            help="explicitly authorize uncapped provider usage for this run",
+        )
+        parser.add_argument(
+            "--env-file",
+            type=Path,
+            help="literal dotenv file; only variable names are ever reported",
+        )
+    parser.add_argument(
+        "--experiment-config",
+        type=Path,
+        default=DEFAULT_MOTIVATION_CONFIG,
+    )
+    parser.add_argument(
+        "--llm-config",
+        type=Path,
+        default=DEFAULT_MOTIVATION_LLM_CONFIG,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="budgeted-group-repair-no-baran",
@@ -225,6 +261,30 @@ def build_parser() -> argparse.ArgumentParser:
     report = commands.add_parser("report")
     _add_run(report)
     report.add_argument("--output", type=Path)
+
+    motivation_plan = commands.add_parser(
+        "plan-motivation-evidence",
+        help="fresh-Baran, zero-provider planning for the Introduction evidence run",
+    )
+    _add_motivation_run(motivation_plan)
+    motivation_plan.add_argument("--mode", choices=("full",), default="full")
+
+    motivation_run = commands.add_parser(
+        "run-motivation-queries",
+        help="execute/resume the frozen interleaved physical request schedule",
+    )
+    _add_motivation_run(motivation_run, paid=True)
+
+    motivation_finalize = commands.add_parser("finalize-motivation-evidence")
+    _add_motivation_run(motivation_finalize)
+
+    motivation_validate = commands.add_parser("validate-motivation-evidence")
+    _add_motivation_run(motivation_validate)
+    motivation_validate.add_argument("--allow-incomplete", action="store_true")
+    motivation_validate.add_argument("--allow-unfinalized", action="store_true")
+
+    motivation_report = commands.add_parser("report-motivation-evidence")
+    _add_motivation_run(motivation_report)
     return parser
 
 
@@ -309,6 +369,42 @@ def _router_runner(args: argparse.Namespace) -> Any:
     return runner
 
 
+def _motivation_runner(args: argparse.Namespace) -> Any:
+    from .motivation_evidence import DEFAULT_RUN_ID, MotivationEvidenceRunner
+
+    if str(args.run_id) != DEFAULT_RUN_ID:
+        raise ValueError(
+            f"the formal motivation evidence run ID is frozen as {DEFAULT_RUN_ID!r}"
+        )
+    bound_root = PROJECT_ROOT / "runs" / args.run_id / "configs"
+    bound_experiment = bound_root / "motivation_evidence.json"
+    bound_llm = bound_root / "deepseek_v4.json"
+    bound_presence = (bound_experiment.is_file(), bound_llm.is_file())
+    if any(bound_presence) and not all(bound_presence):
+        raise FileNotFoundError(
+            "same-run motivation resume has an incomplete bound configuration pair"
+        )
+    # Once a run has bound both configurations, every same-run command reads
+    # those copies.  Project defaults may evolve without changing a frozen
+    # plan or making a later execute/finalize/validate command appear to drift.
+    experiment_config = (
+        bound_experiment if all(bound_presence) else Path(args.experiment_config)
+    )
+    llm_config = bound_llm if all(bound_presence) else Path(args.llm_config)
+    return MotivationEvidenceRunner.create(
+        project_root=PROJECT_ROOT,
+        data_root=PROJECT_ROOT / "data",
+        vendor_root=PROJECT_ROOT / "vendor" / "raha_source",
+        runs_root=PROJECT_ROOT / "runs",
+        run_id=args.run_id,
+        config_path=experiment_config,
+        llm_config_path=llm_config,
+        resume=bool(args.resume),
+        provider_token_cap=getattr(args, "token_cap", None),
+        allow_uncapped_provider_usage=bool(getattr(args, "no_token_cap", False)),
+    )
+
+
 
 
 def _redact(value: object, parent_key: str = "") -> object:
@@ -385,6 +481,31 @@ def _execute(args: argparse.Namespace) -> object:
             PROJECT_ROOT / "runs" / args.run_id,
             output_path=args.output,
         )
+
+    if args.command.startswith("plan-motivation-") or args.command in {
+        "run-motivation-queries",
+        "finalize-motivation-evidence",
+        "validate-motivation-evidence",
+        "report-motivation-evidence",
+    }:
+        runner = _motivation_runner(args)
+        if args.command == "plan-motivation-evidence":
+            return runner.plan()
+        if args.command == "run-motivation-queries":
+            return runner.run_queries()
+        if args.command == "finalize-motivation-evidence":
+            return runner.finalize()
+        if args.command == "validate-motivation-evidence":
+            return runner.validate(
+                require_execution=not bool(args.allow_incomplete),
+                require_finalized=(
+                    not bool(args.allow_incomplete)
+                    and not bool(args.allow_unfinalized)
+                ),
+            )
+        if args.command == "report-motivation-evidence":
+            return runner.report_results()
+        raise AssertionError(f"unhandled motivation command: {args.command}")
 
     runner = _router_runner(args)
     if args.command == "plan-router-run":
