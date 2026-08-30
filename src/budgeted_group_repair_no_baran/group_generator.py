@@ -7,6 +7,7 @@ import json
 import math
 from collections import Counter, defaultdict
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from statistics import median
 from types import MappingProxyType
 from typing import Any, Iterable, Mapping, Sequence
@@ -34,6 +35,22 @@ from .prompt_policy import INFORMATION_POLICY
 GROUP_VIEWS = ("singleton", "row", "pattern", "public_fd", "semantic")
 DEFAULT_GROUP_SIZES = (1, 2, 4, 8)
 EXACT_OPTIMAL_LINKAGE_LIMIT = 512
+
+
+def _exact_positive_integer(value: object, *, label: str) -> int:
+    if isinstance(value, bool):
+        raise ValueError(f"{label} must be a positive integer")
+    try:
+        decimal = Decimal(str(value))
+    except (InvalidOperation, ValueError) as error:
+        raise ValueError(f"{label} must be a positive integer") from error
+    if (
+        not decimal.is_finite()
+        or decimal != decimal.to_integral_value()
+        or decimal <= 0
+    ):
+        raise ValueError(f"{label} must be a positive integer")
+    return int(decimal)
 
 
 def _frozen_mapping(values: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -80,7 +97,8 @@ class GroupQueryAction:
         ordered = tuple(sorted(str(identifier) for identifier in self.cell_ids))
         if not ordered or len(set(ordered)) != len(ordered):
             raise ValueError("cell_ids must be non-empty and unique")
-        if int(self.group_size) != len(ordered):
+        group_size = _exact_positive_integer(self.group_size, label="group_size")
+        if group_size != len(ordered):
             raise ValueError("group_size must equal len(cell_ids)")
         if self.group_view not in GROUP_VIEWS:
             raise ValueError(f"unsupported group_view: {self.group_view!r}")
@@ -88,16 +106,22 @@ class GroupQueryAction:
             raise ValueError(f"unsupported experiment arm: {self.arm!r}")
         if self.prompt_information_policy != INFORMATION_POLICY:
             raise ValueError("query action uses the wrong prompt information policy")
-        if int(self.estimated_prompt_tokens) <= 0:
-            raise ValueError("estimated_prompt_tokens must be positive")
-        if int(self.completion_token_ceiling) <= 0:
-            raise ValueError("completion_token_ceiling must be positive")
-        if int(self.estimated_total_tokens) < (
-            int(self.estimated_prompt_tokens) + int(self.completion_token_ceiling)
-        ):
+        prompt_tokens = _exact_positive_integer(
+            self.estimated_prompt_tokens, label="estimated_prompt_tokens"
+        )
+        completion_tokens = _exact_positive_integer(
+            self.completion_token_ceiling, label="completion_token_ceiling"
+        )
+        total_tokens = _exact_positive_integer(
+            self.estimated_total_tokens, label="estimated_total_tokens"
+        )
+        if total_tokens < prompt_tokens + completion_tokens:
             raise ValueError("estimated_total_tokens is below its prompt and completion components")
         object.__setattr__(self, "cell_ids", ordered)
-        object.__setattr__(self, "group_size", len(ordered))
+        object.__setattr__(self, "group_size", group_size)
+        object.__setattr__(self, "estimated_prompt_tokens", prompt_tokens)
+        object.__setattr__(self, "completion_token_ceiling", completion_tokens)
+        object.__setattr__(self, "estimated_total_tokens", total_tokens)
         object.__setattr__(self, "messages", canonical_messages(self.messages))
         object.__setattr__(self, "group_features", _frozen_mapping(dict(self.group_features)))
 

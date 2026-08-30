@@ -34,6 +34,7 @@ from .router_v3 import (
     _budget_label,
     _dataset_key,
     _hash_tree,
+    _nonnegative_finite_uplift,
     _read_csv,
     _write_csv,
     generation_order,
@@ -739,7 +740,7 @@ class RouterV4ExperimentRunner(ExperimentRunner):
                 raise ValueError(f"LLM-only singleton coverage differs for {suite}/{dataset}")
             llm_only_ids.update(dataset_singletons)
             costs = {
-                query_id: float(action.estimated_total_tokens)
+                query_id: int(action.estimated_total_tokens)
                 for query_id, action in actions.items()
             }
             for variant, allowed_sizes in variants.items():
@@ -771,7 +772,7 @@ class RouterV4ExperimentRunner(ExperimentRunner):
                         PairGain(
                             str(row.cell_id),
                             str(row.query_id),
-                            max(0.0, float(row.conservative_uplift)),
+                            _nonnegative_finite_uplift(row.conservative_uplift),
                         )
                         for row in predictions.itertuples(index=False)
                     ]

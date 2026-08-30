@@ -871,6 +871,8 @@ def run_group_llm_batch(
             return True
         if source == "model_preflight" and target == "preliminary_singleton":
             return True
+        if source == "offline_group_calibration" and target == "online_selected_union":
+            return True
         preliminary = source in {
             "preliminary_singleton",
             "preliminary_structured",

@@ -16,6 +16,7 @@ import shutil
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
@@ -393,6 +394,38 @@ def _budget_label(value: float) -> str:
     return f"{int(round(float(value) * 100)):02d}pct"
 
 
+def _nonnegative_finite_uplift(value: object) -> float:
+    """Clamp a finite gate score at zero and reject non-finite ledgers."""
+
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError("conservative_uplift must be finite")
+    return max(0.0, number)
+
+
+def _exact_ledger_integer(
+    value: object,
+    *,
+    label: str,
+    minimum: int = 0,
+) -> int:
+    """Parse one persisted integer without a binary-float round trip."""
+
+    if isinstance(value, bool):
+        raise ValueError(f"{label} must be an integer >= {minimum}")
+    try:
+        number = Decimal(str(value))
+    except (InvalidOperation, ValueError) as error:
+        raise ValueError(f"{label} must be an integer >= {minimum}") from error
+    if (
+        not number.is_finite()
+        or number != number.to_integral_value()
+        or number < minimum
+    ):
+        raise ValueError(f"{label} must be an integer >= {minimum}")
+    return int(number)
+
+
 def _action_from_dict(raw: Mapping[str, object]) -> GroupQueryAction:
     messages = raw.get("messages")
     features = raw.get("group_features")
@@ -407,14 +440,14 @@ def _action_from_dict(raw: Mapping[str, object]) -> GroupQueryAction:
         arm=str(raw["arm"]),
         group_view=str(raw["group_view"]),
         cell_ids=tuple(str(value) for value in raw["cell_ids"]),  # type: ignore[arg-type]
-        group_size=int(raw["group_size"]),
+        group_size=raw["group_size"],  # type: ignore[arg-type]
         prompt_schema_version=str(raw["prompt_schema_version"]),
         prompt_information_policy=str(raw["prompt_information_policy"]),
         messages=canonical_messages(messages),  # type: ignore[arg-type]
         prompt_hash=str(raw["prompt_hash"]),
-        estimated_prompt_tokens=int(raw["estimated_prompt_tokens"]),
-        completion_token_ceiling=int(raw["completion_token_ceiling"]),
-        estimated_total_tokens=int(raw["estimated_total_tokens"]),
+        estimated_prompt_tokens=raw["estimated_prompt_tokens"],  # type: ignore[arg-type]
+        completion_token_ceiling=raw["completion_token_ceiling"],  # type: ignore[arg-type]
+        estimated_total_tokens=raw["estimated_total_tokens"],  # type: ignore[arg-type]
         group_features=dict(features),
     )
 
@@ -2843,10 +2876,14 @@ class ExperimentRunner:
         ].copy()
         if singletons["cell_id"].astype(str).duplicated().any():
             raise ValueError("singleton reference has duplicate cells")
-        costs = pd.to_numeric(singletons["estimated_total_tokens"], errors="raise")
-        if bool((costs <= 0).any()):
-            raise ValueError("singleton reference costs must be positive")
-        return int(costs.sum())
+        return sum(
+            _exact_ledger_integer(
+                value,
+                label="singleton reference cost",
+                minimum=1,
+            )
+            for value in singletons["estimated_total_tokens"].tolist()
+        )
 
     def train_and_select_stage(self) -> dict[str, object]:
         """Fit size-conditioned family-holdout gates and select every slice."""
@@ -3101,7 +3138,7 @@ class ExperimentRunner:
                 raise ValueError(f"LLM-only singleton coverage failed for {suite}/{dataset}")
             llm_only_ids.update(dataset_singletons)
             costs = {
-                query_id: float(action.estimated_total_tokens)
+                query_id: int(action.estimated_total_tokens)
                 for query_id, action in actions.items()
             }
             print(
@@ -3259,7 +3296,7 @@ class ExperimentRunner:
                             PairGain(
                                 str(row.cell_id),
                                 str(row.query_id),
-                                max(0.0, float(row.conservative_uplift)),
+                                _nonnegative_finite_uplift(row.conservative_uplift),
                             )
                             for row in predictions.itertuples(index=False)
                         ]
@@ -6371,7 +6408,11 @@ def _validate_router_v3_run(
             raise ValueError("Router-v3 candidate ledger is empty or duplicated")
         actions_by_dataset[(suite, dataset)] = actions
         singleton_references[(suite, dataset)] = sum(
-            int(row.get("estimated_total_tokens", 0) or 0)
+            _exact_ledger_integer(
+                row.get("estimated_total_tokens", 0),
+                label="candidate estimated_total_tokens",
+                minimum=1,
+            )
             for row in rows
             if int(row.get("group_size", 0) or 0) == 1
             and str(row.get("group_view", "")) == "singleton"
@@ -6383,12 +6424,24 @@ def _validate_router_v3_run(
         reference = singleton_references[(suite, dataset)]
         share = round(float(row.budget_share), 12)
         budget = int(round(reference * share))
+        declared_reference = _exact_ledger_integer(
+            row.budget_reference_tokens,
+            label="selection budget_reference_tokens",
+        )
+        declared_budget = _exact_ledger_integer(
+            row.budget_estimated_tokens,
+            label="selection budget_estimated_tokens",
+        )
+        declared_selected_cost = _exact_ledger_integer(
+            row.selected_estimated_tokens,
+            label="selection selected_estimated_tokens",
+        )
         if (
             str(row.scenario) != "size_conditioned"
             or share not in set(expected_budgets)
-            or int(row.budget_reference_tokens) != reference
-            or int(row.budget_estimated_tokens) != budget
-            or int(row.selected_estimated_tokens) > budget
+            or declared_reference != reference
+            or declared_budget != budget
+            or declared_selected_cost > budget
         ):
             raise ValueError("Router-v3 selection budget declaration failed")
         document = load_json(
@@ -6412,12 +6465,20 @@ def _validate_router_v3_run(
         ):
             raise ValueError("Router-v3 selection contains a disallowed group size")
         recomputed_cost = sum(
-            int(actions[query_id].get("estimated_total_tokens", 0) or 0)
+            _exact_ledger_integer(
+                actions[query_id].get("estimated_total_tokens", 0),
+                label="selected action estimated_total_tokens",
+                minimum=1,
+            )
             for query_id in selected_ids
         )
+        document_total_cost = _exact_ledger_integer(
+            document.get("total_cost", -1),
+            label="selection document total_cost",
+        )
         if (
-            recomputed_cost != int(row.selected_estimated_tokens)
-            or recomputed_cost != int(float(document.get("total_cost", -1)))
+            recomputed_cost != declared_selected_cost
+            or recomputed_cost != document_total_cost
             or recomputed_cost > budget
             or tuple(int(value) for value in document.get("training_group_sizes", []))
             != expected_variants[variant]

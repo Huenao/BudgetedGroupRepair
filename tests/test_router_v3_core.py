@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 
 import pandas as pd
@@ -23,12 +24,54 @@ from budgeted_group_repair_no_baran.router_v3 import (
     TEST_TARGET_CELL_COUNT,
     TEST_TARGETS,
     ExperimentRunner,
+    _exact_ledger_integer,
+    _nonnegative_finite_uplift,
     generation_order,
     target_order,
 )
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_nonnegative_finite_uplift_rejects_non_finite_values(value: float) -> None:
+    with pytest.raises(ValueError, match="must be finite"):
+        _nonnegative_finite_uplift(value)
+
+
+def test_nonnegative_finite_uplift_clamps_only_finite_negative_values() -> None:
+    assert _nonnegative_finite_uplift(-0.25) == 0.0
+    assert _nonnegative_finite_uplift(0.25) == 0.25
+
+
+def test_router_token_ledgers_preserve_integers_above_binary64_exact_range() -> None:
+    large = 2**53 + 1
+    rows = pd.DataFrame(
+        [
+            {
+                "cell_id": "c1",
+                "group_size": 1,
+                "group_view": "singleton",
+                "estimated_total_tokens": large,
+            },
+            {
+                "cell_id": "c2",
+                "group_size": 1,
+                "group_view": "singleton",
+                "estimated_total_tokens": 1,
+            },
+        ]
+    )
+
+    assert _exact_ledger_integer(str(large), label="cost", minimum=1) == large
+    assert ExperimentRunner._singleton_reference_cost(rows) == large + 1
+
+
+@pytest.mark.parametrize("value", [True, 1.5, float("nan"), float("inf")])
+def test_router_token_ledger_integer_parser_rejects_invalid_values(value: object) -> None:
+    with pytest.raises(ValueError, match="must be an integer"):
+        _exact_ledger_integer(value, label="cost", minimum=1)
 
 
 def _action(
@@ -63,6 +106,16 @@ def _action(
             "baran_changed_share": 1.0,
         },
     )
+
+
+def test_group_query_action_rejects_fractional_token_ledger_values() -> None:
+    action = _action("q", ("tableeg:toy:0:0",), 1, "singleton")
+    with pytest.raises(ValueError, match="positive integer"):
+        replace(action, estimated_prompt_tokens=10.5)
+    with pytest.raises(ValueError, match="positive integer"):
+        replace(action, completion_token_ceiling=True)
+    with pytest.raises(ValueError, match="positive integer"):
+        replace(action, estimated_total_tokens=202.5)
 
 
 def test_router_v3_frozen_dataset_universes_are_exact() -> None:

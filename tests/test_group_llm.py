@@ -104,6 +104,36 @@ def test_checkpoint_binds_provider_model_and_preflight_can_feed_singleton(tmp_pa
     assert calls[-1] == "different-model"
 
 
+def test_offline_calibration_checkpoint_can_feed_online_selected_union(tmp_path) -> None:
+    calls = 0
+
+    def opener(request, timeout):
+        nonlocal calls
+        calls += 1
+        request_payload = json.loads(request.data)
+        content = json.dumps(
+            {"query_id": "q1", "repairs": [_item("c1"), _item("c2")]}
+        )
+        return _Response(
+            {
+                "id": f"r-{calls}",
+                "model": request_payload["model"],
+                "choices": [{"message": {"content": content}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            }
+        )
+
+    client = DeepSeekGroupClient(
+        GroupClientConfig(max_retries=0), api_key="test", opener=opener
+    )
+    run_group_llm_batch(client, (_job("offline_group_calibration"),), tmp_path)
+    replay = run_group_llm_batch(client, (_job("online_selected_union"),), tmp_path)
+
+    assert calls == 1
+    assert replay[0]["checkpoint_hit"] is True
+    assert replay[0]["metadata"]["phase"] == "offline_group_calibration"
+
+
 def test_missing_provider_model_is_not_replaced_with_requested_model(tmp_path) -> None:
     def opener(request, timeout):
         content = json.dumps({"query_id": "q1", "repairs": [_item("c1"), _item("c2")]})
