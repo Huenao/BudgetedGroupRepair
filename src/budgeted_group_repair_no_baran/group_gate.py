@@ -7,8 +7,10 @@ The gate learns two binary events for every ``(cell_id, query_id)`` pair:
 ``harmful``
     The executable LLM repair is wrong while the Baran fallback is correct.
 
-Only a parsed, basically validated ``propose`` item is executable.  Every
-other outcome is the Baran fallback and therefore receives two neutral labels.
+Only a parsed, cell- and base-aware validated ``propose`` item is label-eligible.
+The schema-level helper in this module assumes that value-specific dirty/base
+checks have already been applied by the caller.  Every other outcome is the
+Baran fallback and therefore receives two neutral labels.
 Point predictions come from a model fitted on all training families.  Model
 uncertainty is the sample standard deviation (``ddof=1``) of net-gain
 predictions from leave-one-family-out replicas.
@@ -85,7 +87,7 @@ class GroupGatePrediction:
 
     @property
     def ell(self) -> float:
-        """Mathematical alias for the conservative uplift."""
+        """Mathematical alias for the uncertainty-penalized routing score."""
 
         return self.conservative_uplift
 
@@ -969,11 +971,14 @@ def build_uplift_targets(
 
 
 def executable_use_llm(item: Mapping[str, object] | object | None) -> bool:
-    """Return whether a parsed item denotes a basically valid LLM upgrade.
+    """Return whether a parsed item passes the schema-level proposal check.
 
     Parsers may pass an immutable item (already schema-valid) or a ledger
     mapping.  A mapping can explicitly set ``base_valid``/``verifier_valid``
     false to turn the item into a neutral fallback before labels are built.
+    This helper does not compare the repair with a cell's dirty or base value;
+    production label construction performs those value-specific checks before
+    calling :func:`build_uplift_targets`.
     """
 
     if item is None:

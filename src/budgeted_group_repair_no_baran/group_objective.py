@@ -58,7 +58,11 @@ def quantize_uplift(
 
 @dataclass(frozen=True)
 class PairGain:
-    """One fixed conservative uplift for a cell-query incidence."""
+    """One fixed uncertainty-penalized routing score for an incidence.
+
+    ``conservative_uplift`` is retained as the serialized field name for
+    compatibility with frozen artifacts; it is not a confidence lower bound.
+    """
 
     cell_id: str
     query_id: str
@@ -97,7 +101,7 @@ class GroupUpliftObjective:
     * ``{query_id: {cell_id: ell}}``.
 
     There is no double counting: if several selected queries cover a cell,
-    only that cell's largest fixed conservative uplift contributes.
+    only that cell's largest fixed routing score contributes.
     """
 
     def __init__(
@@ -174,7 +178,7 @@ class GroupUpliftObjective:
         return self._quantized_gains_sha256
 
     def gains_for(self, query_id: str) -> dict[str, float]:
-        """Return a copy of the conservative uplift vector for one query."""
+        """Return a copy of the routing-score vector for one query."""
 
         self._require_query(query_id)
         return dict(self._by_query[query_id])
