@@ -87,7 +87,6 @@ _FREEZE_TERMINAL_FAILURE_REVISIONS = {
     "router_v3_tabpfn3_exact_size_conditioned",
     "router_v3_tabiclv2_k1248_budget_sweep_k24_exact_size_conditioned",
     "router_v3_tabpfn3_k1248_budget_sweep_k24_exact_size_conditioned",
-    "router_v4_lightgbm_isotonic",
 }
 
 

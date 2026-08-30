@@ -117,7 +117,32 @@ def test_catboost_gate_is_deterministic_and_does_not_write_training_dir(
     first_predictions = [row.as_dict() for row in first.predict(features)]
     second_predictions = [row.as_dict() for row in second.predict(features)]
     assert first_predictions == second_predictions
+    assert all(
+        set(row)
+        == {
+            "q_helpful",
+            "q_harmful",
+            "net_gain",
+            "sigma",
+            "conservative_uplift",
+        }
+        for row in first_predictions
+    )
+    public_gate_methods = {
+        name
+        for name, value in vars(GroupUpliftGate).items()
+        if not name.startswith("_") and callable(value)
+    }
+    assert public_gate_methods == {
+        "fit",
+        "metadata",
+        "predict",
+        "predict_dicts",
+        "targets",
+        "to_metadata",
+    }
     metadata = first.metadata()
+    assert "calibration" not in metadata
     assert metadata["backend"] == "catboost"
     assert metadata["full"]["encoder"]["kind"] == "catboost_native_categorical"
     parameters = metadata["full"]["helpful_head"]["parameters"]

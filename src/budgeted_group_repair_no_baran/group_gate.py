@@ -34,7 +34,6 @@ import pandas as pd
 Backend: TypeAlias = Literal[
     "catboost", "lightgbm", "xgboost", "tabiclv2", "tabpfn3"
 ]
-ProbabilityCalibration: TypeAlias = Literal["none", "isotonic"]
 FeatureInput: TypeAlias = Any
 
 _BACKEND_PACKAGES = {
@@ -103,60 +102,6 @@ class GroupGatePrediction:
         """Compatibility alias for JSON-oriented callers."""
 
         return self.as_dict()
-
-
-@dataclass(frozen=True)
-class AuditedGroupGatePrediction:
-    """Raw and post-calibration prediction for one cell-query pair."""
-
-    raw_q_helpful: float
-    raw_q_harmful: float
-    q_helpful: float
-    q_harmful: float
-    raw_net_gain: float
-    net_gain: float
-    sigma: float
-    conservative_uplift: float
-    probability_calibration: ProbabilityCalibration
-
-    def as_dict(self) -> dict[str, float | str]:
-        return {
-            "raw_q_helpful": float(self.raw_q_helpful),
-            "raw_q_harmful": float(self.raw_q_harmful),
-            "q_helpful": float(self.q_helpful),
-            "q_harmful": float(self.q_harmful),
-            "raw_net_gain": float(self.raw_net_gain),
-            "net_gain": float(self.net_gain),
-            "sigma": float(self.sigma),
-            "conservative_uplift": float(self.conservative_uplift),
-            "probability_calibration": self.probability_calibration,
-        }
-
-
-@dataclass(frozen=True)
-class CalibrationOOFPrediction:
-    """One family-held-out training prediction used to fit calibration maps."""
-
-    row_index: int
-    family: str
-    helpful: int
-    harmful: int
-    raw_q_helpful_oof: float
-    raw_q_harmful_oof: float
-    q_helpful_oof: float
-    q_harmful_oof: float
-
-    def as_dict(self) -> dict[str, int | float | str]:
-        return {
-            "row_index": int(self.row_index),
-            "family": self.family,
-            "helpful": int(self.helpful),
-            "harmful": int(self.harmful),
-            "raw_q_helpful_oof": float(self.raw_q_helpful_oof),
-            "raw_q_harmful_oof": float(self.raw_q_harmful_oof),
-            "q_helpful_oof": float(self.q_helpful_oof),
-            "q_harmful_oof": float(self.q_harmful_oof),
-        }
 
 
 @dataclass(frozen=True)
@@ -982,22 +927,6 @@ class _ConstantProbabilityModel:
         return {"kind": "constant", "probability": float(self.probability)}
 
 
-class _ConstantProbabilityCalibrator:
-    def __init__(self, probability: float) -> None:
-        self.probability = _clip_probability(probability)
-
-    def predict(self, values: Sequence[float]) -> list[float]:
-        return [self.probability] * len(values)
-
-    def as_dict(self) -> dict[str, object]:
-        return {
-            "kind": "constant",
-            "probability": float(self.probability),
-            "X_thresholds_": [],
-            "y_thresholds_": [float(self.probability)],
-        }
-
-
 @dataclass
 class _FittedHeads:
     family_left_out: str | None
@@ -1073,7 +1002,6 @@ class GroupUpliftGate:
         rho: float = 1.0,
         gamma: float = 1.0,
         random_state: int = 42,
-        probability_calibration: ProbabilityCalibration = "none",
         backend_config: Mapping[str, object] | None = None,
     ) -> None:
         if backend not in {
@@ -1089,18 +1017,13 @@ class GroupUpliftGate:
             )
         _validate_penalty("rho", rho)
         _validate_penalty("gamma", gamma)
-        if probability_calibration not in {"none", "isotonic"}:
-            raise ValueError("probability_calibration must be 'none' or 'isotonic'")
         self.backend = backend
         self.rho = float(rho)
         self.gamma = float(gamma)
         self.random_state = int(random_state)
-        self.probability_calibration = probability_calibration
         self.backend_config = dict(backend_config or {})
         self._full: _FittedHeads | None = None
         self._replicas: tuple[_FittedHeads, ...] = ()
-        self._calibrators: tuple[object, object] | None = None
-        self._oof_predictions: tuple[CalibrationOOFPrediction, ...] = ()
         self._training_summary: dict[str, object] = {}
 
     @staticmethod
@@ -1163,15 +1086,6 @@ class GroupUpliftGate:
                 )
             )
         self._replicas = tuple(replicas)
-        self._calibrators = None
-        self._oof_predictions = ()
-        if self.probability_calibration == "isotonic":
-            self._fit_calibrators(
-                records,
-                targets.helpful,
-                targets.harmful,
-                normalized_families,
-            )
         self._training_summary = {
             "rows": row_count,
             "families": sorted(set(normalized_families)),
@@ -1183,34 +1097,12 @@ class GroupUpliftGate:
         return self
 
     def predict(self, features: FeatureInput) -> list[GroupGatePrediction]:
-        """Return the legacy five-field prediction surface."""
-
-        return [
-            GroupGatePrediction(
-                q_helpful=value.q_helpful,
-                q_harmful=value.q_harmful,
-                net_gain=value.net_gain,
-                sigma=value.sigma,
-                conservative_uplift=value.conservative_uplift,
-            )
-            for value in self.predict_audited(features)
-        ]
-
-    def predict_audited(
-        self, features: FeatureInput
-    ) -> list[AuditedGroupGatePrediction]:
-        """Return raw and calibrated predictions without changing legacy schema."""
-
         self._require_fitted()
         assert self._full is not None
-        raw_full_helpful, raw_full_harmful = self._predict_heads(self._full, features)
-        full_helpful = self._calibrate("helpful", raw_full_helpful)
-        full_harmful = self._calibrate("harmful", raw_full_harmful)
+        full_helpful, full_harmful = self._predict_heads(self._full, features)
         replica_net: list[list[float]] = []
         for replica in self._replicas:
-            raw_helpful, raw_harmful = self._predict_heads(replica, features)
-            helpful = self._calibrate("helpful", raw_helpful)
-            harmful = self._calibrate("harmful", raw_harmful)
+            helpful, harmful = self._predict_heads(replica, features)
             replica_net.append(
                 [
                     float(q_helpful - self.rho * q_harmful)
@@ -1218,37 +1110,24 @@ class GroupUpliftGate:
                 ]
             )
 
-        predictions: list[AuditedGroupGatePrediction] = []
+        predictions: list[GroupGatePrediction] = []
         for index, (q_helpful, q_harmful) in enumerate(
             zip(full_helpful, full_harmful)
         ):
-            raw_q_helpful = raw_full_helpful[index]
-            raw_q_harmful = raw_full_harmful[index]
-            raw_net_gain = float(raw_q_helpful - self.rho * raw_q_harmful)
             net_gain = float(q_helpful - self.rho * q_harmful)
             replicate_values = [values[index] for values in replica_net]
             sigma = _sample_standard_deviation(replicate_values)
             ell = max(0.0, net_gain - self.gamma * sigma)
             predictions.append(
-                AuditedGroupGatePrediction(
-                    raw_q_helpful=float(raw_q_helpful),
-                    raw_q_harmful=float(raw_q_harmful),
+                GroupGatePrediction(
                     q_helpful=float(q_helpful),
                     q_harmful=float(q_harmful),
-                    raw_net_gain=raw_net_gain,
                     net_gain=net_gain,
                     sigma=sigma,
                     conservative_uplift=float(ell),
-                    probability_calibration=self.probability_calibration,
                 )
             )
         return predictions
-
-    def calibration_oof_predictions(self) -> tuple[CalibrationOOFPrediction, ...]:
-        self._require_fitted()
-        if self.probability_calibration != "isotonic":
-            raise RuntimeError("OOF calibration predictions require isotonic calibration")
-        return self._oof_predictions
 
     def predict_dicts(self, features: FeatureInput) -> list[dict[str, float]]:
         return [prediction.as_dict() for prediction in self.predict(features)]
@@ -1256,7 +1135,7 @@ class GroupUpliftGate:
     def metadata(self) -> dict[str, object]:
         self._require_fitted()
         assert self._full is not None
-        metadata = {
+        return {
             "backend": self.backend,
             "backend_version": package_version(_BACKEND_PACKAGES[self.backend]),
             "rho": self.rho,
@@ -1266,46 +1145,6 @@ class GroupUpliftGate:
             "full": _heads_metadata(self._full),
             "lofo": [_heads_metadata(replica) for replica in self._replicas],
         }
-        if self.probability_calibration == "isotonic":
-            assert self._calibrators is not None
-            helpful = [value.helpful for value in self._oof_predictions]
-            harmful = [value.harmful for value in self._oof_predictions]
-            metadata["calibration"] = {
-                "enabled": True,
-                "method": "isotonic",
-                "source": "train_family_out_of_fold",
-                "out_of_bounds": "clip",
-                "class_rebalancing": False,
-                "oof_rows": len(self._oof_predictions),
-                "oof_families": sorted(
-                    {value.family for value in self._oof_predictions}
-                ),
-                "helpful": {
-                    "positives": int(sum(helpful)),
-                    "negatives": int(len(helpful) - sum(helpful)),
-                    **_calibrator_metadata(self._calibrators[0]),
-                },
-                "harmful": {
-                    "positives": int(sum(harmful)),
-                    "negatives": int(len(harmful) - sum(harmful)),
-                    **_calibrator_metadata(self._calibrators[1]),
-                },
-                "constant_fallback": {
-                    "helpful": isinstance(
-                        self._calibrators[0], _ConstantProbabilityCalibrator
-                    ),
-                    "harmful": isinstance(
-                        self._calibrators[1], _ConstantProbabilityCalibrator
-                    ),
-                },
-                "target_labels_used": False,
-                "target_responses_used": False,
-            }
-            metadata["uncertainty"] = {
-                "scale": "calibrated_net_gain",
-                "ddof": 1,
-            }
-        return metadata
 
     def to_metadata(self) -> dict[str, object]:
         return self.metadata()
@@ -1347,73 +1186,6 @@ class GroupUpliftGate:
                 else ()
             ),
         )
-
-    def _fit_calibrators(
-        self,
-        records: Sequence[Mapping[str, object]],
-        helpful: Sequence[int],
-        harmful: Sequence[int],
-        families: Sequence[str],
-    ) -> None:
-        unique_families = sorted(set(families))
-        if len(unique_families) < 2:
-            raise ValueError(
-                "isotonic calibration requires at least two training families"
-            )
-        replica_by_family = {
-            str(replica.family_left_out): replica
-            for replica in self._replicas
-            if replica.family_left_out is not None
-        }
-        if set(replica_by_family) != set(unique_families):
-            raise ValueError("every training family must have exactly one LOFO replica")
-
-        raw_by_index: dict[int, tuple[float, float]] = {}
-        for family in unique_families:
-            indices = [
-                index for index, value in enumerate(families) if value == family
-            ]
-            family_records = [records[index] for index in indices]
-            raw_helpful, raw_harmful = self._predict_heads(
-                replica_by_family[family], family_records
-            )
-            for index, q_helpful, q_harmful in zip(
-                indices, raw_helpful, raw_harmful
-            ):
-                if index in raw_by_index:
-                    raise ValueError("OOF calibration predicted a training row twice")
-                raw_by_index[index] = (float(q_helpful), float(q_harmful))
-        if set(raw_by_index) != set(range(len(records))):
-            raise ValueError("OOF calibration did not predict every training row once")
-
-        raw_helpful = [raw_by_index[index][0] for index in range(len(records))]
-        raw_harmful = [raw_by_index[index][1] for index in range(len(records))]
-        helpful_calibrator = _fit_probability_calibrator(raw_helpful, helpful)
-        harmful_calibrator = _fit_probability_calibrator(raw_harmful, harmful)
-        self._calibrators = (helpful_calibrator, harmful_calibrator)
-        calibrated_helpful = _calibrator_predict(helpful_calibrator, raw_helpful)
-        calibrated_harmful = _calibrator_predict(harmful_calibrator, raw_harmful)
-        self._oof_predictions = tuple(
-            CalibrationOOFPrediction(
-                row_index=index,
-                family=str(families[index]),
-                helpful=int(helpful[index]),
-                harmful=int(harmful[index]),
-                raw_q_helpful_oof=float(raw_helpful[index]),
-                raw_q_harmful_oof=float(raw_harmful[index]),
-                q_helpful_oof=float(calibrated_helpful[index]),
-                q_harmful_oof=float(calibrated_harmful[index]),
-            )
-            for index in range(len(records))
-        )
-
-    def _calibrate(self, head: Literal["helpful", "harmful"], values: Sequence[float]) -> list[float]:
-        if self.probability_calibration == "none":
-            return [float(value) for value in values]
-        if self._calibrators is None:
-            raise RuntimeError("probability calibrators have not been fitted")
-        calibrator = self._calibrators[0 if head == "helpful" else 1]
-        return _calibrator_predict(calibrator, values)
 
     def _fit_binary_head(
         self,
@@ -1559,54 +1331,6 @@ def _model_metadata(model: object) -> dict[str, object]:
     if type(model).__name__ == "CatBoostClassifier" and hasattr(model, "get_params"):
         metadata["parameters"] = dict(model.get_params())
     return metadata
-
-
-def _fit_probability_calibrator(
-    scores: Sequence[float], labels: Sequence[int]
-) -> object:
-    values = [int(value) for value in labels]
-    if not scores or len(scores) != len(values):
-        raise ValueError("calibration scores and labels must be non-empty and aligned")
-    if any(value not in {0, 1} for value in values):
-        raise ValueError("calibration labels must be binary")
-    if len(set(values)) == 1:
-        return _ConstantProbabilityCalibrator(sum(values) / len(values))
-    try:
-        from sklearn.isotonic import IsotonicRegression
-    except ImportError as exc:  # pragma: no cover - locked project dependency
-        raise ImportError(
-            "isotonic calibration requires the project's scikit-learn dependency"
-        ) from exc
-    calibrator = IsotonicRegression(
-        y_min=0.0,
-        y_max=1.0,
-        out_of_bounds="clip",
-    )
-    calibrator.fit([float(value) for value in scores], values)
-    return calibrator
-
-
-def _calibrator_predict(calibrator: object, values: Sequence[float]) -> list[float]:
-    raw = [float(value) for value in values]
-    if isinstance(calibrator, _ConstantProbabilityCalibrator):
-        predicted = calibrator.predict(raw)
-    else:
-        predicted = calibrator.predict(raw)
-    return [_clip_probability(float(value)) for value in predicted]
-
-
-def _calibrator_metadata(calibrator: object) -> dict[str, object]:
-    if isinstance(calibrator, _ConstantProbabilityCalibrator):
-        return calibrator.as_dict()
-    x_thresholds = getattr(calibrator, "X_thresholds_", None)
-    y_thresholds = getattr(calibrator, "y_thresholds_", None)
-    if x_thresholds is None or y_thresholds is None:
-        raise RuntimeError("fitted isotonic calibrator exposes no thresholds")
-    return {
-        "kind": "isotonic",
-        "X_thresholds_": [float(value) for value in x_thresholds],
-        "y_thresholds_": [float(value) for value in y_thresholds],
-    }
 
 
 def _predict_positive(model: object, matrix: object) -> list[float]:

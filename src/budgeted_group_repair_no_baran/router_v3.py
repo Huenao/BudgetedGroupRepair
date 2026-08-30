@@ -106,9 +106,6 @@ ROUTER_V3_TABICLV2_MATRIX_REVISION = (
 ROUTER_V3_TABPFN3_MATRIX_REVISION = (
     "router_v3_tabpfn3_k1248_budget_sweep_k24_exact_size_conditioned"
 )
-ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION = (
-    "router_v4_lightgbm_isotonic_exact_size_conditioned"
-)
 ROUTER_V3_VARIANTS = ("1", "2", "4", "8", "all")
 ROUTER_V3_SWEEP_VARIANTS = ("2", "4")
 ROUTER_V3_TABICLV2_VARIANTS = ("1", "4")
@@ -608,20 +605,10 @@ class ExperimentRunner:
             ROUTER_V3_TABPFN3_REVISION,
             ROUTER_V3_TABICLV2_MATRIX_REVISION,
             ROUTER_V3_TABPFN3_MATRIX_REVISION,
-            ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
         }:
             raise ValueError(f"unsupported router_revision: {self.router_revision!r}")
         backends = self._active_gate_backends()
-        if self.is_router_v4_lightgbm_isotonic:
-            if backends != ("lightgbm",):
-                raise ValueError(
-                    "Router-v4 isotonic gate_backends must be exactly lightgbm"
-                )
-            if self.calibration_source_run is None:
-                raise ValueError(
-                    "Router-v4 isotonic requires --calibration-source-run"
-                )
-        elif self.is_router_v3_budget_sweep:
+        if self.is_router_v3_budget_sweep:
             if backends != ("lightgbm",):
                 raise ValueError(
                     "Router-v3 budget sweep gate_backends must be exactly lightgbm"
@@ -675,9 +662,7 @@ class ExperimentRunner:
             )
         variants = self._router_training_variants()
         expected_variants = (
-            ("1", "4")
-            if self.is_router_v4_lightgbm_isotonic
-            else ROUTER_V3_FOUNDATION_MATRIX_VARIANTS
+            ROUTER_V3_FOUNDATION_MATRIX_VARIANTS
             if self.is_router_v3_foundation_matrix
             else ROUTER_V3_SWEEP_VARIANTS
             if self.is_router_v3_budget_sweep
@@ -745,10 +730,6 @@ class ExperimentRunner:
         )
 
     @property
-    def is_router_v4_lightgbm_isotonic(self) -> bool:
-        return self.router_revision == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION
-
-    @property
     def freezes_reused_terminal_failures(self) -> bool:
         return self.router_revision in {
             ROUTER_V3_BUDGET_SWEEP_REVISION,
@@ -757,7 +738,6 @@ class ExperimentRunner:
             ROUTER_V3_TABPFN3_REVISION,
             ROUTER_V3_TABICLV2_MATRIX_REVISION,
             ROUTER_V3_TABPFN3_MATRIX_REVISION,
-            ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION,
         }
 
     def _bgr_method_name(self, backend: str) -> str:
@@ -1070,27 +1050,10 @@ class ExperimentRunner:
             existing = load_json(resolved_run / "run_manifest.json")
             provider_checkpoint = resolved_run / "llm" / "group_query_checkpoint.jsonl"
             checkpoint_rows = read_jsonl(provider_checkpoint)
-            stages = existing.get("stages", {})
-            gate_selection_complete = bool(
-                isinstance(stages, Mapping)
-                and isinstance(stages.get("gate_selection"), Mapping)
-                and stages["gate_selection"].get("status") == "complete"  # type: ignore[index]
-            )
-            imported_only_v4 = bool(
-                str(experiment_config.get("router_revision", ""))
-                == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION
-                and checkpoint_rows
-                and all(
-                    bool(row.get("cache_hit"))
-                    and bool(row.get("imported_response"))
-                    for row in checkpoint_rows
-                )
-                and not gate_selection_complete
-            )
             if (
                 str(existing.get("implementation_sha256", ""))
                 != str(metadata["implementation_sha256"])
-                and (not checkpoint_rows or imported_only_v4)
+                and not checkpoint_rows
             ):
                 previous = str(existing.get("implementation_sha256", ""))
                 existing["implementation_sha256"] = metadata["implementation_sha256"]
@@ -1099,11 +1062,7 @@ class ExperimentRunner:
                 rebinds = list(history) if isinstance(history, list) else []
                 rebinds.append(
                     {
-                        "reason": (
-                            "router_v4_pre_selection_imported_cache_only_rebind"
-                            if imported_only_v4
-                            else "pre_provider_prompt_audit_false_positive_fix"
-                        ),
+                        "reason": "pre_provider_prompt_audit_false_positive_fix",
                         "previous_implementation_sha256": previous,
                         "implementation_sha256": metadata["implementation_sha256"],
                         "provider_checkpoint_rows": len(checkpoint_rows),
@@ -7430,19 +7389,6 @@ def validate_run(
 
     root = Path(run_dir).resolve()
     manifest = load_json(root / "run_manifest.json")
-    bound_config_path = root / "bound_experiment_config.json"
-    if bound_config_path.is_file():
-        bound_revision = str(
-            load_json(bound_config_path).get("router_revision", "")
-        )
-        if bound_revision == ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION:
-            from .router_v4 import validate_router_v4_run
-
-            return validate_router_v4_run(
-                root,
-                manifest,
-                require_complete=require_complete,
-            )
     completed_matrix = manifest.get("completed_matrix", {})
     if (
         isinstance(completed_matrix, Mapping)
@@ -7585,7 +7531,6 @@ __all__ = [
     "ROUTER_V3_TABPFN3_VARIANTS",
     "ROUTER_V3_FOUNDATION_MATRIX",
     "ROUTER_V3_FOUNDATION_MATRIX_VARIANTS",
-    "ROUTER_V4_LIGHTGBM_ISOTONIC_REVISION",
     "TABICLV2_GATE_BACKENDS",
     "TABPFN3_GATE_BACKENDS",
     "SafetyCapExceeded",

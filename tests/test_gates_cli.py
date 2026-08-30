@@ -43,6 +43,17 @@ def test_optimizer_matches_exact_small_solution_and_respects_budget() -> None:
 def test_cli_requires_paid_cap_and_env_parser_never_interpolates(tmp_path) -> None:
     with pytest.raises(SystemExit):
         parse_args(["check-model", "--run-id", "r1"])
+    with pytest.raises(SystemExit) as cache_only:
+        parse_args(
+            [
+                "run-router-bgr",
+                "--run-id",
+                "r1",
+                "--no-token-cap",
+                "--cache-only",
+            ]
+        )
+    assert cache_only.value.code == 2
     args = parse_args(
         ["run-full-baselines", "--run-id", "r1", "--token-cap", "1000"]
     )
@@ -56,10 +67,13 @@ def test_cli_requires_paid_cap_and_env_parser_never_interpolates(tmp_path) -> No
             "plan-router-run",
             "--run-id",
             "router-sweep",
+            "--calibration-source-run",
+            "runs/router-v3-calibration",
             "--router-artifact-reuse-run",
             "runs/router-v3-parent",
         ]
     )
+    assert router.calibration_source_run == Path("runs/router-v3-calibration")
     assert router.router_artifact_reuse_run == Path("runs/router-v3-parent")
     assert router.baran_source_run is None
     assert router.response_reuse_run is None
