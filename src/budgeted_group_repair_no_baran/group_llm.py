@@ -42,6 +42,17 @@ class PermanentGroupLLMError(GroupLLMError):
     pass
 
 
+class CompletionTruncatedError(PermanentGroupLLMError):
+    """A strict batch observed a provider ``finish_reason=length`` response."""
+
+    def __init__(self, query_ids: Sequence[str]) -> None:
+        self.query_ids = tuple(str(value) for value in query_ids)
+        super().__init__(
+            "strict completion was truncated for query_id(s): "
+            + ", ".join(self.query_ids)
+        )
+
+
 class ProviderModelIdentityError(PermanentGroupLLMError):
     """The provider omitted or changed the requested model identity."""
 
@@ -191,18 +202,31 @@ def parse_group_response(
     text: str,
     expected_query_id: str,
     expected_cell_ids: Sequence[str],
+    *,
+    require_complete_json: bool = False,
 ) -> GroupParseResult:
     """Parse independently valid items while rejecting identity ambiguity."""
 
     expected = tuple(sorted(str(identifier) for identifier in expected_cell_ids))
     expected_set = set(expected)
-    payload = _first_json_object(str(text))
+    if require_complete_json:
+        try:
+            decoded = json.loads(str(text))
+        except json.JSONDecodeError:
+            decoded = None
+        payload = decoded if isinstance(decoded, Mapping) else None
+    else:
+        payload = _first_json_object(str(text))
     if payload is None:
         return GroupParseResult(
             query_id="",
             expected_cell_ids=expected,
             items=(),
-            parse_status="no_json_object",
+            parse_status=(
+                "incomplete_or_invalid_json"
+                if require_complete_json
+                else "no_json_object"
+            ),
             missing_cell_ids=expected,
         )
     actual_query_id = str(payload.get("query_id", ""))
@@ -296,6 +320,8 @@ class GroupClientConfig:
     backoff_max_seconds: float = 30.0
     backoff_jitter: float = 0.2
     concurrency: int = 4
+    completion_token_parameter: str = "max_tokens"
+    stream: bool | None = None
     extra_body: Mapping[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -309,7 +335,24 @@ class GroupClientConfig:
             raise ValueError("max_retries must be non-negative")
         if self.concurrency <= 0:
             raise ValueError("concurrency must be positive")
-        reserved = {"model", "messages", "max_tokens", "response_format"}
+        if self.completion_token_parameter not in {
+            "max_tokens",
+            "max_completion_tokens",
+        }:
+            raise ValueError(
+                "completion_token_parameter must be max_tokens or "
+                "max_completion_tokens"
+            )
+        if self.stream not in {None, False}:
+            raise ValueError("the non-streaming group client only supports stream=false")
+        reserved = {
+            "model",
+            "messages",
+            "max_tokens",
+            "max_completion_tokens",
+            "response_format",
+            "stream",
+        }
         overlap = reserved.intersection(self.extra_body)
         if overlap:
             raise ValueError("extra_body cannot override request identity fields: " + ",".join(sorted(overlap)))
@@ -328,6 +371,8 @@ class GroupClientConfig:
             "backoff_max_seconds",
             "backoff_jitter",
             "concurrency",
+            "completion_token_parameter",
+            "stream",
             "extra_body",
         }
         return cls(**{key: value for key, value in values.items() if key in allowed})
@@ -390,6 +435,16 @@ class GroupLLMResult:
     observed_total_tokens: int = 0
     model_requested: str = ""
     provider_model_field_present: bool = False
+    finish_reason: str = ""
+    response_usage: Mapping[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "usage", MappingProxyType(dict(self.usage)))
+        object.__setattr__(
+            self,
+            "response_usage",
+            MappingProxyType(dict(self.response_usage)),
+        )
 
     @property
     def model_returned(self) -> str:
@@ -433,10 +488,12 @@ class DeepSeekGroupClient:
             "model": self.config.model,
             "temperature": self.config.temperature,
             "top_p": self.config.top_p,
-            "max_tokens": job.max_tokens,
             "extra_body": dict(self.config.extra_body),
             "messages": messages_as_dicts(job.messages),
         }
+        payload[self.config.completion_token_parameter] = job.max_tokens
+        if self.config.stream is not None:
+            payload["stream"] = self.config.stream
         return hashlib.sha256(
             json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
@@ -449,10 +506,12 @@ class DeepSeekGroupClient:
                 "messages": messages_as_dicts(job.messages),
                 "temperature": self.config.temperature,
                 "top_p": self.config.top_p,
-                "max_tokens": int(job.max_tokens),
                 "response_format": {"type": "json_object"},
             }
         )
+        payload[self.config.completion_token_parameter] = int(job.max_tokens)
+        if self.config.stream is not None:
+            payload["stream"] = self.config.stream
         return payload
 
     def _request_once(self, payload: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -499,6 +558,14 @@ class DeepSeekGroupClient:
             return json.dumps(dict(content), ensure_ascii=False)
         raise RetryableGroupLLMError("chat completion content is not JSON text")
 
+    @staticmethod
+    def _finish_reason(raw: Mapping[str, Any]) -> str:
+        try:
+            value = raw["choices"][0].get("finish_reason")
+        except (KeyError, IndexError, TypeError, AttributeError):
+            return ""
+        return value if isinstance(value, str) else ""
+
     def _provider_model(self, raw: Mapping[str, Any]) -> tuple[str, bool]:
         field_present = "model" in raw
         value = raw.get("model")
@@ -524,6 +591,29 @@ class DeepSeekGroupClient:
                 continue
             if isinstance(value, (int, float)) and math.isfinite(float(value)):
                 target[str(key)] = target.get(str(key), 0) + value
+            elif isinstance(value, Mapping):
+                nested = target.setdefault(str(key), {})
+                if isinstance(nested, dict):
+                    DeepSeekGroupClient._merge_usage(nested, value)
+
+    @staticmethod
+    def _usage_complete(usage: Mapping[str, Any]) -> bool:
+        return all(
+            isinstance(usage.get(key), (int, float))
+            and not isinstance(usage.get(key), bool)
+            and math.isfinite(float(usage[key]))
+            for key in ("prompt_tokens", "completion_tokens", "total_tokens")
+        )
+
+    @staticmethod
+    def _reasoning_tokens(usage: Mapping[str, Any]) -> int | None:
+        details = usage.get("completion_tokens_details")
+        if not isinstance(details, Mapping):
+            return None
+        value = details.get("reasoning_tokens")
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return int(value)
+        return None
 
     def _backoff(self, failed_attempt: int) -> None:
         base = min(
@@ -538,15 +628,62 @@ class DeepSeekGroupClient:
         started = time.monotonic()
         usage_total: JSONDict = {}
         attempts = self.config.max_retries + 1
+        require_complete = bool(job.metadata.get("require_complete_response"))
+        require_complete_json = bool(
+            job.metadata.get("require_complete_json", require_complete)
+        )
+        required_finish_reason = str(
+            job.metadata.get("required_finish_reason", "")
+        )
+        retry_finish_reasons = {
+            str(value)
+            for value in job.metadata.get("retry_finish_reasons", ())
+            if str(value)
+        }
+        require_complete_usage = bool(
+            job.metadata.get("require_complete_usage", False)
+        )
+        require_zero_reasoning = bool(
+            job.metadata.get("require_zero_reasoning_tokens", False)
+        )
         last_parsed: GroupParseResult | None = None
         last_content = ""
         last_raw: Mapping[str, Any] = {}
+        last_response_usage: Mapping[str, Any] = {}
         last_model_returned = ""
         last_model_field_present = False
+        last_finish_reason = ""
         last_error: RetryableGroupLLMError | None = None
         usage_observed_attempts = 0
         unknown_usage_attempts = 0
         observed_total_tokens = 0
+
+        def result(attempt_count: int) -> GroupLLMResult:
+            parsed = last_parsed or parse_group_response(
+                last_content,
+                job.query_id,
+                job.expected_cell_ids,
+                require_complete_json=require_complete_json,
+            )
+            return GroupLLMResult(
+                content=last_content,
+                parsed=parsed,
+                model=last_model_returned,
+                usage=usage_total,
+                latency_seconds=time.monotonic() - started,
+                prompt_hash=job.prompt_hash,
+                provider_request_hash=provider_hash,
+                attempts=attempt_count,
+                response_id=str(last_raw.get("id") or ""),
+                usage_observed_attempts=usage_observed_attempts,
+                unknown_usage_attempts=unknown_usage_attempts,
+                observed_total_tokens=observed_total_tokens,
+                model_requested=self.config.model,
+                provider_model_field_present=last_model_field_present,
+                finish_reason=last_finish_reason,
+                response_usage=last_response_usage,
+            )
+
         for attempt in range(1, attempts + 1):
             usage_observed_this_attempt = False
             usage_status_recorded = False
@@ -556,8 +693,10 @@ class DeepSeekGroupClient:
                 model_returned, model_field_present = self._provider_model(raw)
                 last_model_returned = model_returned
                 last_model_field_present = model_field_present
-                usage = raw.get("usage") or {}
-                if isinstance(usage, Mapping):
+                raw_usage = raw.get("usage") or {}
+                usage = raw_usage if isinstance(raw_usage, Mapping) else {}
+                last_response_usage = dict(usage)
+                if usage:
                     self._merge_usage(usage_total, usage)
                     numeric = {
                         str(key)
@@ -598,26 +737,51 @@ class DeepSeekGroupClient:
                     unknown_usage_attempts += 1
                 usage_status_recorded = True
                 content = self._response_content(raw)
-                parsed = parse_group_response(content, job.query_id, job.expected_cell_ids)
+                finish_reason = self._finish_reason(raw)
+                parsed = parse_group_response(
+                    content,
+                    job.query_id,
+                    job.expected_cell_ids,
+                    require_complete_json=require_complete_json,
+                )
                 last_content = content
                 last_parsed = parsed
-                if parsed.parse_status in {"ok", "partial"} or attempt == attempts:
-                    return GroupLLMResult(
-                        content=content,
-                        parsed=parsed,
-                        model=model_returned,
-                        usage=MappingProxyType(dict(usage_total)),
-                        latency_seconds=time.monotonic() - started,
-                        prompt_hash=job.prompt_hash,
-                        provider_request_hash=provider_hash,
-                        attempts=attempt,
-                        response_id=str(raw.get("id") or ""),
-                        usage_observed_attempts=usage_observed_attempts,
-                        unknown_usage_attempts=unknown_usage_attempts,
-                        observed_total_tokens=observed_total_tokens,
-                        model_requested=self.config.model,
-                        provider_model_field_present=model_field_present,
-                    )
+                last_finish_reason = finish_reason
+                parse_valid = (
+                    parsed.is_complete
+                    if require_complete
+                    else parsed.parse_status in {"ok", "partial"}
+                    and parsed.has_valid_items
+                )
+                finish_valid = (
+                    not required_finish_reason
+                    or finish_reason == required_finish_reason
+                )
+                usage_valid = (
+                    not require_complete_usage or self._usage_complete(usage)
+                )
+                reasoning_tokens = self._reasoning_tokens(usage)
+                reasoning_valid = (
+                    not require_zero_reasoning or reasoning_tokens in {None, 0}
+                )
+                if parse_valid and finish_valid and usage_valid and reasoning_valid:
+                    return result(attempt)
+                retryable_finish = (
+                    not finish_valid
+                    and finish_reason in retry_finish_reasons
+                    and attempt < attempts
+                )
+                # Missing usage or observed reasoning remains terminal. A
+                # caller may explicitly classify selected finish reasons as
+                # retryable; this is used for rejected Qwen truncations while
+                # preserving the original request payload and response audit.
+                if (
+                    (not finish_valid and not retryable_finish)
+                    or not usage_valid
+                    or not reasoning_valid
+                    or attempt == attempts
+                ):
+                    return result(attempt)
                 last_error = RetryableGroupLLMError(
                     "invalid structured group response: " + parsed.parse_status
                 )
@@ -628,41 +792,9 @@ class DeepSeekGroupClient:
             if attempt < attempts:
                 self._backoff(attempt)
         if last_parsed is not None:
-            return GroupLLMResult(
-                content=last_content,
-                parsed=last_parsed,
-                model=last_model_returned,
-                usage=MappingProxyType(dict(usage_total)),
-                latency_seconds=time.monotonic() - started,
-                prompt_hash=job.prompt_hash,
-                provider_request_hash=provider_hash,
-                attempts=attempts,
-                response_id=str(last_raw.get("id") or ""),
-                usage_observed_attempts=usage_observed_attempts,
-                unknown_usage_attempts=unknown_usage_attempts,
-                observed_total_tokens=observed_total_tokens,
-                model_requested=self.config.model,
-                provider_model_field_present=last_model_field_present,
-            )
+            return result(attempts)
         if usage_total or usage_observed_attempts:
-            return GroupLLMResult(
-                content=last_content,
-                parsed=parse_group_response(
-                    last_content, job.query_id, job.expected_cell_ids
-                ),
-                model=last_model_returned,
-                usage=MappingProxyType(dict(usage_total)),
-                latency_seconds=time.monotonic() - started,
-                prompt_hash=job.prompt_hash,
-                provider_request_hash=provider_hash,
-                attempts=attempts,
-                response_id=str(last_raw.get("id") or ""),
-                usage_observed_attempts=usage_observed_attempts,
-                unknown_usage_attempts=unknown_usage_attempts,
-                observed_total_tokens=observed_total_tokens,
-                model_requested=self.config.model,
-                provider_model_field_present=last_model_field_present,
-            )
+            return result(attempts)
         assert last_error is not None
         raise RetryableGroupLLMError(
             f"request failed after {attempts} attempts: {last_error}"
@@ -738,6 +870,15 @@ def _append_jsonl(path: Path, row: Mapping[str, Any], lock: threading.Lock) -> N
 def _record_from_result(job: GroupLLMJob, result: GroupLLMResult, *, cache_hit: bool) -> JSONDict:
     parsed = result.parsed
     require_complete = bool(job.metadata.get("require_complete_response"))
+    required_finish_reason = str(job.metadata.get("required_finish_reason", ""))
+    require_complete_usage = bool(job.metadata.get("require_complete_usage", False))
+    require_zero_reasoning = bool(
+        job.metadata.get("require_zero_reasoning_tokens", False)
+    )
+    require_thinking_disabled = bool(
+        job.metadata.get("require_thinking_disabled", False)
+    )
+    response_usage = dict(result.response_usage or result.usage)
     model_requested = str(
         job.metadata.get("model_requested") or result.model_requested
     )
@@ -746,10 +887,33 @@ def _record_from_result(job: GroupLLMJob, result: GroupLLMResult, *, cache_hit: 
         and model_requested
         and result.model_returned == model_requested
     )
-    successful = model_matches and (
+    parse_valid = (
         parsed.is_complete
         if require_complete
         else parsed.parse_status in {"ok", "partial"} and parsed.has_valid_items
+    )
+    finish_valid = (
+        not required_finish_reason or result.finish_reason == required_finish_reason
+    )
+    usage_valid = (
+        not require_complete_usage
+        or DeepSeekGroupClient._usage_complete(response_usage)
+    )
+    reasoning_tokens = DeepSeekGroupClient._reasoning_tokens(response_usage)
+    reasoning_valid = (
+        not require_zero_reasoning or reasoning_tokens in {None, 0}
+    )
+    thinking_valid = (
+        not require_thinking_disabled
+        or job.metadata.get("thinking_disabled") is True
+    )
+    successful = bool(
+        model_matches
+        and parse_valid
+        and finish_valid
+        and usage_valid
+        and reasoning_valid
+        and thinking_valid
     )
     return {
         "query_id": job.query_id,
@@ -770,7 +934,12 @@ def _record_from_result(job: GroupLLMJob, result: GroupLLMResult, *, cache_hit: 
         "provider_model_field_present": result.provider_model_field_present,
         "model_returned_present": result.model_returned_present,
         "model_matches_request": model_matches,
-        "usage": dict(result.usage),
+        "finish_reason": result.finish_reason,
+        "usage": response_usage,
+        "attempt_usage_total": dict(result.usage),
+        "usage_complete": usage_valid,
+        "reasoning_tokens": reasoning_tokens,
+        "thinking_disabled": job.metadata.get("thinking_disabled"),
         "latency_seconds": result.latency_seconds,
         "attempts": result.attempts,
         "usage_observed_attempts": result.usage_observed_attempts,
@@ -780,12 +949,16 @@ def _record_from_result(job: GroupLLMJob, result: GroupLLMResult, *, cache_hit: 
         "checkpoint_hit": False,
         "response_id": result.response_id,
         "max_tokens": job.max_tokens,
+        "completion_token_parameter": job.metadata.get(
+            "completion_token_parameter", "max_tokens"
+        ),
         "cell_ids": list(job.expected_cell_ids),
         "metadata": dict(job.metadata),
     }
 
 
 def _cache_row(result: GroupLLMResult, job: GroupLLMJob) -> JSONDict:
+    response_usage = dict(result.response_usage or result.usage)
     return {
         "prompt_hash": result.prompt_hash,
         "provider_request_hash": result.provider_request_hash,
@@ -795,7 +968,9 @@ def _cache_row(result: GroupLLMResult, job: GroupLLMJob) -> JSONDict:
         "model_returned": result.model_returned,
         "provider_model_field_present": result.provider_model_field_present,
         "model_returned_present": result.model_returned_present,
-        "usage": dict(result.usage),
+        "finish_reason": result.finish_reason,
+        "usage": response_usage,
+        "attempt_usage_total": dict(result.usage),
         "latency_seconds": result.latency_seconds,
         "attempts": result.attempts,
         "usage_observed_attempts": result.usage_observed_attempts,
@@ -808,7 +983,18 @@ def _cache_row(result: GroupLLMResult, job: GroupLLMJob) -> JSONDict:
 
 def _result_from_cache(row: Mapping[str, Any], job: GroupLLMJob) -> GroupLLMResult | None:
     content = str(row.get("content", ""))
-    parsed = parse_group_response(content, job.query_id, job.expected_cell_ids)
+    require_complete_json = bool(
+        job.metadata.get(
+            "require_complete_json",
+            job.metadata.get("require_complete_response", False),
+        )
+    )
+    parsed = parse_group_response(
+        content,
+        job.query_id,
+        job.expected_cell_ids,
+        require_complete_json=require_complete_json,
+    )
     require_complete = bool(job.metadata.get("require_complete_response"))
     valid = (
         parsed.is_complete
@@ -816,6 +1002,24 @@ def _result_from_cache(row: Mapping[str, Any], job: GroupLLMJob) -> GroupLLMResu
         else parsed.parse_status in {"ok", "partial"} and parsed.has_valid_items
     )
     if not valid:
+        return None
+    finish_reason = str(row.get("finish_reason", ""))
+    required_finish_reason = str(job.metadata.get("required_finish_reason", ""))
+    if required_finish_reason and finish_reason != required_finish_reason:
+        return None
+    usage = row.get("usage")
+    response_usage = dict(usage) if isinstance(usage, Mapping) else {}
+    if bool(job.metadata.get("require_complete_usage")) and not (
+        DeepSeekGroupClient._usage_complete(response_usage)
+    ):
+        return None
+    if bool(job.metadata.get("require_zero_reasoning_tokens")) and (
+        DeepSeekGroupClient._reasoning_tokens(response_usage) not in {None, 0}
+    ):
+        return None
+    if bool(job.metadata.get("require_thinking_disabled")) and (
+        job.metadata.get("thinking_disabled") is not True
+    ):
         return None
     model_returned = str(row.get("model_returned", row.get("model", "")))
     presence_marker = row.get("provider_model_field_present")
@@ -829,7 +1033,7 @@ def _result_from_cache(row: Mapping[str, Any], job: GroupLLMJob) -> GroupLLMResu
         content=content,
         parsed=parsed,
         model=model_returned,
-        usage=MappingProxyType(dict(row.get("usage") or {})),
+        usage=MappingProxyType(dict(row.get("attempt_usage_total") or response_usage)),
         latency_seconds=float(row.get("latency_seconds", 0.0) or 0.0),
         prompt_hash=job.prompt_hash,
         provider_request_hash=str(row.get("provider_request_hash", "")),
@@ -840,6 +1044,8 @@ def _result_from_cache(row: Mapping[str, Any], job: GroupLLMJob) -> GroupLLMResu
         observed_total_tokens=int(row.get("observed_total_tokens", 0) or 0),
         model_requested=str(row.get("model_requested", "")),
         provider_model_field_present=model_field_present,
+        finish_reason=finish_reason,
+        response_usage=MappingProxyType(response_usage),
     )
 
 
@@ -850,6 +1056,8 @@ def run_group_llm_batch(
     *,
     concurrency: int | None = None,
     retry_failed: bool = True,
+    retry_failed_finish_reasons: Iterable[str] = (),
+    fail_fast_finish_reasons: Iterable[str] = (),
 ) -> list[JSONDict]:
     """Execute unique physical requests and resume by query_id + prompt_hash."""
 
@@ -861,6 +1069,12 @@ def run_group_llm_batch(
     cache_path = run_path / "group_response_cache.jsonl"
     checkpoint_path = run_path / "group_query_checkpoint.jsonl"
     lock = threading.Lock()
+    fatal_finish_reasons = {
+        str(value) for value in fail_fast_finish_reasons if str(value)
+    }
+    retry_checkpoint_finish_reasons = {
+        str(value) for value in retry_failed_finish_reasons if str(value)
+    }
 
     def phase_of(row: Mapping[str, Any]) -> str:
         metadata = row.get("metadata")
@@ -922,7 +1136,16 @@ def run_group_llm_batch(
             and str(row.get("provider_request_hash", "")) == provider_request_hash
         ]
         checkpoint = compatible_checkpoints[-1] if compatible_checkpoints else None
-        if checkpoint is not None and (checkpoint.get("status") == "success" or not retry_failed):
+        retry_checkpoint = bool(
+            checkpoint is not None
+            and checkpoint.get("status") != "success"
+            and (
+                retry_failed
+                or str(checkpoint.get("finish_reason", ""))
+                in retry_checkpoint_finish_reasons
+            )
+        )
+        if checkpoint is not None and not retry_checkpoint:
             resumed = dict(checkpoint)
             resumed["checkpoint_hit"] = True
             output[indexed.index] = resumed
@@ -989,7 +1212,14 @@ def run_group_llm_batch(
                             model_field_present and model_returned
                         ),
                         "model_matches_request": False,
+                        "finish_reason": "",
                         "usage": {},
+                        "attempt_usage_total": {},
+                        "usage_complete": False,
+                        "reasoning_tokens": None,
+                        "thinking_disabled": job.metadata.get(
+                            "thinking_disabled"
+                        ),
                         "latency_seconds": 0.0,
                         "attempts": client.config.max_retries + 1 if retryable else 1,
                         "usage_observed_attempts": 0,
@@ -1002,6 +1232,9 @@ def run_group_llm_batch(
                         "exception_class": type(error).__name__,
                         "error": str(error)[:500],
                         "max_tokens": job.max_tokens,
+                        "completion_token_parameter": job.metadata.get(
+                            "completion_token_parameter", "max_tokens"
+                        ),
                         "cell_ids": list(job.expected_cell_ids),
                         "metadata": dict(job.metadata),
                     }
@@ -1024,6 +1257,16 @@ def run_group_llm_batch(
                 _append_jsonl(checkpoint_path, record, lock)
                 output[indexed.index] = record
                 emitted.append(record)
+            fatal_query_ids = [
+                str(row["query_id"])
+                for row in emitted
+                if str(row.get("finish_reason", "")) in fatal_finish_reasons
+            ]
+            if fatal_query_ids:
+                for other_future in future_to_key:
+                    if other_future is not future:
+                        other_future.cancel()
+                raise CompletionTruncatedError(fatal_query_ids)
             # Persist the cost-bearing checkpoint before the convenience cache
             # so a crash can never turn a paid response into an uncharged hit.
             if emitted and all(row.get("status") == "success" for row in emitted):
@@ -1044,6 +1287,7 @@ run_llm_batch = run_group_llm_batch
 
 __all__ = [
     "ClientConfig",
+    "CompletionTruncatedError",
     "DeepSeekClient",
     "DeepSeekGroupClient",
     "GroupClientConfig",

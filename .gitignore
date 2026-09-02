@@ -24,6 +24,7 @@ venv/
 !.env.example
 
 # Experiment outputs
+organized_runs/**
 runs/**
 !runs/.gitkeep
 report.html
